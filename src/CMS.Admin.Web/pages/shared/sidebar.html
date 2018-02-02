@@ -8,39 +8,79 @@
                 <a ui-sref="cms.dashboard" title="Dashboard"><i class="fa fa-clock-o"></i><span>Dashboard</span></a>
             </li>
 
-            <li class="has-sub" ng-class="{active:$state.includes('cms.users')}">
+            <li class="has-sub" ng-class="{active:$state.includes('cms.scrap')}">
                 <a href="javascript:;">
                     <b class="caret pull-right"></b>
-                    <i class="fa fa-user-o"></i>
+                    <i class="fa fa-trash-o"></i>
                     <span>Scrap</span>
                 </a>
                 <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.users')}"><a ui-sref="cms.users.list">Usuarios</a></li>
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.scrap')}"><a ui-sref="cms.scrap">Scrap</a></li>
                 </ul>
             </li>
 
 
+            <li class="has-sub" ng-class="{active:$state.includes('cms.maquinas')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-building-o"></i>
+                    <span>Maquinas</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.maquinas')}"><a ui-sref="cms.maquinas.list">Maquinas</a></li>
+                </ul>
+            </li>
+
+
+            <li class="has-sub" ng-class="{active:$state.includes('cms.operarios')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-users"></i>
+                    <span>Operarios</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.operarios')}"><a ui-sref="cms.operarios.list">Operarios</a></li>
+                </ul>
+            </li>
+
+
+
+            <li class="has-sub" ng-class="{active:$state.includes('cms.tipoMaterial')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-list"></i>
+                    <span>Material</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.tipoMaterial')}"><a ui-sref="cms.tipoMaterial.list">Tipo de Material</a></li>
+                </ul>
+            </li>
+
+           
+
+
+            <li class="has-sub" ng-class="{active:$state.includes('cms.origenScrap')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-cart-plus"></i>
+                    <span>Origen de Scrap</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.origenScrap')}"><a ui-sref="cms.origenScrap.list">Origen de Scrap</a></li>
+                </ul>
+            </li>
+
+
+
+
             <li class="has-sub" ng-class="{active:$state.includes('cms.users')}">
                 <a href="javascript:;">
                     <b class="caret pull-right"></b>
-                    <i class="fa fa-user-o"></i>
+                    <i class="fa fa-users"></i>
                     <span>Usuarios</span>
                 </a>
                 <ul class="sub-menu">
                     <li ui-sref-active="active" ng-class="{active:$state.includes('cms.users')}"><a ui-sref="cms.users.list">Usuarios</a></li>
-                </ul>
-            </li>
-
-            <li class="has-sub" ng-class="{active:$state.includes('cms.config')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-cog"></i>
-                    <span>Configuracion</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.config.cars')}"><a ui-sref="cms.config.cars.list">Materiales</a></li>
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.config.models')}"><a ui-sref="cms.config.models.list">Tipo Material</a></li>
-                   
                 </ul>
             </li>
 
