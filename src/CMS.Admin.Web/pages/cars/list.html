@@ -1,0 +1,47 @@
+﻿<div ng-app="app" ng-controller="CarsController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li class="active">Marcas</li>
+                </ol>
+                <h1 class="page-header">Marcas <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Listado de Marcas</h4>
+                    </div>
+                    <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Acciones</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="cms.config.cars.crud">Nueva Marca</a>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body">
+                         <md-input-container md-no-float class="md-block md-no-error search">
+                            <input type="text" ng-model="searchQuery" placeholder="Buscar marcas" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

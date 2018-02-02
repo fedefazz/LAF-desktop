@@ -1,0 +1,124 @@
+﻿<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <ol class="breadcrumb pull-right">
+                <li><a href="/#/cms/dashboard">Home</a></li>
+                <li class="active">Dashboard</li>
+            </ol>
+            <h1 class="page-header">Dashboard <small></small></h1>
+        </div>
+        
+		<div class="col-md-3 col-sm-6">
+			<div class="widget widget-stats bg-green">
+			    <div class="stats-icon stats-icon-lg"><i class="fa fa-globe fa-fw"></i></div>
+			    <div class="stats-title">TODAY'S VISITS</div>
+			    <div class="stats-number">842,900</div>
+			    <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: 70.1%;"></div>
+                </div>
+                <div class="stats-desc">Better than last week (70.1%)</div>
+			</div>
+		</div>
+		<div class="col-md-3 col-sm-6">
+			<div class="widget widget-stats bg-blue">
+			    <div class="stats-icon stats-icon-lg"><i class="fa fa-file fa-fw"></i></div>
+			    <div class="stats-title">PAGE VIEWS</div>
+			    <div class="stats-number">180,200</div>
+			    <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: 40.5%;"></div>
+                </div>
+                <div class="stats-desc">Better than last week (40.5%)</div>
+			</div>
+		</div>
+		<div class="col-md-3 col-sm-6">
+			<div class="widget widget-stats bg-purple">
+			    <div class="stats-icon stats-icon-lg"><i class="fa fa-users fa-fw"></i></div>
+			    <div class="stats-title">NEW USERS</div>
+			    <div class="stats-number">38,900</div>
+			    <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: 76.3%;"></div>
+                </div>
+                <div class="stats-desc">Better than last week (76.3%)</div> 
+			</div>
+		</div>
+		<div class="col-md-3 col-sm-6">
+			<div class="widget widget-stats bg-black">
+			    <div class="stats-icon stats-icon-lg"><i class="fa fa-comments fa-fw"></i></div>
+			    <div class="stats-title">NEW COMMENTS</div>
+			    <div class="stats-number">3,988</div>
+			    <div class="stats-progress progress">
+                    <div class="progress-bar" style="width: 54.9%;"></div>
+                </div>
+                <div class="stats-desc">Better than last week (54.9%)</div>
+			</div>
+		</div>
+
+        <div class="col-sm-12 col-md-8">
+            <div class="widget-chart with-sidebar bg-black">
+			    <div class="widget-chart-content">
+			        <h4 class="chart-title">
+			            Visitors Analytics
+			            <small>Where do our visitors come from</small>
+			        </h4>
+			        <div id="visitors-line-chart" class="morris-inverse" style="height: 260px;"></div>
+			    </div>
+			    <div class="widget-chart-sidebar bg-black-darker">
+			        <div class="chart-number">
+			            1,225,729
+			            <small>visitors</small>
+			        </div>
+			        <div id="visitors-donut-chart" style="height: 160px"></div>
+			        <ul class="chart-legend">
+			            <li><i class="fa fa-circle-o fa-fw text-success m-r-5"></i> 34.0% <span>New Visitors</span></li>
+			            <li><i class="fa fa-circle-o fa-fw text-primary m-r-5"></i> 56.0% <span>Return Visitors</span></li>
+			        </ul>
+			    </div>
+		    </div>
+		</div>
+
+        <div class="col-sm-12 col-md-4">
+            <div class="panel panel-inverse" data-sortable-id="index-9">
+				<div class="panel-heading">
+					<h4 class="panel-title">World Visitors</h4>
+				</div>
+				<div class="panel-body p-0">
+					<div id="visitors-map" class="height-sm width-full"></div>
+				</div>
+			</div>
+		</div>
+
+        <div class="col-sm-12 col-md-4">
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Latest News</h4>
+                </div>
+                <div class="list-group stats-list">
+                    <a ng-repeat="news in lastestNews" class="list-group-item"><span class="label label-primary">{{ news.Nodes_en[0] }}</span> {{ news.Title_en }}</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-4">
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Statistics</h4>
+                </div>
+                <div class="list-group stats">
+                    <a ng-repeat="ns in newsStats" class="list-group-item"><span class="badge badge-primary badge-square">{{ ns.Value }}</span> {{ ns.Name | capitalize }}</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-4">
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Most Viewed</h4>
+                </div>
+                <div class="list-group stats-list">
+                    <a ng-repeat="news in lastestNews" class="list-group-item"><span class="label label-primary">{{ news.Nodes_en[0] }}</span> {{ news.Title_en }}</a>
+                </div>
+            </div>
+        </div>
+
+    </div>    
+</div>

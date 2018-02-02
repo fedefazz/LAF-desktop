@@ -1,0 +1,192 @@
+<div ng-app="app" ng-controller="EditLayoutController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a href="javascript:;">Content</a></li>
+                    <li class="active">Layouts</li>
+                </ol>
+                <h1 class="page-header">Layout Edition</h1>
+            </div>
+
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="newLayoutForm.$valid && processForm()" name="newLayoutForm" novalidate>
+
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Layout Information</h4>
+                        </div>
+                        <div class="panel-body">
+                            <h4 class="subtitle">Page: <strong>{{layoutData.Node.Description}}</strong></h4>
+                            <h4 class="subtitle">Template: <strong>{{layoutData.Layout.Name}}</strong></h4>
+                            <h4 class="subtitle">Release version: <strong>#{{layoutData.Id}}</strong></h4>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Layout Versioning</h4>
+                        </div>
+                        <table class="table table-bordered dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Release Version</th>
+                                    <th>Description</th>
+                                    <th>Release Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="layout in LayoutInstances | orderBy:sortUser:sortReverse | filter:searchUser | filter:filterByStatus | filter:filterByRol">
+                                    <td>
+                                        <i class="fa fa-{{layout.css}}"></i>
+                                        <a href="/#/cms/content/layouts/editor/{{layout.Id}}" class="title">
+                                            <strong>Layout #{{layout.Id}}</strong>
+                                        </a>
+                                    </td>
+                                    <td>{{layout.Description}}</td>
+                                    <td>{{ layout.PublicationDate | date : "d-MMM-yyyy HH:mm" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Actions</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button type="submit" class="btn btn-block btn-primary">Save Layout</button>
+                            <button type="button" ng-click="ShowEditor()" class="btn btn-block btn-success">Layout Editor</button>
+                            <a class="btn btn-block btn-default" ui-sref="cms.content.layouts.list">Back to Layouts</a>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Publication Date</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block datetime md-no-error" flex-gt-xs>
+                                    <!-- <label>Publication Date</label> -->
+                                    <input mdc-datetime-picker="" date="true" time="true" type="text" id="PublicationDate" show-todays-date="" min-date="date" ng-model="layoutData.PublicationDate" class="md-input" readonly="readonly" />
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+
+                    <!--<pre>{{layoutData | json}}</pre>-->
+                </div>
+
+                <div class="col-sm-12 col-md-12">
+                    <h1 class="page-header" style="margin-top: 30px;">Page Details</h1>
+                </div>
+
+                <div class="col-sm-12 col-md-8">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Page Information</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Title</label>
+                                    <input type="text" ng-model="layoutData.pageData.Content[0].Title" name="PageTitle">
+                                    <div ng-messages="createNodeForm.PageTitle.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                   <label>Details</label>
+                                    <input md-maxlength="120" type="text" name="Details" ng-model="layoutData.Description">
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Social Media</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <!-- SOCIAL NETWORKS -->
+                            <fieldset data-ng-repeat="SN in layoutData.pageData.Content[0].SocialNetwork">
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Social Network</label>
+                                        <md-select ng-model="SN.Id" name="SNID" placeholder="Social Network">
+                                            <md-option ng-repeat="sn in SNList" ng-value="sn.Id">
+                                                {{sn.Name}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>URL</label>
+                                        <input type="text" name="SNURL" ng-model="SN.Url" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs-5>
+                                        <button type="button" class="btn btn-danger pull-right btn-remove remove" ng-show="$last" ng-click="removeSN()"><i class="fa fa-remove"></i></button>
+                                    </md-input-container>
+                                </div>
+                            </fieldset>
+                            <button type="button" class="btn btn-primary pull-right btn-remove addfields" ng-click="addSN()" style="margin: -10px 5px 10px;"><i class="fa fa-plus"></i></button>
+                        </md-content>
+                    </div>
+
+                </div>
+                <div class="col-sm-12 col-md-4">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h6 class="helper pull-right">1140px x 200px</h6>
+                            <h4 class="panel-title">Page Header</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="img-holder">
+
+                                <img src="{{headerImage}}" alt="Featured Image" class="img-responsive img-preview" />
+                            </div>
+                            <a ng-click="ChooseFile('headerImage')" class="btn btn-sm btn-block btn-primary">Change image</a>
+                            <a ng-show="layoutData.Media.length>0" ng-click="RemoveMedia('headerImage')" class="btn btn-sm btn-block btn-danger">Remove image</a>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block color-picker" flex-gt-xs>
+                                    <button colorpicker type="button" colorpicker-position="left" ng-model="layoutData.BackgroundColor">
+                                        <i class="fa fa-paint-brush"></i>
+                                    </button>
+                                    <label>Background color</label>
+                                    <input md-maxlength="7" type="text" name="BackgroundColor" ng-model="layoutData.BackgroundColor">
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h6 class="helper pull-right">360px x 540px</h6>
+                            <h4 class="panel-title">Layout Image</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="img-holder">
+                                <img src="{{pageImage}}" alt="Featured Image" class="img-responsive img-preview" />
+                            </div>
+                            <a ng-click="ChooseFile('pageImage')" class="btn btn-sm btn-block btn-primary">Change image</a>
+                            <a ng-show="layoutData.pageData.AssetMedia.length>0" ng-click="RemoveMedia('pageImage')" class="btn btn-sm btn-block btn-danger">Remove image</a>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

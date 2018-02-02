@@ -1,0 +1,706 @@
+﻿'use strict';
+angular
+    .module('app.controllers')
+
+    .controller('ServiceController', function ($scope, $timeout, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http, $localStorage, $mdDialog, $interval) {
+        $localStorage.$reset();
+
+        $scope.dtInstance = {};
+
+
+        var Today = moment.locale('es');
+        var Today = moment().format();
+        $scope.TodayMostrar = moment(Today).format('LL');
+
+
+        generarGrilla(Today);
+
+
+
+        //GENERO LA GRILLA DE HORAS CON TURNOS DEFAULT VACIOS
+        function generarGrilla(date) {
+            if (date != "") {
+                date = Today;
+            }
+            var x;
+            var hour = 20;
+            var y;
+            var turnos = 10;
+            $scope.hours = [];
+            for (x = 8; x < hour; x++) {
+                $scope.hours[x] = [];
+                for (y = 0; y < turnos; y++) {
+                    $scope.turnoVacio = {
+                        Orden: y + 1,
+                        Id: "",
+                        Modelo: "",
+                        Patente: "",
+                        Activo: false,
+                        Hora: x
+                    }
+                    $scope.hours[x][y] = $scope.turnoVacio;
+                }
+            }
+
+            getAllServices(date);
+
+        }
+
+
+        function getAllServices(date) {
+
+            if (!date) {
+                date = Today;
+            }
+
+
+            Pace.restart();
+            $timeout(function () {
+
+                var servCall = APIService.getServicesSolr(" AND IsDeleted:false&fl=Date,License,Model,ServiceId,Hour,Order&sort=Date asc&&rows=3000")
+                servCall.then(function (u) {
+
+                    console.log(u.data.response.docs);
+                    $scope.services = u.data.response.docs;
+                    $scope.sortId = 'id'; // set the default sort type
+                    $scope.sortReverse = false;  // set the default sort order
+                    $scope.searchUser = '';     // set the default search/filter term
+                    $("#alertMessage").show(400);
+                    AlertService.ShowAlert($scope);
+                    $timeout(function () {
+                        $("#alertMessage").hide("fast", function () {
+                        });
+                    }, 2500);
+
+                    asignarTurnos(date);
+                    Pace.stop();
+
+
+                }, function (error) {
+                    $scope.errorMessage = "Oops, something went wrong.";
+                })
+
+
+            }, 1500);
+
+
+        };
+
+        //ASIGNA LOS TURNOS DE LA BASE DE DATOS AL PRIMER DISPONIBLE DE CADA HORA
+        function asignarTurnos(date) {
+
+            var x;
+            var orden = 0;
+            angular.forEach($scope.services, function (value, key) {
+
+                var fechaDiaActual = mySplit(date, 0);
+                var fechaDiaTurno = mySplit(value.Date, 0);
+                if (fechaDiaActual == fechaDiaTurno) {
+                    var hora = value.Hour;
+                    for (x = 0; x < $scope.hours[hora].length; x++) {
+                        var slot = $scope.hours[hora][x];
+                        if (!slot.Activo) {
+
+                            $scope.turno = {
+                                Orden: x + 1,
+                                Id: value.ServiceId,
+                                Modelo: value.Model,
+                                Patente: value.License,
+                                Activo: true,
+                                Hora: hora
+                            }
+                            $scope.hours[hora][x] = $scope.turno;
+
+                            break;
+                        }
+                    }
+                }
+            });
+
+        };
+
+        //CUENTA SLOTS DISPONIBLES
+        $scope.FilterResults = function (h) {
+            var selectedCount = $filter('filter')(h, { Activo: true }).length;
+            return 10 - selectedCount;
+        }
+
+        //HACE UN SPLIT DE LOS DIAS PARA COMPARAR
+        function mySplit(string, nb) {
+            var array = string.split('T');
+            return array[nb];
+        }
+
+
+        $scope.$watch('models.dropzones', function (model) {
+            $scope.modelAsJson = angular.toJson(model, true);
+        }, true);
+
+
+
+        //modal regions layouts
+        $scope.showRegions = function (ev, h, hora, fecha, id) {
+
+            console.log(ev);
+
+
+            var selectedCount = $filter('filter')(h, { Activo: true }).length;
+
+            var OrdenMasGrande = selectedCount;
+
+
+
+
+
+            $mdDialog.show({
+                controller: DialogRegionController,
+                templateUrl: 'pages/content/dialog-regions.html',
+                parent: angular.element(document.body),
+                targetEvent: ev,
+                clickOutsideToClose: true,
+                fullscreen: $scope.customFullscreen,
+                locals: {
+                    OrdenMasGrande: OrdenMasGrande,
+                    Hora: hora,
+                    fecha: fecha,
+                    id : id
+                }
+            })
+            .then(function (answer) {
+                $scope.status = 'You said the information was "' + answer + '".';
+            }, function () {
+                $scope.status = 'You cancelled the dialog.';
+            });
+        };
+
+        function DialogRegionController($scope, $mdDialog, APIService, DTOptionsBuilder, DTColumnBuilder, $http, $compile, $rootScope, OrdenMasGrande, Hora, fecha, $window, AlertService, $cookies, $timeout, id, $filter) {
+
+
+            $scope.newServiceData = {};
+            $scope.newServiceData.ServiceType = [];
+
+            if (id != null) {
+               
+                var servCall = APIService.getServicesSolr("&fq=ServiceId:" + id);
+                
+                servCall.then(function (u) {
+                    console.log(u.data.response.docs[0]);
+
+                    $scope.newServiceData.CreationDate = u.data.response.docs[0].CreationDate;
+
+
+
+                    $scope.newServiceData.ServiceType = u.data.response.docs[0].ServiceType;
+
+                    $scope.Id = u.data.response.docs[0].Order;
+                    $scope.serviceId = u.data.response.docs[0].ServiceId;
+                    GetVehicleLicence($scope.newServiceData.License);
+
+                    $scope.newServiceData.Patente = u.data.response.docs[0].License;
+                    $scope.updateService = true;
+
+                }
+
+                );
+                
+                
+                
+                }
+
+
+
+            getallServiceTypes();
+
+
+            $scope.localLang = {
+                selectAll: "Seleccionar Todos",
+                selectNone: "Deseleccionar Todos",
+                reset: "Borrar Todo",
+                search: "Busqueda...",
+                nothingSelected: "Nada Seleccionado"         //default-label is deprecated and replaced with this.
+            }
+
+
+            //TRAIGO TIPOS DE SERVICIO
+            function getallServiceTypes() {
+                var servCallType = APIService.getServiceTypes();
+                servCallType.then(function (u) {
+                    console.log(u.data);
+                    $scope.serviceTypes = u.data;
+                    $scope.sortId = 'id'; // set the default sort type
+                    $scope.sortReverse = false;  // set the default sort order
+                    $scope.searchUser = '';     // set the default search/filter term
+
+
+
+
+
+                    $scope.modernBrowsers = [];
+
+                    var _ticked = false;
+                    
+                    angular.forEach($scope.serviceTypes, function (value, key) {
+
+                        if ($scope.newServiceData.ServiceType != undefined) {
+
+                        
+
+                        if ($scope.newServiceData.ServiceType.length != 0) {
+
+                        var a = $scope.newServiceData.ServiceType.indexOf(value.TypeServiceId);
+
+                        }
+
+                       }
+
+                        if ($scope.updateService == true && a.length != 0) {
+
+                            if (a !== -1) {
+
+                                _ticked = true;
+                            }
+                            else {
+
+                                _ticked = false;
+
+                            }
+
+                        }
+                        
+                        $scope.modernBrowsers.push({ Name: value.Name, Duration: value.Duration, TypeServiceId: value.TypeServiceId, ticked: _ticked });
+
+
+
+                       
+                    });
+
+               
+
+
+
+
+
+
+
+                    //Display message if necessary
+                    AlertService.ShowAlert($scope);
+                }, function (error) {
+                    $scope.errorMessage = "Oops, something went wrong.";
+                })
+            };
+
+
+
+
+
+
+
+            //CREO VARIABLES
+            $scope.fecha = moment(fecha).format('LL');
+            $scope.dia = moment(fecha).format('dddd');
+            $scope.fechaFormateada = moment().format("YYYY-MM-DD");
+            $scope.Id = OrdenMasGrande + 1;
+            $scope.Hora = Hora;
+            $scope.newServiceData = {};
+            $scope.Vehicle = {};
+            $scope.Client = {};
+
+
+            //MONITEOREO CAMBIO DE PATENTE
+            $scope.newServiceData.Patente = '';
+            $scope.$watch('newServiceData.Patente', function (newValue) {
+
+
+                if (newValue != undefined) {
+                    if (newValue.length > 5 && newValue.length < 8) {
+                        GetVehicleLicence(newValue);
+                    }
+                    else if (newValue.length == 0) {
+                        //$scope.Vehicle.Brand = "Ingrese una patente";
+                        //$scope.Vehicle.Model = "Ingrese una patente";
+                    }
+
+                }
+                else {
+                    $scope.Vehicle.Brand = "";
+                    $scope.Vehicle.Model = "";
+
+                    $scope.Client.FirstName = "";
+                    $scope.Client.Dni = "";
+                    $scope.Client.Email = "";
+                }
+
+            });
+
+
+
+            //BUSCAR VEHICULO CON PATENTE
+            function GetVehicleLicence(Licence) {
+                var servCallVehicle = APIService.GetVehicleLicence(Licence);
+                //SI EXISTE
+                servCallVehicle.then(function (u) {
+                    $scope.Vehicle = u.data;
+                    GetClientById($scope.Vehicle.ClientId, true);
+                    AlertService.ShowAlert($scope);
+                    //SI NO EXISTE
+                }, function (error) {
+
+                    $scope.flag = 2.0;
+
+
+                    //$scope.Client.FirstName = "";
+                    //$scope.Client.Dni = "";
+                    //$scope.Client.Email = "";
+                    //$scope.Vehicle.Brand = "";
+                    //$scope.Vehicle.Model = "";
+
+
+                    GetClientById($scope.Vehicle.ClientId, false);
+
+                })
+            }
+
+
+
+
+
+            //BUSCAR CLIENTE CON ID
+            function GetClientById(id, newCar) {
+
+                if (newCar) {
+
+                    var servCallClient = APIService.GetClientById(id);
+
+                    //SI EXISTE Y DEJA EL MISMO / ACTUALIZAR CLIENTE
+                    servCallClient.then(function (u) {
+                        $scope.Client = u.data;
+                        $scope.flag = 1.0;
+
+
+                    }, function (error) { $scope.errorMessage = "Oops, something went wrong." }
+
+                    )
+                }
+                //SI EXISTE Y CAMBIA / ACTUALIZAR O CREAR CLIENTE
+
+                    //SI CAMBIA
+
+
+                    $scope.$watch('Client.Dni', function (newValue) {
+
+                        if (newValue.length != undefined) {
+
+                            var dniabuscar = newValue.trim();
+
+
+                        }
+
+                        if (dniabuscar.length == 8) {
+
+                            GetClientByDni(dniabuscar);
+
+                        }
+                        else {
+                            $scope.Client.FirstName = "";
+                            $scope.Client.Email = "";
+                            GetClientByDni(dniabuscar);
+
+
+                        }
+
+                    });
+
+
+
+
+              
+            }
+
+
+
+
+
+
+
+            //BUSCAR CLIENTE CON DNI
+            function GetClientByDni(dni) {
+                var servCallClientDni = APIService.GetClientByDni(dni);
+
+                //ACTUALIZO CLIENTE Y AUTO
+                servCallClientDni.then(function (u) {
+                    $scope.Client = u.data;
+
+                    if ($scope.flag != 2.0) {
+
+                        if ($scope.Client.Id != $scope.Vehicle.ClientId) {
+
+                            $scope.flag = 1.1;
+
+                        } else {
+
+                            $scope.flag = 1.0;
+                        }
+
+                    }
+                    console.log($scope.Client);
+                    return $scope.Client;
+
+
+
+                    //NO EXISTE LO CREO CLIENTE
+                }, function (error) {
+                    //$scope.newServiceData.flag = 1.2;
+                    $scope.Client.FirstName = "";
+                    $scope.Client.Email = "";
+                    return false;
+
+
+
+
+
+
+
+
+
+                })
+
+            }
+
+
+
+
+
+
+            //PROCESAR FORMULARIO
+            $scope.processForm = function () {
+
+
+
+                //ACTUALIZA CLIENTE
+                function ActualizarCliente() {
+                    console.log("actualizar cliente" + $scope.Client);
+
+                    var dataClient = $.param($scope.Client);
+                    var servCallUpdate = APIService.updateClient($scope.Client.Id, dataClient);
+                    servCallUpdate.then(function (u) {
+                        $scope.Client = u.data;
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+
+
+                //CREAR CLIENTE
+                function CrearCliente() {
+
+
+                   
+
+                    $scope.Client.Id = null;
+
+
+
+                    $scope.Client.LastName = "";
+
+                    var dataClient = $.param($scope.Client);
+                    var servCallCreate = APIService.createClient(dataClient);
+                    servCallCreate.then(function (u) {
+
+                        $scope.Client = u.data;
+
+                    }, function (error) {
+                        alert("No se puedo crear el cliente");
+                    })
+                };
+
+                //ACTUALIZA AUTO
+                function ActualizarAuto() {
+                    $scope.Vehicle.ClientId = $scope.Client.Id;
+                    var dataVehicle = $.param($scope.Vehicle);
+                    var servCallUpdateVehicle = APIService.updateVehicle($scope.Vehicle.Id, dataVehicle);
+                    servCallUpdateVehicle.then(function (u) {
+                        $scope.Vehicle = u.data;
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+
+                //CREAR AUTO
+                function CrearAuto() {
+
+
+                    if ($scope.Vehicle.Model == "") {
+
+                        $scope.Vehicle.Model = "Sin Modelo"
+
+                    }
+
+                    if ($scope.Vehicle.Brand == "") {
+
+                        $scope.Vehicle.Brand = "Sin Marca"
+
+                    }
+
+                    $scope.Vehicle.ClientId = $scope.Client.Id;
+                    $scope.Vehicle.IsDeleted = false;
+                    $scope.Vehicle.IsEnabled = true;
+                    $scope.Vehicle.License = $scope.newServiceData.Patente;
+                    var dataVehicle = $.param($scope.Vehicle);
+                    var servCallCreate = APIService.createVehicle(dataVehicle);
+
+                    servCallCreate.then(function (u) {
+
+                        $scope.Vehicle = u.data;
+                        console.log($scope.Vehicle);
+
+
+                    }, function (error) {
+                        console.log(error);
+                    });
+                };
+                if ($scope.updateService) {
+                    $scope.flag = 1.1;
+                }
+                if ($scope.flag == 1.0) {
+
+                    ActualizarCliente();
+                    NewService($scope.updateService);
+
+                    
+
+                } else if ($scope.flag == 1.1) {
+                    $scope.Vehicle.Client = $scope.Client;
+
+                    ActualizarCliente();
+                    ActualizarAuto();
+                    NewService($scope.updateService);
+
+                }
+                else if ($scope.flag == 1.2) {
+
+                    CrearCliente();
+                    $timeout(function () { GetClientByDni($scope.Client.Dni) }, 1000);
+                    ActualizarCliente();
+                    ActualizarAuto();
+                    NewService($scope.updateService);
+                }
+                else if ($scope.flag == 2.0) {
+
+
+                    var cliente = GetClientByDni($scope.Client.Dni);
+
+                    if (cliente != false && cliente != undefined) {
+
+                        ActualizarCliente();
+                        CrearAuto();
+                        $timeout(function () {NewService()},1000);
+                    }
+
+                    else {
+
+
+                        CrearCliente();
+                        $timeout(function () { CrearAuto() }, 2000);
+                        $timeout(function () { NewService() }, 2500);
+                    }
+    
+                }
+
+                //CREA SERVICIO
+                function NewService(update) {
+                    $scope.newServiceData.VehicleId = $scope.Vehicle.Id;
+                    $scope.newServiceData.Order = $scope.Id;
+                    $scope.newServiceData.Hour = $scope.Hora;
+                    $scope.newServiceData.Date = $scope.fechaFormateada;
+                    console.log($scope.newServiceData.ServiceType);
+                    $scope.tiposServicio = [];
+                    angular.forEach($scope.outputBrowsers, function (value, key) {
+
+                       
+
+
+                        $scope.tiposServicio.push({ TypeServiceId: value.TypeServiceId, Name: value.Name, ticked: value.ticked,  Duration: value.Duration });
+
+
+
+                    });
+                    console.log($scope.tiposServicio);
+
+                    $scope.newServiceData.ServiceType = $scope.tiposServicio;
+
+                    console.log($scope.newServiceData);
+
+
+                    if (update) {
+
+                        $scope.newServiceData.serviceId = $scope.serviceId;
+                        console.log($scope.newServiceData);
+
+                    }
+
+
+                    var data = $.param($scope.newServiceData);
+
+
+                    if (update) {
+                            var servCall = APIService.UpdateService($scope.serviceId, data);
+                    }
+                    else
+                    {
+
+                        var servCall = APIService.NewService(data);
+
+
+                    }
+
+                    servCall.then(function (u) {
+                        var serviceData = u.data;
+                        //Set message
+
+                        generarGrilla();
+
+                        $scope.hide();
+
+                        $window.location.href = "/#/cms/services/list";
+
+                        AlertService.SetAlert("El servicio ha sido creado de manera exitosa", "success");
+
+                    }, function (error) {
+                        console.log(error);
+                        $scope.errorMessage = "Oops, something went wrong.";
+                    })
+                }
+
+
+
+
+                $scope.hide = function () {
+                    $mdDialog.hide();
+                };
+
+                $scope.cancel = function () {
+                    $mdDialog.cancel();
+                };
+
+                $scope.answer = function (answer) {
+                    $mdDialog.hide(answer);
+                };
+            }
+
+
+
+        }
+    });
+
+
+
+
+
+
+//.controller('APIController', function ($scope, APIService, $controller, AlertService) {
+
+//   angular.extend(this, $controller('ServiceListController', { $scope: $scope })); //Could be useful later
+
+
+
+//});

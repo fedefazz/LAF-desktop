@@ -1,0 +1,130 @@
+﻿<div ng-app="app" ng-controller="ProfileEditController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a ui-sref="cms.profile.edit">Profile</a></li>
+                    <li class="active">Update Profile</li>
+                </ol>
+                <h1 class="page-header">Update Profile <small></small></h1>
+            </div>
+            
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+
+            <form ng-submit="profileForm.$valid && processForm()" name="profileForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Personal Information</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>First Name</label>
+                                    <input type="text" ng-model="profileData.FirstName" name="FirstName" required />
+                                    <div ng-messages="profileForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Last Name</label>
+                                    <input type="text" ng-model="profileData.LastName" name="LastName" required />
+                                    <div ng-messages="profileForm.LastName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Contact Information</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Address</label>
+                                    <input type="text" ng-model="profileData.Address" />
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Country</label>
+                                    <input type="text" ng-model="profileData.Country" />
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>State</label>
+                                    <input type="text" ng-model="profileData.State" />
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>City</label>
+                                    <input type="text" ng-model="profileData.City" />
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>ZipCode</label>
+                                    <input type="text" ng-model="profileData.ZipCode" />
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Phone Number</label>
+                                    <input type="text" ng-model="profileData.PhoneNumber" />
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Cell Phone</label>
+                                    <input type="text" ng-model="profileData.CellPhone" />
+                                </md-input-container>
+                            </div>
+                            <!--
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Description</label>
+                                    <input type="text" ng-model="profileData.Description" />
+                                </md-input-container>
+                            </div>
+                            -->
+                        </md-content>
+                    </div>
+                </div>
+        
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Actions</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button type="submit" class="btn btn-block btn-primary">Update Profile</button>
+                        </div>
+                    </div>
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Image Profile</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="user-img">
+                                <img ng-src="{{$root.ProfileImagePath}}" alt="" class="img-responsive">
+                            </div>
+                    
+                            <button type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*" ngf-max-height="1000" ngf-max-size="1MB" class="btn btn-sm btn-block btn-default">Change image</button>
+                          
+                            <div class="file-uploader">
+                                <span class="filename">{{f.name}}</span>
+                                <md-progress-linear ng-show="f.progress >= 0" md-mode="determinate" value="{{f.progress}}"></md-progress-linear>
+                                <span class="error">{{errorMsg}} <strong>{{errFile.name}}</strong> {{errFile.$error}} {{errFile.$errorParam}}</span>
+                            </div>   
+
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,127 @@
+﻿@{
+    dynamic user = ViewBag.ConfirmUser;
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-md-8 p-0">
+            <div class="main-panel">
+                <div class="flex-center">
+
+                    <h2 class="logo">RAY</h2>
+
+                    <div class="holder holderx2">
+                        <div class="holder-heading">
+                            <h3 class="panel-title">Confirm User Request</h3>
+                        </div>
+                        <div class="holder-body">
+                            <div class="form">
+                                <form role="form" action="/Login/ConfirmUserRequest" method="post" id="ConfirmUserRequestForm">
+                                    <input type="hidden" id="languageid" value="1" name="languageid" />
+                                    <input type="hidden" id="timezoneid" value="1" name="timezoneid" />
+                                    <input type="hidden" id="id" value="@user.Id" name="id" />
+                                    <input type="hidden" id="token" value="@user.Token" name="token" />
+                                    <input type="hidden" id="username" value="@user.Email" name="username" />
+
+                                    <div class="form-group">
+                                        <h4>@user.Email</h4>
+                                    </div>
+
+                                    <div class="form-multiple-group">
+                                        <div class="form-group">
+                                            <input id="firstname" name="firstname" type="text" class="form-control" value="@user.FirstName" required>
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="firstname">First Name</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="lastname" name="lastname" type="text" class="form-control" value="@user.LastName" required>
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="lastname">Last Name</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input id="address" name="address" type="text" class="form-control" required>
+                                        <span class="highlight"></span>
+                                        <span class="bar"></span>
+                                        <label class="control-label" for="address">Address</label>
+                                    </div>
+
+                                    <div class="form-multiple-group">
+                                        <div class="form-group">
+                                            <input id="country" name="country" type="text" class="form-control" required>
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="country">Country</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="zipcode" name="state" type="text" class="form-control" required>
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="state">State</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-multiple-group">
+                                        <div class="form-group">
+                                            <input id="country" name="city" type="text" class="form-control" required>
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="city">City</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="zipcode" name="zipcode" type="text" class="form-control" required>
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="zipcode">ZIP Code</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-multiple-group">
+                                        <div class="form-group">
+                                            <input id="phonenumber" name="phonenumber" type="text" class="form-control" required />
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="phonenumber">Phone number</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="cellphone" name="cellphone" type="text" class="form-control" required />
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="cellphone">Mobile number</label>
+                                        </div>
+                                    </div>
+                                    <div class="form-multiple-group">
+                                        <div class="form-group">
+                                            <input id="password" name="password" type="password" class="form-control" required />
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="password">Password</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="confirmpassword" name="confirmpassword" type="password" class="form-control" required />
+                                            <span class="highlight"></span>
+                                            <span class="bar"></span>
+                                            <label class="control-label" for="confirmpassword">Confirm password</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-button">
+                                        <button type="submit" class="btn btn-block btn-primary">Confirm user</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <a href="/Login/LogOn" class="btn btn-primary btn-back"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-4 p-0">
+            <div class="background">
+
+            </div>
+        </div>
+    </div>
+</div>

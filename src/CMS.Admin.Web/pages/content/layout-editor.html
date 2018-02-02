@@ -1,0 +1,53 @@
+﻿
+<div ng-app="app" ng-controller="EditorLayoutController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a href="javascript:;">Content</a></li>
+                    <li class="active">Layouts</li>
+                </ol>
+                <h1 class="page-header">Layouts <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Layout Information</h4>
+                    </div>
+                    <div class="panel-body">
+                        <h4><strong>Page:</strong> {{$root.newLayoutData.Node.Description?$root.newLayoutData.Node.Description:$root.newLayoutData.pageData.Url}}</h4>
+                        <h4><strong>Details:</strong> {{$root.newLayoutData.Description}}</h4>
+                        <h4><strong>Template:</strong> {{$root.newLayoutData.Layout.Name}}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Actions</h4>
+                    </div>
+                    <div class="panel-body">
+                        <button type="button" class="btn btn-block btn-primary" ng-click="processForm()">Save Layout</button>
+                        <button type="button" class="btn btn-block btn-default">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <form>
+                    <div class="layout-holder">
+                        <div class="header-bg"></div>
+                            <div id="TemplateEditor" class="body-content" compile="template"></div>
+                        <div class="footer-bg"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <pre>{{$root.newLayoutData | json}}</pre>
+
+    </div>
+</div>

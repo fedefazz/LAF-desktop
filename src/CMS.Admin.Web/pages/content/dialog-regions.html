@@ -1,0 +1,223 @@
+﻿<md-dialog id="region-list">
+    
+        <md-dialog-content class="md-dialog-content">
+            <h2 class="md-title ng-binding">Ingreso de nuevo Turno para el <strong>{{dia | capitalize}} {{fecha | capitalize}}</strong> | Hora: <strong>{{Hora}} hs.</strong> | Orden: <strong>{{Id}}</strong></h2>
+            
+            <form ng-submit="newServiceForm.$valid && processForm()" name="newServiceForm" novalidate>
+
+
+                <input ng-model="newServiceData.BranchId" type="hidden" name="BranchId" class="form-control" ng-init="newServiceData.BranchId='1'" value="1">
+                <input ng-model="newServiceData.IsEnabled" type="hidden" name="IsEnabled" class="form-control" ng-init="newServiceData.IsEnabled='True'" value="True">
+                <input ng-model="newServiceData.IsDeleted" type="hidden" name="IsDeleted" class="form-control" ng-init="newServiceData.IsDeleted='False'" value="False">
+                <input ng-model="newServiceData.VehicleId" type="hidden" name="VehicleId" class="form-control" ng-init="newServiceData.VehicleId='6'" value="6">
+
+                <input ng-model="newServiceData.Date" type="hidden" name="Date" class="form-control" ng-init="newServiceData.Date='fechaFormateada'" value="fechaFormateada">
+
+                <input ng-model="newServiceData.Hour" type="hidden" name="Hour" class="form-control" ng-init="newServiceData.Hour='8'" value="Hora">
+                <input ng-model="newServiceData.Order" type="hidden" name="Order" class="form-control" ng-init="newServiceData.Order='1'" value="OrdenMasGrande + 1">
+
+                <div ng-cloak>
+                    <md-content>
+                        <md-tabs md-dynamic-height md-border-bottom>
+                            <md-tab label="Turno">
+                                <md-content class="md-padding">
+                                    <!-- datos auto, seleccion de tipos de servicio -->
+                                    <div class="col-sm-12 col-md-12">
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="panel panel-inverse">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">Vehiculo</h4>
+                                                </div>
+                                                <md-content layout-padding>
+                                                    <div layout-gt-xs="row" class="col-md-12">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Patente</label>
+                                                            <input type="text" name="input" class="form-control input-lg" ng-model="newServiceData.Patente" placeholder="Ingrese la Patente" ng-minlength="6" ng-maxlength="7" ng-change="text.toUpperCase(); UpdateLicense()" required tabindex="1" />
+                                                            <div ng-messages="newServiceForm.Patente.$error">
+                                                                <div ng-messages-include="pages/validation/text.html"></div>
+                                                            </div>
+                                                        </md-input-container>
+                                                    </div>
+                                                    <div layout-gt-xs="row" class="col-md-6">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Marca</label>
+                                                            <md-select ng-model="Vehicle.Brand" tabindex="2" ng-change="FindModels()">
+                                                                <md-option ng-repeat="brand in Brands" ng-value="brand.Name">
+                                                                    {{brand.Name}}
+                                                                </md-option>
+                                                            </md-select>
+                                                            <!--<input type="text"
+                                                                   name="input"
+                                                                   class="form-control input-lg"
+                                                                   ng-model="Vehicle.Brand"  tabindex="2">-->
+                                                        </md-input-container>
+                                                    </div>
+                                                    <div layout-gt-xs="row" class="col-md-6">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Modelo</label>
+                                                            <md-select ng-model="Vehicle.Model" tabindex="3">
+                                                                <md-option ng-repeat="model in Models" ng-value="model.Name">
+                                                                    {{model.Name}}
+                                                                </md-option>
+                                                            </md-select>
+                                                            <!--<input type="text"
+                                                                   name="input"
+                                                                   class="form-control input-lg"
+                                                                   ng-model="Vehicle.Model"  tabindex="3">-->
+                                                        </md-input-container>
+                                                    </div>
+                                                </md-content>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="panel panel-inverse bottommargin">
+                                                <div class="panel-heading" style="margin-bottom:20px !important;">
+                                                    <h4 class="panel-title bottommargin">Servicios Solicitados</h4>
+                                                </div>
+                                                <div isteven-multi-select tabindex="8"
+                                                     helper-elements=""
+                                                     translation="localLang"
+                                                     input-model="modernBrowsers"
+                                                     output-model="outputBrowsers"
+                                                     button-label="Name"
+                                                     item-label="Name"
+                                                     tick-property="ticked"
+                                                     orientation="horizontal"
+                                                     required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Datos cliente, botones de accion -->
+                                    <div class="col-sm-12 col-md-12">
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="panel panel-inverse">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">Cliente</h4>
+                                                </div>
+                                                <md-content layout-padding>
+                                                    <div layout-gt-xs="row" class="col-md-6">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Email</label>
+                                                            <input type="text" name="input" class="form-control input-lg" ng-model="Client.Email" placeholder="Ingrese el Email" ng-change="FindClient()" tabindex="4" />
+                                                        </md-input-container>
+                                                    </div>
+
+                                                    <div layout-gt-xs="row" class="col-md-6">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Telefono</label>
+                                                            <input type="text" name="input" class="form-control input-lg" ng-model="Client.Phone"  tabindex="5" />
+                                                        </md-input-container>
+                                                    </div>
+                                                    <div layout-gt-xs="row" class="col-md-6">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Nombre</label>
+                                                            <input type="text" ame="input" class="form-control input-lg" ng-model="Client.FirstName"  tabindex="6" />
+                                                        </md-input-container>
+                                                    </div>
+                                                    <div layout-gt-xs="row" class="col-md-6">
+                                                        <md-input-container class="md-block" flex-gt-xs>
+                                                            <label>Apellido</label>
+                                                            <input type="text" ame="input" class="form-control input-lg" ng-model="Client.LastName" tabindex="7" />
+                                                        </md-input-container>
+                                                    </div>
+                                                </md-content>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="col-sm-6 col-md-6">
+                                                    <div class="note note-info">
+                                                        <p>Monto a pagar</p>
+                                                        <h3>${{Total}}</h3>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6">
+                                                    <md-radio-group ng-model="Payed" ng-disabled="checkPaid()">
+                                                        <md-radio-button value="0">Pago Pendiente</md-radio-button>
+                                                        <md-radio-button value="1">Pagado</md-radio-button>
+                                                        <md-radio-button value="2">Cortesia</md-radio-button>
+                                                    </md-radio-group>
+
+                                                    <!--<md-checkbox ng-model="Payed" aria-label="Pagado" ng-disabled="checkPaid()">
+                                                        Pagado
+                                                    </md-checkbox>-->
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12">
+                                                <div class="col-sm-6 col-md-6">
+                                                    <button type="submit" class="btn btn-block btn-primary" ng-show="serviceId!==undefined && Status!=='ENTREGADO'">Guardar</button>
+                                                    <button type="submit" class="btn btn-block btn-primary" ng-show="serviceId===undefined">Reservar</button>
+                                                    <button type="button" class="btn btn-block btn-primary" ng-click="hide('close')" ng-show="serviceId!==undefined && Status==='ENTREGADO'">Cerrar</button>
+                                                    <button type="submit" class="btn btn-block btn-danger" ng-click="Status='CANCELADO'" ng-show="serviceId!==undefined">Anular</button>
+                                                </div>
+                                                <div class="col-sm-6 col-md-6">
+                                                    <button type="submit" class="btn btn-block btn-warning" ng-click="Status='RECIBIDO'" ng-show="Status==='PENDIENTE'">Recibido</button>
+                                                    <button type="submit" class="btn btn-block btn-warning" ng-click="Status='TERMINADO'" ng-show="serviceId!==undefined && Status==='RECIBIDO'">Terminado</button>
+                                                    <button type="submit" class="btn btn-block btn-success" ng-click="Status='ENTREGADO'" ng-show="serviceId!==undefined && Status==='TERMINADO'">Entregado</button>
+                                                    <button type="button" class="btn btn-block btn-default" ng-print print-element-id="printThisElement" ng-show="serviceId!==undefined">Imprimir Ticket</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </md-content>
+                            </md-tab>
+                            <md-tab label="Ultimos servicios">
+                                <md-content class="md-padding">
+                                    <!-- Ultimos servicios -->
+                                    <div class="col-sm-12 col-md-12">
+                                        <div class="panel panel-inverse">
+                                            <div class="panel-heading">
+                                                <h4 class="panel-title">Ultimos servicios</h4>
+                                            </div>
+                                            <md-content flex layout-padding>
+                                                <md-list class="md-dense">
+                                                    <md-list-item class="md-3-line" ng-repeat="serv in LastestServices">
+                                                        <div class="md-list-item-text">
+                                                            <h4>{{serv.CreationDate | date :  "dd.MM.y" }}</h4>
+                                                            <p ng-repeat="sertype in serv.ServiceTypeName">{{sertype}}</p>
+                                                        </div>
+                                                        <md-divider ng-if="!$last"></md-divider>
+                                                    </md-list-item>
+                                                </md-list>
+                                            </md-content>
+                                        </div>
+                                    </div>
+                                </md-content>
+                            </md-tab>
+                        </md-tabs>
+                    </md-content>
+                </div>
+
+                <div style="display:none">
+                    <div id="printThisElement">
+                        <img src="/images/logo.png" with="320" />
+                        <h2>{{dia | capitalize}} {{fecha | capitalize}} {{Hora}} hs.</h2>
+                        <h3>Dominio: {{newServiceData.Patente}}</h3>
+                        <p>Vehículo: {{Vehicle.Brand}} {{Vehicle.Model}}</p>
+                        <p>Servicios:</p>
+                        <p ng-repeat="service in modernBrowsers | filter:{ ticked: true }">&nbsp;&nbsp;&nbsp;&nbsp;{{$index + 1}}. {{service.Name}}<br /></p>
+                        <br />
+                        <p>Orden: <strong>{{Id}}</strong></p>
+                        <br />
+                        <p class="footer">
+                            Reclamos y consultas:<br />
+                            administracion@morenocarcenter.con.ar<br />
+                            4240-9548
+                        </p>
+                    </div>
+                </div>
+
+            </form>
+
+        </md-dialog-content>
+
+        <!--<md-dialog-actions layout="row">
+            <md-button ng-click="answer('useful')" ng-class="btn btn-default">Cerrar</md-button>
+        </md-dialog-actions>-->
+
+        
+
+</md-dialog>

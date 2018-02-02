@@ -1,0 +1,146 @@
+﻿<div ng-app="app" ng-controller="CashRegisterController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li class="active">Caja</li>
+                </ol>
+                <h1 class="page-header">Caja <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Detalle Caja Diaria</h4>
+                    </div>
+                    <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>  <!--dt-column-defs="dtColumnDefs"-->
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <input type="text" ng-model="searchQuery" placeholder="Buscar" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Detalle</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha</label>
+                                    <md-datepicker ng-model="CreationDate" md-open-on-focus ng-change="doSearch()"></md-datepicker>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                        <h4>Saldo: $ {{CashTotal | number:2}}</h4>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Acciones</h4>
+                    </div>
+                    <div class="panel-body">
+                        <form ng-submit="recordDataForm.$valid && processForm()" class="form-horizontal" role="form" name="recordDataForm" novalidate>
+                            <md-content layout-padding>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Operación</label>
+                                        <md-select ng-model="recordData.Type" name="Type" required>
+                                            <md-option ng-repeat="type in PaymentTypes" ng-value="type.value">
+                                                {{type.name}}
+                                            </md-option>
+                                        </md-select>
+                                        <div ng-messages="recordDataForm.Type.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Monto</label>
+                                        <input type="number" ng-model="recordData.Amount" name="Amount" ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" step="0.01" required />
+                                        <div ng-messages="recordDataForm.Amount.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Concepto</label>
+                                        <md-select ng-model="recordData.Concept" name="Concept" required>
+                                            <md-option ng-repeat="key in Keywords" ng-value="key.Name">
+                                                {{key.Name}}
+                                            </md-option>
+                                        </md-select>
+                                        <div ng-messages="recordDataForm.Concept.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Metodo de Pago</label>
+                                        <md-select ng-model="recordData.PaymentMethod" name="PaymentMethod" required>
+                                            <md-option ng-repeat="type in PaymentMethods" ng-value="type.name">
+                                                {{type.name}}
+                                            </md-option>
+                                        </md-select>
+                                        <div ng-messages="recordDataForm.PaymentMethod.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+
+
+
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Descripcion</label>
+                                        <input type="text" ng-model="recordData.Description" name="Description" required />
+                                        <div ng-messages="recordDataForm.Description.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Empleado</label>
+                                        <md-select ng-model="recordData.UserId" name="UserId">
+                                            <md-option><em>Ninguno</em></md-option>
+                                            <md-option ng-repeat="user in Users" ng-value="user.Id">
+                                                {{user.FirstName}} {{user.LastName}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                            </md-content>
+
+                            <button class="btn btn-block btn-primary" type="submit" ng-show="recordData.Id===undefined">Nuevo Registro</button>
+                            <button class="btn btn-block btn-primary" type="submit" ng-show="recordData.Id!==undefined">Actualizar Registro</button>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteCashRegister($event, recordData.Id);" ng-show="recordData.Id">Borrar Registro</button>
+                            <button class="btn btn-block btn-default" type="button" ng-click="recordData={};recordData.Type='credit';" ng-show="recordData.Id">Cancelar</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!--<pre>{{recordData | json}}</pre>-->
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<!-- begin #sidebar -->
+<div id="sidebar" class="sidebar" ng-controller="sidebarController" ng-class="{ 'sidebar-transparent': setting.layout.pageSidebarTransparent }">
+    <!-- begin sidebar scrollbar -->
+    <div data-scrollbar="true" data-height="100%">
+
+        <ul class="nav">
+            <li ng-class="{active:$state.includes('cms.services')}">
+                <a ui-sref="cms.dashboard" title="Dashboard"><i class="fa fa-clock-o"></i><span>Dashboard</span></a>
+            </li>
+
+            <li class="has-sub" ng-class="{active:$state.includes('cms.users')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-user-o"></i>
+                    <span>Scrap</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.users')}"><a ui-sref="cms.users.list">Usuarios</a></li>
+                </ul>
+            </li>
+
+
+            <li class="has-sub" ng-class="{active:$state.includes('cms.users')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-user-o"></i>
+                    <span>Usuarios</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.users')}"><a ui-sref="cms.users.list">Usuarios</a></li>
+                </ul>
+            </li>
+
+            <li class="has-sub" ng-class="{active:$state.includes('cms.config')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-cog"></i>
+                    <span>Configuracion</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.config.cars')}"><a ui-sref="cms.config.cars.list">Materiales</a></li>
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('cms.config.models')}"><a ui-sref="cms.config.models.list">Tipo Material</a></li>
+                   
+                </ul>
+            </li>
+
+            <li class="toggle"><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-arrow-left"></i></a></li>
+        </ul>
+        <!-- end sidebar nav -->
+    </div>
+    <!-- end sidebar scrollbar -->
+</div>
+<div class="sidebar-bg"></div>
+<!-- end #sidebar -->

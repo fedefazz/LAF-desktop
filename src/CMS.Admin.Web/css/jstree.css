@@ -1,0 +1,125 @@
+/* jsTree default theme */
+treecontrol li,
+treecontrol li > ul,
+treecontrol > ul,
+treeitem > ul {
+  display: block;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  list-style-image: none;
+}
+treecontrol li {
+  white-space: nowrap;
+}
+.tree-label {
+  display: inline-block;
+  color: black;
+  white-space: nowrap;
+  padding: 0 4px 0 1px;
+  margin: 0;
+  vertical-align: top;
+}
+.tree-label:focus {
+  outline: 0;
+}
+.tree-label,
+.tree-label:link,
+.tree-label:visited,
+.tree-label:hover,
+.tree-label:active {
+  text-decoration: none;
+  color: inherit;
+}
+.tree-branch-head {
+  display: inline-block;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  text-align: center;
+}
+.tree-branch-head:empty {
+  display: inline-block;
+  text-decoration: none;
+  margin: 0;
+  padding: 0;
+  vertical-align: top;
+  text-align: center;
+}
+.tree-branch-head {
+  cursor: pointer;
+}
+.tree-leaf > .tree-branch-head {
+  cursor: default;
+}
+treecontrol .tree-expanded > .jstree-children {
+  display: block;
+}
+treecontrol .tree-collapsed > .jstree-children,
+treecontrol .tree-leaf > .jstree-children {
+  display: none;
+}
+.tree-label > .jstree-themeicon {
+  margin-right: 2px;
+}
+treecontrol li {
+  min-height: 24px;
+  line-height: 24px;
+  margin-left: 24px;
+  min-width: 24px;
+}
+treecontrol .tree-label {
+    line-height: 24px;
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid #fff;
+    border-radius: 2px; 
+}
+treecontrol .tree-label:hover {
+    border: 1px dotted #aaa;
+}
+treecontrol .tree-selected {
+    background: #fff;
+    color: #449d44;
+    font-weight: bold;
+}
+treecontrol .tree-selected:hover {
+    color: #449d44;
+    border: 1px dotted #449d44;
+}
+treecontrol li,
+treecontrol .tree-branch-head {
+  background-repeat: no-repeat;
+  background-color: transparent;
+}
+treecontrol .tree-branch-head {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+treecontrol .tree-branch-head:empty {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+treecontrol li,
+treecontrol .tree-branch-head {
+  background-image: url("../images/jstree/32apx.png");
+}
+treecontrol li {
+  background-position: -292px -4px;
+  background-repeat: repeat-y;
+}
+treecontrol li:last-child {
+  background: transparent;
+}
+treecontrol .tree-expanded > .tree-branch-head {
+  background-position: -132px -4px;
+}
+treecontrol .tree-collapsed > .tree-branch-head {
+  background-position: -100px -4px;
+}
+treecontrol .tree-leaf > .tree-branch-head {
+  background-position: -68px -4px;
+}

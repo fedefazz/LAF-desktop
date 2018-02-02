@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html ng-app="APIModule" ng-controller="AuthorsController as aCtrl" lang="en">
+<body>
+<!-- START Sub-Navbar with Header only-->
+<div class="sub-navbar sub-navbar__header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header m-t-0">
+                    <h3 class="m-t-0">Author List</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Sub-Navbar with Header only-->
+
+<!-- START Sub-Navbar with Header and Breadcrumbs-->
+<div class="sub-navbar sub-navbar__header-breadcrumbs">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 sub-navbar-column">
+                <div class="sub-navbar-header">
+                    <h3>Author List</h3>
+                </div>
+                <ol class="breadcrumb navbar-text navbar-right no-bg">
+                    <li class="current-parent">
+                        <a class="current-parent" href="../index.html">
+                            <i class="fa fa-fw fa-home"></i>
+                        </a>
+                    </li>
+                    <li>Author</li>
+                    <li class="active">Author List</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Sub-Navbar with Header and Breadcrumbs-->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-12">
+            <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+            <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+        </div>
+        <div class="col-sm-12 col-md-8">
+<<<<<<< HEAD
+            <h4 class="title"><strong>Author List</strong></h4> 
+
+            <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
+
+=======
+            <div class="panel panel-default no-bg b-a-2 b-gray-dark m-t-2">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Author List</h3>
+                </div>
+                <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance">
+                    <thead>
+                        <tr>
+                            <th style="color:#337ab7">
+                                <a href="" ng-click="sortUser = 'Email'; sortReverse = !sortReverse">
+                                    <span ng-show="sortUser == 'Email' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortUser == 'Email' && sortReverse" class="fa fa-caret-up"></span>
+                                    Name
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" ng-click="sortUser = 'CreationDate'; sortReverse = !sortReverse">
+                                    <span ng-show="sortUser == 'CreationDate' && !sortReverse" class="fa fa-caret-down"></span>
+                                    <span ng-show="sortUser == 'CreationDate' && sortReverse" class="fa fa-caret-up"></span>
+                                    Creation Date
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="author in authors | orderBy:sortUser:sortReverse | filter:searchUser">
+                            <td>
+                                <i class="fa fa-circle" ng-class="author.IsEnabled==true ? 'green' : 'red'"></i>
+                                <a ng-click="getAuthor(author.Id)"><strong>{{ author.FirstName }} {{ author.LastName }}</strong></a>
+                                <em>{{ author.Email }}</em>
+                            </td>
+                            <td>{{ author.CreationDate | date : "d-MMM-yyyy" }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+>>>>>>> master/NewLayout2
+        </div>
+        <div class="col-sm-12 col-md-4">
+            <div class="panel panel-default no-bg b-a-2 b-gray-dark m-t-2">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body">
+                     <md-input-container md-no-float class="md-block md-no-error">
+                        <!--<input type="text" ng-model="searchUser" placeholder="Search author" ng-change="rerender()">-->
+<<<<<<< HEAD
+                        <input type="text" ng-model="searchQuery" placeholder="Search users" my-enter="doSearch()">
+=======
+                        <input type="text" ng-model="searchText" placeholder="Search authors" ng-change="doSearch()">
+>>>>>>> master/NewLayout2
+                        <md-icon>search</md-icon>
+                    </md-input-container>
+                </div>
+            </div>
+            <!--
+            <div class="panel panel-default no-bg b-a-2 b-gray-dark m-t-2">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Status</h3>
+                </div>
+                <ul class="list-group" ng-repeat="(key, value) in users | groupBy: 'IsEnabled'">
+                    <li class="list-group-item"><a href="javacript:;">{{key === "true" ? "Active" : "Inactive"}}</a><span class="badge">{{ value.length }}</span></li>
+                </ul>
+            </div>-->
+        </div>
+    </div>
+            
+</body>
+</html>

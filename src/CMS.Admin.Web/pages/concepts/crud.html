@@ -1,0 +1,52 @@
+﻿<div ng-app="app" ng-controller="ConceptsCRUDController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a ui-sref="cms.clients.list">Rubros</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}}<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="editKeywordForm.$valid && processForm()" class="form-horizontal" role="form" name="editKeywordForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Información del rubro</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Rubro</label>
+                                    <input type="text" ng-model="keywordData.Name" name="Name" required />
+                                    <div ng-messages="editKeywordForm.Name.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Acciones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteKeyword($event, keywordData.Id);" ng-show="keywordData.Id">Borrar Rubro</button>
+                            <a class="btn btn-block btn-default" ui-sref="cms.config.concepts.list">Volver</a>
+                        </div>
+                    </div>
+
+                    <!--<pre>{{keywordData | json}}</pre>-->
+                </div>
+            </form>
+        </div>   
+    </div>
+</div>

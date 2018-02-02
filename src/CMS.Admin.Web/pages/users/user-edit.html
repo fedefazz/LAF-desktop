@@ -1,0 +1,148 @@
+﻿<div ng-app="app" ng-controller="UserEditController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a ui-sref="cms.users.list">Usuarios</a></li>
+                    <li class="active">Editar Usuario</li>
+                </ol>
+                <h1 class="page-header">Editar Usuario <small></small></h1>
+            </div>
+                <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+                </div>
+                <form  ng-submit="editUserForm.$valid && processForm()" role="form" name="editUserForm" novalidate>
+                    <div class="col-sm-12 col-md-8">
+                        <div class="panel panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Información Personal</h4>
+                            </div>
+                            <md-content layout-padding>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Usuario</label>
+                                        <input disabled="disabled" type="text" ng-model="userData.UserName" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>E-mail</label>
+                                        <input disabled="disabled" type="text" ng-model="userData.Email" />
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Nombre</label>
+                                        <input type="text" ng-model="userData.FirstName" name="FirstName" required />
+                                        <div ng-messages="editUserForm.FirstName.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Apellido</label>
+                                        <input type="text" ng-model="userData.LastName" name="LastName" required />
+                                        <div ng-messages="editUserForm.LastName.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
+                            </md-content>
+                        </div>
+                        <div class="panel panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Salario</h4>
+                            </div>
+                            <md-content layout-padding>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Salario</label>
+                                        <input type="number" ng-model="userData.Salary" name="Salary" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Jornal (Día)</label>
+                                        <input type="number" ng-model="userData.DaySalary" name="DaySalary" />
+                                    </md-input-container>
+                                </div>
+                            </md-content>
+                        </div>
+                        <div class="panel panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Información de Contacto</h4>
+                            </div>
+                            <md-content layout-padding>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Dirección</label>
+                                        <input type="text" ng-model="userData.Address" />
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Pais</label>
+                                        <input type="text" ng-model="userData.Country" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Estado</label>
+                                        <input type="text" ng-model="userData.State" />
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Ciudad</label>
+                                        <input type="text" ng-model="userData.City" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Código Postal</label>
+                                        <input type="text" ng-model="userData.ZipCode" />
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Número Teléfono</label>
+                                        <input type="text" ng-model="userData.PhoneNumber" />
+                                    </md-input-container>
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Número Celular</label>
+                                        <input type="text" ng-model="userData.CellPhone" />
+                                    </md-input-container>
+                                </div>
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="md-block" flex-gt-xs>
+                                        <label>Datos Adicionales</label>
+                                        <input type="text" ng-model="userData.Description" />
+                                    </md-input-container>
+                                </div>
+                            </md-content>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-4">
+                        <div class="panel panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Acciones</h4>
+                            </div>
+                            <div class="panel-body">
+                                <button class="btn btn-block btn-primary" type="submit">Actualizar Usuario</button>
+                                <!--<button class="btn btn-block btn-warning" type="button" ng-show="userData.IsEnabled == true" ng-click="disableUser(userData.Id);">Disable User</button>
+                                <button class="btn btn-block btn-success" type="button" ng-show="userData.IsEnabled == false" ng-click="enableUser(userData.Id);">Enable User</button>
+                                <button class="btn btn-block btn-primary" type="button" ng-show="userData.EmailConfirmed == false" ng-click="resendUserRequest(userData.UserName);">Notify User</button>-->
+                                <button class="btn btn-block btn-danger" type="button" ng-click="deleteUser($event, userData.Id);">Borrar Usuario</button>
+                                <a class="btn btn-block btn-default" ui-sref="cms.users.list">Volver</a>
+                            </div>
+                        </div>
+                
+                        <!--<div class="panel panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Profile Image</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="user-img">
+                                    <img ng-src="{{userData.ProfileImagePath}}" alt="" class="img-responsive">
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

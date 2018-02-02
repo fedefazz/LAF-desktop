@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "teletica-167814",
+  "private_key_id": "dcd68c5ee219ae3578a84eb775b71b3b6078d0be",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC6IjaO02f4PtCE\nTLqe12bYj7ISm+mA68zEwUe/J85knbwjPWunVSFBcu9/3BIK+NyuEy7X6j3TrIon\nYZLqLlUt9PxIZkU42eEGvLlJG9XLCfIPPWIu6wyxWm0swgE+py33jc0hpIsUtuTJ\nLXy9zeCx8K+tlCUZlG4szlu+TaAHiQFfp9XuSuQeM6729/qpDYkFOY/yJ3fma73H\nITevnUiKSuBNFpc/oYvj7itbVm8/VBx9rKT0aHmya7DsQfBQrgES2awbYVqDItvZ\ngk99VWACMS8ZWQM5AYjUh6orlleI8rLYfTTDtBDXvFwRAxsX1l23yFl0OoPli3U+\nmDAcjyzrAgMBAAECggEAJ6qr4tM1yIcma9NoP/qandM9uU6FvCZETLf+AMRMbU/a\nLM5ll1MCk86ZMK/nHnR7nxNSe8wdIfOWu57FLufx2inn68vzu5JfLM7iU6y9apgz\ngEDuIB6SZWdmdc/gcQgyuRt8mEtXInJ5nk/10gNCe9lVrxGvuFxUAHN3xL4JOSGA\n1ttkRW15CbYHoYD96WaGUVA++fmmRDGhCNqCtRfT6w+fApl3GjnCAYls8uNGZJFz\nSdriire3u9shz3c46Ost9+k0tOJLH7M3GtHN/lwafj3OyyYi3G3DJGM/3ZJp99Sd\nWXkV6edRad+rKnGlY8fb294D0IEILiwMh9hUIJlAUQKBgQD9gANUgoqeymta6B7E\nVOvgwOmmFTQM0t8Ka8fqVlwA3K9ueZo0s+8D8UPguEAJpXagee2ucmQkVVYOqDmS\nekPf1KRM9OYfwflGmgvaDWibTU5P+vOQkABBjPQyrbpNVVpUdpPQlFU2DoNTOD35\nF0qD5fHyI5vPjHX22LkOgIfr+wKBgQC7+CBt8JvG+mgCY9TQjj8eOtNQHE4B/JNN\n4nbnPepxhHc7tpJI+0pXbJOSgsABI7cyUvtE5HXXGVdChPlImaQneTCalRKmZSRK\nEYol66XROoDYJ3+KNA0GwbnvlxzQ2l2ErjWwthIAiELiz5JyB8grwgV60TbBC/CT\nAvC4EbJ/0QKBgQCokcOlItmDFh+lZ81tyPrBjgbRBjCChocCqwFZduvfNuEBmaNN\ngIlkGb+FY4BR6dGkjO/cnPyynHyJapw+J0eTRBethPyyCY71v+I5scjp3NJCpSHp\n85f3/v8z5AqK+kMC/4bzoG+5bpUtdazgQviuFO56kes+bKzU5PDKD/ZSmQKBgQCr\nuhrWljWbafZQCKjLCMn9cjzQOavDAOALDdUXmmdv4leURE4NQxc+G8IO3klQQTMD\nVPCeliJaq5oe+aFNhKCGN6AB+iOZxVmMGc4eqtVI+6vuztckij1EaQTYMTRwUq+R\noh8HHLABsHt6/6yJZTapU47yD+V4JNJbXRpS8EgloQKBgQD8DgT1Z7rvOKpgZC3j\npV2jcfqScD+BtprV0s1gD+hoL15RjUveYPsRJc8oIyFOPQC7XjY7oKtNtkRWzeV2\nm3SENnmEKTfzhdRI/p5IkUsnKNY3gMLfL1riMSitqb+sAozV2MMm4HOdbvEl5u1L\n0YyvnTiHHZIX6uJ7CsPD3S6gLA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "teletica@teletica-167814.iam.gserviceaccount.com",
+  "client_id": "103833542792368780857",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/teletica%40teletica-167814.iam.gserviceaccount.com"
+}

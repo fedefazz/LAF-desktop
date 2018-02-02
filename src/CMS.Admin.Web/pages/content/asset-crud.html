@@ -1,0 +1,245 @@
+﻿<div ng-app="app" ng-controller="AssetCRUDController" id="CreateAsset">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a ui-sref="cms.content.assets.list">Content</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}} <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+
+            <form ng-submit="editAssetForm.$valid && processForm()" name="editAssetForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <input ng-model="assetData['Content[0].LanguageId']" type="hidden" class="form-control" ng-init="assetData['Content[0].LanguageId']=1" value="1">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Asset Information</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block field-bigger" flex-gt-xs>
+                                    <label>Title</label>
+                                    <input md-maxlength="100" type="text" ng-model="assetData.Content[0].Title" name="Title" required class="big-input" ng-blur="SetSlug()">
+                                    <div ng-messages="editAssetForm.Title.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Slug Url</label>
+                                    <input md-maxlength="100" type="text" ng-model="assetData.Url" name="Url" ng-change="slugify()">
+                                </md-input-container>
+                            </div>
+                            <!--<div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Epigraph</label>
+                                    <textarea md-maxlength="200" ng-model="assetData.Content[0].Volanta" name="Volanta" rows="2"></textarea>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Introduction</label>
+                                    <textarea md-maxlength="200" ng-model="assetData.Content[0].Introduction" name="Introduction" rows="2"></textarea>
+                                </md-input-container>
+                            </div>-->
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Short Description</label>
+                                    <textarea md-maxlength="250" ng-model="assetData.Content[0].Description" name="Description" rows="2"></textarea>
+                                    <!-- <input md-maxlength="250" type="text" ng-model="assetData.Content[0].Description" name="Description" required> -->
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <div ng-messages="editAssetForm.Description.$error">
+                                    <div ng-messages-include="pages/validation/text.html"></div>
+                                </div>
+                            </div>
+
+                        </md-content>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Asset Body</h4>
+                        </div>
+                        <md-content>
+                            <md-input-container class="md-block" flex-gt-xs>
+                                <label class="hide">Main Content</label>
+                                <text-angular ng-model="assetData.Content[0].Content"></text-angular>
+                            </md-input-container>
+                        </md-content>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <button type="button" class="btn btn-primary btn-xs pull-right" ng-click="AddGallery()">Add gallery</button>
+                            <h4 class="panel-title">Gallery</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="gallery gallery-list">
+                                <div class="panel panel-default" ng-repeat="gallery in assetData.Galleries">
+                                    <div class="panel-heading">
+                                        <div class="btn-group pull-right">
+                                            <button class="btn btn-xs btn-primary" ng-click="editGallery(gallery.Id)">Edit</button>
+                                            <button class="btn btn-xs btn-danger" ng-click="removeGallery($index)">Delete</button>
+                                        </div>
+                                        <h4>{{ gallery.Name }}</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="images">
+                                            <div class="image" ng-repeat="media in gallery.Media">
+                                                <div class="image-inner">
+                                                    <a href="javascript:;" ng-click="getMedia(media.Id)" class="order" style="background-image:url({{ImagePath}}Files/{{ media.FileName }})"></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                     <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Actions</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button type="submit" class="btn btn-block btn-primary">{{SubmitButton}}</button>
+                            <button type="button" class="btn btn-block btn-warning" ng-show="assetData.Status == 'DRAFT'" ng-click="sendApproval($event, assetData.Id);">Approval request</button>
+                            <button type="button" class="btn btn-block btn-warning" ng-show="assetData.Status == 'PENDING_APPROVAL'" ng-click="approve($event, assetData.Id);">Approve</button>
+                            <button type="button" class="btn btn-block btn-danger" ng-show="assetData.Status == 'PENDING_APPROVAL'" ng-click="disapprove($event, assetData.Id);">Disapprove</button>
+                            <button type="button" class="btn btn-block btn-primary" ng-show="assetData.Status == 'APPROVED'" ng-click="publish($event, assetData.Id);">Publish</button>
+                            <button type="button" class="btn btn-block btn-danger" ng-click="deleteAsset($event, assetData.Id);" ng-show="assetData.Id">Delete Asset</button>
+                            <a class="btn btn-block btn-default" ui-sref="cms.content.assets.list">Back to Assets</a>
+                        </div>
+                    </div>
+
+
+                     <!--<div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Status</h4>
+                        </div>
+                        <div class="panel-body">
+                            <md-radio-group ng-model="data.group1">
+                                <md-radio-button value="Draft" class="md-primary">Draft</md-radio-button>
+                                <md-radio-button value="ApprovalRequest" class="md-primary">Approval request</md-radio-button>
+                                <md-radio-button value="Approved" class="md-primary">Approved</md-radio-button>
+                                <md-radio-button value="Published" class="md-primary">Published</md-radio-button>
+                            </md-radio-group>
+                        </div>
+                    </div>-->
+
+                     <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Publication</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block datetime md-no-error" flex-gt-xs>
+                                    <input mdc-datetime-picker="" date="true" time="true" type="text" id="PublicationDate" placeholder="Publication date" show-todays-date="" min-date="date" ng-model="assetData.PublicationDate" class="md-input" readonly="readonly" ng-change="validateDates()" />
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block datetime md-no-error" flex-gt-xs>
+                                    <input mdc-datetime-picker="" date="true" time="true" type="text" id="ExpirationDate" placeholder="Expiration date" show-todays-date="" min-date="assetData.PublicationDate" ng-model="assetData.ExpirationDate" class="md-input" readonly="readonly" />
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+
+                     <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Categories</h4>
+                        </div>
+                        <div class="panel-body">
+                            <md-input-container md-no-float class="md-block search">
+                                <input type="text" id="Text1" ng-model="predicate" placeholder="Search categories">
+                            </md-input-container>
+                            <treecontrol class="tree-classic tree-check"
+                                tree-model="dataForTheTree"
+                                options="treeOptions"
+                                on-selection="showSelected(node, selected)"
+                                selected-nodes="selectedNodes"
+                                expanded-nodes="expandedNodes"
+                                filter-expression="predicate">
+                                <span class="fa fa-square-o"></span> {{node.Content[0].Title}}
+                            </treecontrol>
+                        </div>
+                    </div>
+
+                     <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Keywords</h4>
+                        </div>
+                        <div class="panel-body">
+                            <md-chips ng-model="abc" md-autocomplete-snap md-require-match="false" md-transform-chip="transformChip($chip)">
+                                <md-autocomplete
+                                    md-no-cache="noCache"
+                                    md-search-text="searchText"
+                                    md-selected-item-change="selectedItemChange(item)"
+                                    md-items="item in querySearch(searchText)"
+                                    md-item-text="item.Name"
+                                    md-min-length="3"
+                                    placeholder="Search keywords">
+                                <md-item-template>
+                                    <span md-highlight-text="searchText" md-highlight-flags="^i">{{item.Name}}</span>
+                                </md-item-template>
+                                </md-autocomplete>
+                                <md-chip-template>
+                                    <span>{{$chip.Name}}</span>
+                                </md-chip-template>
+                            </md-chips>
+                        </div>
+                    </div>
+
+
+                     <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Author</h4>
+                        </div>
+                        <div class="panel-body">
+                            <md-input-container class="md-block" flex-gt-xs>
+                                <md-select ng-model="assetData.Authors" name="Author" placeholder="Author" multiple ng-model-options="{trackBy: '$value.Id' }">
+                                    <!--<md-option><em>None</em></md-option>-->
+                                    <md-option ng-repeat="author in authors" ng-value="author">
+                                        {{author.FirstName}} {{author.LastName}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                    </div>
+
+
+                     <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Featured Image</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="img-holder">
+                                <img src="{{featuredImage}}" alt="Featured Image" class="img-responsive img-preview" />
+                            </div>
+                            <a ng-click="ChooseFile('featured')" class="btn btn-sm btn-block btn-primary">Change featured image</a>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>

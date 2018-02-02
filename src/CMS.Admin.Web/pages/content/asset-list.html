@@ -1,0 +1,116 @@
+﻿<div ng-app="app" ng-controller="AssetsController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a href="javascript:;">Content</a></li>
+                    <li class="active">Assets</li>
+                </ol>
+                <h1 class="page-header">Assets <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Asset List</h4>
+                    </div>
+                    <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Actions</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="cms.content.assets.crud">New Asset</a>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Search</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <input type="text" ng-model="searchQuery" placeholder="Search assets" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
+                        </md-input-container>
+                    </div>
+                </div>
+
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Publication Date</h4>
+                    </div>
+
+                    <md-content layout-padding>
+                        <div layout-gt-xs="row">
+                            <md-input-container class="md-block" flex-gt-xs>
+                                <label>From</label>
+                                <md-datepicker ng-model="PublicationDateFrom" md-open-on-focus ng-change="doSearch()"></md-datepicker>
+                            </md-input-container>
+                        </div>
+                        <div layout-gt-xs="row">
+                            <md-input-container class="md-block" flex-gt-xs>
+                                <label>To</label>
+                                <md-datepicker ng-model="PublicationDateTo" md-open-on-focus ng-change="doSearch()"></md-datepicker>
+                            </md-input-container>
+                        </div>
+                    </md-content>
+                    <!--
+                    <div class="panel-body">
+                        <div layout-gt-xs="row" layout-align="end" class="dateHolder">
+                            <label>From</label>
+                            <md-datepicker ng-model="PublicationDateFrom" md-open-on-focus ng-change="doSearch()"></md-datepicker>
+                        </div>
+                        <div layout-gt-xs="row" layout-align="end" class="dateHolder">
+                            <label>To</label>
+                            <md-datepicker ng-model="PublicationDateTo" md-open-on-focus ng-change="doSearch()"></md-datepicker>
+                        </div>
+                    </div>
+                    -->
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Category</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block search">
+                            <input type="text" id="Text1" ng-model="predicate" placeholder="Search categories">
+                        </md-input-container>
+                        <treecontrol class="tree-classic tree-check"
+                            tree-model="dataForTheTree"
+                            options="treeOptions"
+                            on-selection="showSelected(node, selected)"
+                            selected-node="node1"
+                            expanded-nodes="expandedNodes"
+                            filter-expression="predicate">
+                            <span class="fa fa-square-o"></span> {{node.Content[0].Title}}
+                        </treecontrol>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <a class="pull-right btn btn-icon btn-sm btn-primary" ng-click="filterList(null)"><i class="fa fa-ban"></i></a>
+                        <h4 class="panel-title">Status</h4>
+                    </div>
+                    <div class="list-group">
+                        <a href="javacript:;" class="list-group-item" ng-class="{'active':filterByStatus.Status === status.Name}" ng-click="filterList(status.Name)" ng-repeat="status in statusFilter">
+                            <span class="badge badge-primary badge-square">{{ status.Value }}</span> {{ status.Name | capitalize }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,80 @@
+﻿<div ng-app="app" ng-controller="CreateUserController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a ui-sref="cms.users.list">Users</a></li>
+                    <li class="active">New User</li>
+                </ol>
+                <h1 class="page-header">New User <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>         
+            <form ng-submit="newUserForm.$valid && processForm()" name="newUserForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <input ng-model="newUserData.LanguageId" type="hidden" name="LanguageId" class="form-control" ng-init="newUserData.LanguageId='1'" value="1">
+                    <input ng-model="newUserData.TimeZoneId" type="hidden" name="TimeZoneId" class="form-control" ng-init="newUserData.TimeZoneId='1'" value="1">
+                    
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">User Information</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block flex-50" flex-gt-xs>
+                                    <label>Email</label>
+                                    <input type="email" ng-model="newUserData.Email" name="Email" required>
+                                    <div ng-messages="newUserForm.Email.$error">
+                                        <div ng-messages-include="pages/validation/email.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>First Name</label>
+                                    <input type="text" ng-model="newUserData.FirstName" name="FirstName" required>
+                                    <div ng-messages="newUserForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Last Name</label>
+                                    <input type="text" ng-model="newUserData.LastName" name="LastName" required>
+                                    <div ng-messages="newUserForm.LastName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block flex-50" flex-gt-xs>
+                                    <label>Roles</label>
+                                    <md-select ng-model="newUserData.Roles" name="Roles" multiple="true" required>
+                                        <md-option ng-value="rol" ng-repeat="rol in roles">{{ rol }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Actions</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary">Create User</button>
+                            <a class="btn btn-block btn-default" ui-sref="cms.users.list">Back to Users</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+            
+    </div>
+</div>

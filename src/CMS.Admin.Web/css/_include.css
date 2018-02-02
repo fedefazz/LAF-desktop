@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:200,400,700');
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("../css/bootstrap.min.css");
+@import url("../css/formValidation.min.css");
+@import url("../css/bootstrap-datetimepicker.min.css");
+@import url("../css/jstree.css");
+@import url("../css/angular-material.min.css");
+@import url("../css/loading-bar.min.css");
+@import url("../css/textAngular.css");
+@import url("../css/ng-croppie.css");
+@import url("../css/croppie.css");
+@import url("../css/jquery.fileupload-ui.css");
+@import url("../css/jquery.fileupload.css");
+@import url("https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css");
+@import url("../css/colorpicker.css");
+
+@import url("../css/isteven-multi-select.css");
+
+
+/* NEW SKIN */
+@import url("../assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css");
+@import url("../assets/plugins/bootstrap/css/bootstrap.min.css");
+@import url("../assets/plugins/font-awesome/css/font-awesome.min.css");
+@import url("../assets/css/animate.min.css");
+@import url("../assets/css/style.css");
+@import url("../assets/css/style-responsive.min.css");
+@import url("../assets/css/theme/blue.css");
+
+
+@import url("../assets/plugins/jquery-jvectormap/jquery-jvectormap.css");
+@import url("../assets/plugins/morris/morris.css");
+
+@import url("../assets/plugins/DataTables/media/css/dataTables.bootstrap.min.css");
+@import url("../assets/plugins/DataTables/extensions/Responsive/css/responsive.bootstrap.min.css");
+@import url("../css/material-datetimepicker.css");
+
+
+
+@import url("../css/login.css");
+
+
+@import url("../css/layout.css");
+
+@import url('../css/ngPrint.css');

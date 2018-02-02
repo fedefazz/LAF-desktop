@@ -1,0 +1,15 @@
+<div ng-include src="'/pages/shared/header.html'"></div>
+
+<div ng-include src="'/pages/shared/sidebar.html'"></div>
+
+<div id="content" view-content class="content">
+    <div ui-view></div>
+</div>
+
+<div ng-if="setting.layout.pageTwoSidebar === true">
+    <!-- begin #sidebar-right -->
+    <<div ng-include src="'/pages/shared/sidebar-right.html'"></div>
+    <!-- end #sidebar-right -->
+</div>
+
+<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>

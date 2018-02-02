@@ -1,0 +1,56 @@
+/*
+WEBFONT **********/
+
+@font-face {
+	font-family: 'Gotham-Light';
+	src: url('../fonts/gotham2/gotham-light-webfont.eot');
+	src: url('../fonts/gotham2/gotham-light-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/gotham2/gotham-light-webfont.woff') format('woff'),
+		url('../fonts/gotham2/gotham-light-webfont.ttf') format('truetype'),
+		url('../fonts/gotham2/gotham-light-webfont.svg#Gotham-Light') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Gotham-Medium';
+	src: url('../fonts/gotham2/gotham-medium-webfont.eot');
+	src: url('../fonts/gotham2/gotham-medium-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/gotham2/gotham-medium-webfont.woff') format('woff'),
+		url('../fonts/gotham2/gotham-medium-webfont.ttf') format('truetype'),
+		url('../fonts/gotham2/gotham-medium-webfont.svg#Gotham-Medium') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Gotham-Bold';
+	src: url('../fonts/gotham2/gotham-bold-webfont.eot');
+	src: url('../fonts/gotham2/gotham-bold-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/gotham2/gotham-bold-webfont.woff') format('woff'),
+		url('../fonts/gotham2/gotham-bold-webfont.ttf') format('truetype'),
+		url('../fonts/gotham2/gotham-bold-webfont.svg#Gotham-Bold') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Gotham-Book';
+	src: url('../fonts/gotham2/gotham-book-webfont.eot');
+	src: url('../fonts/gotham2/gotham-book-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/gotham2/gotham-book-webfont.woff') format('woff'),
+		url('../fonts/gotham2/gotham-book-webfont.ttf') format('truetype'),
+		url('../fonts/gotham2/gotham-book-webfont.svg#Gotham-Medium') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Gotham-Black';
+	src: url('../fonts/gotham2/gotham-black-webfont.eot');
+	src: url('../fonts/gotham2/gotham-black-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/gotham2/gotham-black-webfont.woff') format('woff'),
+		url('../fonts/gotham2/gotham-black-webfont.ttf') format('truetype'),
+		url('../fonts/gotham2/gotham-black-webfont.svg#Gotham-Black') format('svg');
+	font-weight: 400;
+	font-style: normal;
+}

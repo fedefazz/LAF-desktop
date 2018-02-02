@@ -1,0 +1,78 @@
+﻿<div ng-app="app" ng-controller="LayoutController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a href="javascript:;">Content</a></li>
+                    <li class="active">Layouts</li>
+                </ol>
+                <h1 class="page-header">Layouts <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Layout List</h4>
+                    </div>
+                    <!-- List -->
+                    <!--<table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>-->
+
+                    <table class="table table-bordered dataTable">
+                        <thead>
+                            <tr>
+                                <th>Page</th>
+                                <th>Path</th>
+                                <th>Publication Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="node in Nodes | orderBy:sortUser:sortReverse | filter:searchUser | filter:filterByStatus | filter:filterByRol">
+                                <td class="capitalize"><a href="/#/cms/content/layouts/edit/{{node.NodeId}}" class="title"><strong>{{node.Node_en}}</strong></a></td>
+                                <td>{{node.NodeDescription}}</td>
+                                <td>{{node.PublicationDate | date : "d-MMM-yyyy"}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Actions</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="cms.content.layouts.new">New Layout</a>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Search</h4>
+                    </div>
+                    <div class="panel-body">
+                         <md-input-container md-no-float class="md-block md-no-error search">
+                            <input type="text" ng-model="searchUser.$" placeholder="Search layout" ng-change="rerender()">
+                        </md-input-container>
+                    </div>
+                </div>
+
+
+                <!--<div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <a class="pull-right btn btn-icon btn-sm btn-primary" ng-click="filterList(null)"><i class="fa fa-ban"></i></a>
+                        <h4 class="panel-title">Status</h4>
+                    </div>
+                    <div class="list-group">
+                        <a href="javacript:;" class="list-group-item" ng-class="{'active':filterByStatus.Status === status.Name}" ng-click="filterList(status.Name)" ng-repeat="status in statusFilter">
+                            <span class="badge badge-primary badge-square">{{ status.Value }}</span> {{ status.Name | capitalize }}
+                        </a>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+</div>

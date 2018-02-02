@@ -1,0 +1,124 @@
+﻿<div ng-app="app" ng-controller="CategoriesController">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a href="javascript:;">Content</a></li>
+                    <li class="active">Categories</li>
+                </ol>
+                <h1 class="page-header">Categories <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="createNodeForm.$valid && createNode()" name="createNodeForm" id="createNodeForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <!--<input ng-model="createNodeData['ParentNode.Id']" type="hidden" name="ParentNode.Id" class="form-control" ng-init="createNodeData['ParentNode.Id']=0" value="0">-->
+                    <input ng-model="createNodeData['Content[0].LanguageId']" type="hidden" class="form-control" ng-init="createNodeData['Content[0].LanguageId']=1" value="1">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Categories</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <treecontrol class="tree-classic"
+                                tree-model="dataForTheTree"
+                                options="treeOptions"
+                                on-selection="showSelected(node, selected)"
+                                selected-node="selected"
+                                filter-expression="predicate"
+                                expanded-nodes="expandedNodes">
+                                <div treednd><span class="fa fa-file-o"></span> {{node.Content[0].Title}}</div>
+                            </treecontrol>
+                        </md-content>
+                    </div>
+
+                    <div class="panel panel-inverse" ng-show="showForm">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Category Information</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Title</label>
+                                    <input type="text" ng-model="createNodeData['Content[0].Title']" name="Title" required>
+                                    <div ng-messages="createNodeForm.Title.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Url Slug</label>
+                                    <input type="text" ng-model="createNodeData.Description" name="Description" required>
+                                    <div ng-messages="createNodeForm.Description.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-switch class="md-block md-primary" ng-model="createNodeData.Visible" aria-label="Visible" ng-init="createNodeData.Visible=true">
+                                    Show in Menu
+                                </md-switch>
+                                <md-switch class="md-block md-primary" ng-model="createNodeData.IsEnabled" aria-label="Active" ng-init="createNodeData.IsEnabled=true">
+                                    Active
+                                </md-switch>
+                                <md-switch class="md-block md-primary" ng-model="createNodeData.HasCustomLayout" aria-label="Active" ng-init="createNodeData.HasCustomLayout=false">
+                                    Custom Layout
+                                </md-switch>
+                            </div>
+                        </md-content>
+                        <div class="panel-heading" ng-show="createNodeData.HasCustomLayout===true">
+                            <h4 class="panel-title">Page Information</h4>
+                        </div>
+                        <md-content layout-padding ng-show="createNodeData.HasCustomLayout===true">
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Title</label>
+                                    <input type="text" ng-model="pageData['Content[0].Title']" name="PageTitle">
+                                    <div ng-messages="createNodeForm.PageTitle.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Actions</h4>
+                        </div>
+                        <div class="panel-body">
+                            <!-- action buttons -->
+                            <button type="button" class="btn btn-block btn-primary" ng-click="updateTree();" ng-show="showSaveOrder" id="SaveOrder">Save</button>
+                            <button type="submit" class="btn btn-block btn-primary" ng-show="showForm">Save Category</button>
+                            <button type="button" class="btn btn-block btn-warning" ng-click="Cancel()" ng-show="showForm">Cancel</button>
+                            <!-- display buttons -->
+                            <button type="button" class="btn btn-primary btn-block" ng-click="showForm=true" ng-show="showForm===false && createNodeData.Id!==0">Edit Category</button>
+                            <button type="button" class="btn btn-primary btn-block" ng-click="newNode();" ng-show="showForm===false && createNodeData.Id != 0">Create Category</button>
+                            <!-- action buttons -->
+                		    <button type="button" class="btn btn-danger btn-block" ng-click="deleteNode();" ng-show="createNodeData.Id !== 0">Delete Category</button>
+                        </div>
+                    </div>
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Search</h4>
+                        </div>
+                        <div class="panel-body">
+                            <md-input-container md-no-float class="md-block search md-no-error">
+                                <input type="text" id="Text1" ng-model="predicate" placeholder="Search categories">
+                            </md-input-container>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

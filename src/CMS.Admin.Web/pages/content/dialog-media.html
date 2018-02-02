@@ -1,0 +1,66 @@
+﻿<md-dialog id="asset-list">
+    <form ng-cloak>
+
+        <md-dialog-content class="md-dialog-content">
+            <div class="row">
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Media List</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="gallery view-text">
+                                <div class="image" ng-repeat="media in medias">
+                                    <div class="image-inner">
+                                        <a href="javascript:;" ng-click="setMedia(media.Id)" style="background-image:url({{getThumb(media.SizesPaths)}})"></a><!--{{ImagePath}}Files/{{ media.FileName }}-->
+                                        <p class="image-caption"><i class="fa fa-image"></i></p>
+                                    </div>
+                                    <div class="image-info">
+                                        <h5 class="title">{{ media.Title }}</h5>
+                                        <div class="desc">
+                                            <span class="tag" ng-repeat="tag in media.Keywords.split(',')" ng-show="media.Keywords">{{tag}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <p class="legend">Showing {{paginationShowFrom}} to {{paginationShowTo}} of {{paginationTotalItems}} items</p>
+                            <ul uib-pagination ng-change="pageChanged()" max-size="5" boundary-links="true" force-ellipses="true" items-per-page="12"  total-items="paginationTotalItems" ng-model="currentPage" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Search</h4>
+                        </div>
+                        <div class="panel-body">
+                             <md-input-container md-no-float class="md-block md-no-error">
+                                <input type="text" ng-model="searchQuery" placeholder="Search asset" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
+                                <md-icon>search</md-icon>
+                            </md-input-container>
+                        </div>
+                    </div>
+            
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <a class="pull-right btn btn-icon btn-sm btn-primary" ng-click="filterList(null)"><i class="fa fa-ban"></i></a>
+                            <h4 class="panel-title">Category</h4>
+                        </div>
+                        <div class="list-group">
+                            <a href="javacript:;" class="list-group-item" ng-class="{'active':filterByStatus.Status === status.Id}" ng-click="filterList(status.Id)" ng-repeat="status in statusFilter">
+                                <span class="badge badge-primary badge-square">{{ status.Value }}</span> {{ status.Name | capitalize }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button ng-click="answer('useful')" class="btn btn-default">Close</md-button>
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

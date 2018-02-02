@@ -1,0 +1,65 @@
+﻿<div ng-app="app" ng-controller="SubConceptsCRUDController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li><a ui-sref="cms.clients.list">Sub-Rubros</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}}<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="editKeywordForm.$valid && processForm()" class="form-horizontal" role="form" name="editKeywordForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Información del sub-rubro</h4>
+                        </div>
+                        <md-content layout-padding>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Rubro</label>
+                                    <md-select ng-model="keywordData.ParentKeywordId" name="ParentKeywordId" required>
+                                        <md-option ng-repeat="brand in Brands" ng-value="brand.Id">
+                                            {{brand.Name}}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editKeywordForm.Name.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Sub-Rubro</label>
+                                    <input type="text" ng-model="keywordData.Name" name="Name" required />
+                                    <div ng-messages="editKeywordForm.Name.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Acciones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteKeyword($event, keywordData.Id);" ng-show="keywordData.Id">Borrar Sub-Rubro</button>
+                            <a class="btn btn-block btn-default" ui-sref="cms.config.subconcepts.list">Volver</a>
+                        </div>
+                    </div>
+
+                    <!--<pre>{{keywordData | json}}</pre>-->
+                </div>
+            </form>
+        </div>   
+    </div>
+</div>

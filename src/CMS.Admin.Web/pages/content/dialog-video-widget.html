@@ -1,0 +1,21 @@
+﻿<md-dialog id="region-list">
+    <form ng-cloak>
+
+        <md-dialog-content class="md-dialog-content">
+            <h2 class="md-title ng-binding">Configure Video Widget</h2>
+            <fieldset class="standard" >
+                <div layout="row" layout-wrap flex>
+                    <div flex="50" ng-repeat="item in categories">
+                        <md-checkbox ng-checked="exists(item, selected)" ng-click="toggle(item, selected)">{{ item.Name }}</md-checkbox>
+                    </div>
+                </div>
+            </fieldset>
+            <!--{{selected | json}}-->
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button ng-click="save()" ng-class="btn btn-default">Close</md-button>
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

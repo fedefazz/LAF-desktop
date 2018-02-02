@@ -1,0 +1,57 @@
+﻿<div ng-app="app" ng-controller="ServiceController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- detalle del dia y cambio de dia con flechas -->
+            <div class="col-sm-12 col-md-12">
+                <h1 class="page-header">Servicios para 
+                    <a href="javascript:;" ng-click="changeDay($event,1)"><i class="fa fa-angle-left" aria-hidden="true"></i></a> 
+                    <strong>{{DayToShow | capitalize}} {{DateToShow | capitalize}}</strong> 
+                    <a href="javascript:;" ng-click="changeDay($event,0)"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                </h1>
+
+                <!-- calendario y selector de cantidad de turnos x dia -->
+                <div layout-gt-xs="row" style="width:200px;float:right; margin-top:-75px; margin-right: 20px;" class="configuration">
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Cambiar Fecha</label>
+                        <md-datepicker ng-model="myDate" md-placeholder="Ingrese Fecha" md-open-on-focus></md-datepicker>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Turnos</label>
+                        <md-select ng-model="selected" name="Roles">
+                            <md-option ng-value="slot" ng-repeat="slot in Slots">{{ slot.value }}</md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage" id="alertMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            
+            <!-- grilla de servicios -->
+            <div class="col-sm-12 col-md-12">
+                <div class="row">
+                    <div ng-repeat="hora in hours track by $index" ng-show="$index > 7" class="col-md-2 slotBlock">
+                        <div class="dropzone box box-yellow">
+                            <!-- The dropzone also uses the list template -->
+                            <!--<h3 style="text-align: center; font-size: 16px" class="SlotHour">{{$index}} Hs.</h3>-->
+                            <div class="col-md-6 slotHeader">
+                                {{$index}}hs
+                                <!--<button class="col-md-6 slotHeader disponibles">{{FilterResults(hora)}}</button>-->
+                            </div>
+                            <button ng-click="showRegions($event, hora, hora[0].Hora, NewDate, null)"  class="col-md-6 slotHeader agregarNuevo"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
+                            <div class="clearfix"></div>
+                            <!-- service list -->
+                            <div ng-repeat="turno in hora track by $index">
+                                <div ng-click="showRegions($event, hora, hora[0].Hora, NewDate, turno.Id)" class="slotBody {{turno.Status}}">{{turno.Orden}} - {{turno.Patente}} <em>{{turno.Modelo}}</em> <span ng-show="turno.Status==='PENDIENTE'" class="pull-right glyphicon glyphicon-time" title="Pendiente"></span><span ng-show="turno.Status==='RECIBIDO'" class="pull-right glyphicon glyphicon-road" title="Recibido"></span><span ng-show="turno.Status==='TERMINADO'" class="pull-right glyphicon glyphicon-flag" title="Terminado"></span><span ng-show="turno.Status==='ENTREGADO'" class="pull-right glyphicon glyphicon-ok" title="Entregado"></span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
