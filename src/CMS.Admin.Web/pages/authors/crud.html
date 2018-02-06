@@ -5,7 +5,7 @@
                 <ol class="breadcrumb pull-right">
                     <li><a href="/#/cms/dashboard">Home</a></li>
                     <li><a href="javascript:;">Content</a></li>
-                    <li><a ui-sref="cms.content.authors.list">Authors</a></li>
+                    <li><a ui-sref="blsp.content.authors.list">Authors</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}}<small></small></h1>
@@ -58,7 +58,7 @@
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
                             <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, authorData.Id);" ng-show="authorData.Id">Delete Author</button>
-                            <a class="btn btn-block btn-default" ui-sref="cms.content.authors.list">Back to Authors</a>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.content.authors.list">Back to Authors</a>
                         </div>
                     </div>
 

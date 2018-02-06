@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace CMS.Admin.Web.Helpers
+namespace blsp.Admin.Web.Helpers
 {
     public static class AppSettingsHelper
     {

@@ -5021,7 +5021,7 @@
     <Content Include="js\app\controllers\CarsController.js" />
     <Content Include="js\app\controllers\ModalDemoController.js" />
     <Content Include="js\app\controllers\ProgrammingGuideController.js" />
-    <Content Include="js\app\controllers\ClientsController.js" />
+    <Content Include="js\app\controllers\MaquinasController.js" />
     <Content Include="js\app\controllers\ServiceController.js" />
     <Content Include="js\bootstrap-colorpicker-module.js" />
     <Content Include="js\croppie\croppie.js" />
@@ -5053,8 +5053,8 @@
     <Content Include="pages\content\dialog-video-widget.html" />
     <Content Include="pages\content\dialog-regions.html" />
     <Content Include="pages\content\dialog-assets.html" />
-    <Content Include="pages\clients\crud.html" />
-    <Content Include="pages\clients\list.html" />
+    <Content Include="pages\maquinas\crud.html" />
+    <Content Include="pages\maquinas\list.html" />
     <Content Include="pages\shared\app.html" />
     <Content Include="pages\shared\header.html" />
     <Content Include="pages\shared\sidebar-right.html" />

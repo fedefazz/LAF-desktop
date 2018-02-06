@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace CMS.Admin.Web.Models
+namespace blsp.Admin.Web.Models
 {
     public class ResetPasswordDto
     {

@@ -18,12 +18,20 @@ angular
             return $http.get($rootScope.webapiurl + "api/ServiceTypes/GetAllSolr?q=* AND IsDeleted:false AND IsEnabled:true&rows=50&sort=Name asc&no-pace", { cache: false })
         }
 
-        this.GetVehicleLicence = function (Licence) {
-            return $http.get($rootScope.webapiurl + "api/Vehicles/GetVehicleLicence?Licence=" + Licence + "&no-pace")
+        this.GetAreas = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSAreas")
         }
 
-        this.GetClientById = function (id) {
-            return $http.get($rootScope.webapiurl + "api/Clients?id=" + id + "&no-pace")
+        this.GetOrigenes = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSOrigenesScraps")
+        }
+
+        this.GetTipos = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSTiposMaterials")
+        }
+
+        this.GetMaquinaById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSMaquinas?id=" + id + "&no-pace")
         }
         
         this.GetClientByDni = function (dni) {
@@ -267,8 +275,8 @@ angular
             return $http.post($rootScope.webapiurl + "api/Services", data)
         }
 
-        this.createClient = function (data) {
-            return $http.post($rootScope.webapiurl + "api/Clients", data)
+        this.createMaquina = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSMaquinas", data)
         }
 
         this.createVehicle = function (data) {

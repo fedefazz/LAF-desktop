@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace CMS.Admin.Web.Controllers
+namespace blsp.Admin.Web.Controllers
 {
     [Authorize]
     public class HomeController : Controller

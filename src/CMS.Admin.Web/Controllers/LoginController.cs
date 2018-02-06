@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Web.Mvc;
-using CMS.Admin.Web.Models;
-using CMS.Admin.Web.Helpers;
+using blsp.Admin.Web.Models;
+using blsp.Admin.Web.Helpers;
 using Newtonsoft.Json;
 using System.Dynamic;
 
-namespace CMS.Admin.Web.Controllers
+namespace blsp.Admin.Web.Controllers
 {
     public class LoginController : Controller
     {

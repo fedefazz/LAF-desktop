@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 
-namespace CMS.Admin.Web.Helpers
+namespace blsp.Admin.Web.Helpers
 {
     internal class HttpRequest
     {

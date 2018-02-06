@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace CMS.Admin.Web
+namespace blsp.Admin.Web
 {
     public class FilterConfig
     {

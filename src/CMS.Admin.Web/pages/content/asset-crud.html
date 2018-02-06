@@ -4,7 +4,7 @@
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
                     <li><a href="/#/cms/dashboard">Home</a></li>
-                    <li><a ui-sref="cms.content.assets.list">Content</a></li>
+                    <li><a ui-sref="blsp.content.assets.list">Content</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}} <small></small></h1>
@@ -119,7 +119,7 @@
                             <button type="button" class="btn btn-block btn-danger" ng-show="assetData.Status == 'PENDING_APPROVAL'" ng-click="disapprove($event, assetData.Id);">Disapprove</button>
                             <button type="button" class="btn btn-block btn-primary" ng-show="assetData.Status == 'APPROVED'" ng-click="publish($event, assetData.Id);">Publish</button>
                             <button type="button" class="btn btn-block btn-danger" ng-click="deleteAsset($event, assetData.Id);" ng-show="assetData.Id">Delete Asset</button>
-                            <a class="btn btn-block btn-default" ui-sref="cms.content.assets.list">Back to Assets</a>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.content.assets.list">Back to Assets</a>
                         </div>
                     </div>
 

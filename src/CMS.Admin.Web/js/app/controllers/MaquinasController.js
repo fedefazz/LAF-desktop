@@ -2,7 +2,7 @@
 angular
     .module('app.controllers')
 
-    .controller('ClientController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
+    .controller('MaquinasController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
 
         //Display message if necessary
         AlertService.ShowAlert($scope);
@@ -11,9 +11,11 @@ angular
         $scope.dtInstance = {};
 
         $scope.dtColumns = [
-            DTColumnBuilder.newColumn('FirstName', 'Nombre').renderWith(renderTitle),
-            DTColumnBuilder.newColumn('Email', 'Email'),
-            DTColumnBuilder.newColumn('CreationDate', 'Creado').renderWith(renderDate)
+            DTColumnBuilder.newColumn('Descripcion', 'Nombre').renderWith(renderTitle),
+            DTColumnBuilder.newColumn('PSSAreas.Descripcion', 'Area'),
+            DTColumnBuilder.newColumn('PSSOrigenesScrap.Descripcion', 'Origenes Scrap').renderWith(renderArrayOrigenes),
+            DTColumnBuilder.newColumn('PSSTiposMaterials.Materiales', 'Tipos Material').renderWith(renderArrayMateriales)
+
         ];
 
         $scope.dtOptions = DTOptionsBuilder
@@ -44,25 +46,26 @@ angular
                 q = $scope.searchQuery;
             }
 
-            //query constructor
-            var qs = "?q=" + q + " AND FirstName:[* TO *]&start=" + aoData[3].value + "&rows=" + aoData[4].value + "&fl=Id,FirstName,LastName,Email,CreationDate&sort=" + sort + "&no-pace";
-
+           
             //query execution
             $http({
                 method: 'GET',
-                url: $rootScope.webapiurl + "api/Clients/GetAllSolr" + qs,
+                url: $rootScope.webapiurl + "api/PSSMaquinas",
                 headers: {
                     'Content-type': 'application/json'
                 }
             })
             .then(function (result) {
+
+                console.log(result);
                 var records = {
                     'draw': result.data.draw,
-                    'recordsTotal': result.data.response.numFound,
-                    'recordsFiltered': result.data.response.numFound,
-                    'data': result.data.response.docs
+                    'recordsTotal': result.data.length,
+                    'recordsFiltered': result.data.length,
+                    'data': result.data
                 };
                 fnCallback(records);
+                $scope.total = result.data.length;
             });
         }
 
@@ -73,13 +76,41 @@ angular
                 css = "check-circle blue";
 
             var html = '<i class="fa fa-blue"></i>';
-            html += '<a href="/#/cms/clients/crud/' + full.Id + '"><strong>' + full.FirstName + ' ' + full.LastName + '</strong></a>';
+            html += '<a href="/#/blsp/maquinas/crud/' + full.IDMaq + '"><strong>' + full.Descripcion + '</strong></a>';
             return html;
         }
 
         //datatables render date field
         function renderDate(data, type, full, meta) {
             var html = $filter('date')(data, "d-MMM-yyyy");
+            return html;
+        }
+
+        //datatables render Array Origenes
+        function renderArrayOrigenes(data, type, full, meta) {
+            var html = "<ul>";
+            angular.forEach(full.PSSOrigenesScrap, function (value, key) {
+
+                html += '<li class="listaTabla">' + value.Descripcion + '</li>';
+
+
+            });
+
+            html += "</ul>";
+            return html;
+        }
+
+        //datatables render Array Materiales
+        function renderArrayMateriales(data, type, full, meta) {
+            var html = "<ul>";
+            angular.forEach(full.PSSTiposMaterial, function (value, key) {
+
+                html += '<li class="listaTabla">' + value.Descripcion + '</li>';
+
+
+            });
+
+            html += "</ul>";
             return html;
         }
 
@@ -93,7 +124,53 @@ angular
 
     })
 
-    .controller('ClientCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('MaquinasCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+
+
+
+
+
+
+
+
+        var CallAreas = APIService.GetAreas();
+        CallAreas.then(function (u) {
+            $scope.areas = u.data;
+            console.log($scope.areas);
+
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/maquinas/list";
+        });
+
+
+        var CallOrigenes = APIService.GetOrigenes();
+        CallOrigenes.then(function (u) {
+            $scope.origenes = u.data;
+            console.log($scope.origenes);
+
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/maquinas/list";
+        });
+
+        var CallTipos = APIService.GetTipos();
+        CallTipos.then(function (u) {
+            $scope.tipos = u.data;
+            console.log($scope.tipos);
+
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/maquinas/list";
+        });
+
+
+
+
+
 
         var id = $stateParams.id;
 
@@ -105,49 +182,59 @@ angular
 
         //labels
         if (id) {
-            $scope.PageTitle = 'Editar Cliente';
-            $scope.SubmitButton = 'Actualizar Cliente';
+            $scope.PageTitle = 'Editar Maquina';
+            $scope.SubmitButton = 'Actualizar Maquina';
+
+
+
+         
+
+
+
+
+
         } else {
-            $scope.PageTitle = 'Crear Cliente';
-            $scope.SubmitButton = 'Crear Cliente';
+            $scope.PageTitle = 'Crear Maquina';
+            $scope.SubmitButton = 'Crear Maquina';
+
+
+
+
+
+
+        
+
+
+
+
+
+
         }
 
         //Gets category by Id for edit fields
         if (id) {
-            var servCall = APIService.GetClientById(id);
+            var servCall = APIService.GetMaquinaById(id);
             servCall.then(function (u) {
-                $scope.clientData = u.data;
-                delete $scope.clientData.$id;
-                console.log($scope.clientData);
+                $scope.maquinaData = u.data;
+                delete $scope.maquinaData.$id;
+                console.log($scope.maquinaData);
 
-                getLastestServices($scope.clientData.Id);
+                getLastestServices($scope.maquinaData.IDMaq);
                 
                 AlertService.ShowAlert($scope);
             }, function (error) {
-                $window.location.href = "/#/cms/clients/list";
+                $window.location.href = "/#/blsp/maquinas/list";
             });
         }
 
-        //TRAIGO ultimos servicios para este auto
-        function getLastestServices(ClientId) {
-            var servCallType = APIService.getLastestServicesByClient(ClientId);
-            servCallType.then(function (u) {
-                $scope.LastestServices = u.data.response.docs;
-
-                console.log($scope.LastestServices);
-
-            }, function (error) {
-                $scope.errorMessage = "Oops, something went wrong.";
-            });
-        };
 
         //User update
         $scope.processForm = function () {
             
-            $scope.clientData.IsEnabled = true;
-            $scope.clientData.CompanyId = 2;
+            //$scope.clientData.IsEnabled = true;
+            //$scope.clientData.CompanyId = 2;
 
-            var data = $.param($scope.clientData);
+            var data = $.param($scope.maquinaData);
             if (id) {
                 var servCall = APIService.updateClient(id, data);
                 servCall.then(function (u) {
@@ -158,9 +245,9 @@ angular
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
             } else {
-                var servCall = APIService.createClient(data);
+                var servCall = APIService.createMaquina(data);
                 servCall.then(function (u) {
-                    var clientData = u.data;
+                    var maquinaData = u.data;
                     //Set message
                     AlertService.SetAlert("El cliente fue creado con éxito", "success");
                     $window.location.href = "/#/cms/clients/crud/" + clientData.Id;

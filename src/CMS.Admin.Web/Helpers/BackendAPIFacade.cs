@@ -1,8 +1,8 @@
-﻿using CMS.Admin.Web.Models;
+﻿using blsp.Admin.Web.Models;
 using System.Net.Http;
 using System.Web;
 
-namespace CMS.Admin.Web.Helpers
+namespace blsp.Admin.Web.Helpers
 {
     internal class BackendAPIFacade
     {
@@ -10,7 +10,7 @@ namespace CMS.Admin.Web.Helpers
         {
             var request = new HttpRequest()
               {
-                  Url = AppSettingsHelper.GetValue<string>("CMS.BackendAPI.Token.Url", () => string.Empty)
+                  Url = AppSettingsHelper.GetValue<string>("blsp.BackendAPI.Token.Url", () => string.Empty)
               };
 
             request.AddArgument("username", userName);
@@ -29,7 +29,7 @@ namespace CMS.Admin.Web.Helpers
         {
             var request = new HttpRequest()
             {
-                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("CMS.BackendAPI.Base.Url", () => string.Empty), "Account/ForgotPassword")
+                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("blsp.BackendAPI.Base.Url", () => string.Empty), "Account/ForgotPassword")
             };
 
             request.AddArgument("email", userName);
@@ -41,7 +41,7 @@ namespace CMS.Admin.Web.Helpers
         {
             var request = new HttpRequest()
             {
-                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("CMS.BackendAPI.Base.Url", () => string.Empty), "Account/ResetPassword")
+                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("blsp.BackendAPI.Base.Url", () => string.Empty), "Account/ResetPassword")
             };
 
             request.AddArgument("email", dto.Email);
@@ -63,7 +63,7 @@ namespace CMS.Admin.Web.Helpers
         {
             var request = new HttpRequest()
             {
-                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("CMS.BackendAPI.Base.Url", () => string.Empty), "Account/GetUserRequest")
+                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("blsp.BackendAPI.Base.Url", () => string.Empty), "Account/GetUserRequest")
             };
 
             request.AddArgument("userid", userId.ToString());
@@ -81,7 +81,7 @@ namespace CMS.Admin.Web.Helpers
         {
             var request = new HttpRequest()
             {
-                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("CMS.BackendAPI.Base.Url", () => string.Empty), "Account/ConfirmUserRequest")
+                Url = string.Format("{0}{1}", AppSettingsHelper.GetValue<string>("blsp.BackendAPI.Base.Url", () => string.Empty), "Account/ConfirmUserRequest")
             };
 
             request.AddArgument("token", userDto.Token);

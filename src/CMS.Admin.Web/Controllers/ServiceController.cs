@@ -3,9 +3,9 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Xml.Linq;
 using System.Net;
-using CMS.Admin.Web.Models;
+using blsp.Admin.Web.Models;
 
-namespace CMS.Admin.Web.Controllers
+namespace blsp.Admin.Web.Controllers
 {
     [Authorize]
     public class ServiceController : Controller

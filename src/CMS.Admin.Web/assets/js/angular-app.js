@@ -56,15 +56,15 @@ app.run(function ($rootScope, $http, $window, $state, setting) {
 
 app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/cms/dashboard');
+    $urlRouterProvider.otherwise('/blsp/dashboard');
 
     $stateProvider
-        .state('cms', {
-            url: '/cms',
+        .state('blsp', {
+            url: '/blsp',
             templateUrl: 'pages/shared/app.html',
             abstract: true
         })
-            .state('cms.dashboard', {
+            .state('blsp.dashboard', {
                 url: '/dashboard',
                 templateUrl: 'pages/dashboard.html',
                 controller: 'DashboardController'
@@ -75,71 +75,61 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
 
 
     /* Users */
-        .state('cms.users', {
+        .state('blsp.users', {
             url: '/users',
             template: '<div ui-view></div>',
             abstract: true
         })
-            .state('cms.users.list', {
+            .state('blsp.users.list', {
                 url: '/list',
                 data: { pageTitle: 'Users' },
                 templateUrl: 'pages/users/user-list.html'
             })
-            .state('cms.users.new', {
+            .state('blsp.users.new', {
                 url: '/new',
                 data: { pageTitle: 'New User' },
                 templateUrl: 'pages/users/user-new.html'
             })
-            .state('cms.users.edit', {
+            .state('blsp.users.edit', {
                 url: '/edit/:id',
                 data: { pageTitle: 'Edit User' },
                 templateUrl: 'pages/users/user-edit.html'
             })
 
-     /* Services */
-        .state('cms.services', {
-            url: '/services',
-            template: '<div ui-view></div>',
-            abstract: true
-        })
-            .state('cms.services.list', {
-                url: '/list',
-                data: { pageTitle: 'Services' },
-                templateUrl: 'pages/services/service-list.html'
-            })
+  
 
-        /* Clients */
-            .state('cms.clients', {
-                url: '/clients',
+        /* Maquinas */
+            .state('blsp.maquinas', {
+                url: '/maquinas',
                 template: '<div ui-view></div>',
                 abstract: true
             })
-                .state('cms.clients.list', {
+                .state('blsp.maquinas.list', {
                     url: '/list',
-                    data: { pageTitle: 'Clientes' },
-                    templateUrl: 'pages/clients/list.html'
+                    data: { pageTitle: 'Maquinas' },
+                    templateUrl: 'pages/maquinas/list.html'
                 })
-                .state('cms.clients.crud', {
+                .state('blsp.maquinas.crud', {
                     url: '/crud/:id',
-                    data: { pageTitle: 'Clientes CRUD' },
-                    templateUrl: 'pages/clients/crud.html',
+                    data: { pageTitle: 'Maquinas CRUD' },
+                    templateUrl: 'pages/maquinas/crud.html',
                     params: {
                         id: { squash: true, value: null }
                     }
                 })
 
          /* Cash Register */
-            .state('cms.cashregister', {
+            .state('blsp.cashregister', {
                 url: '/cashregister',
                 template: '<div ui-view></div>',
                 abstract: true
             })
-                .state('cms.cashregister.list', {
+                .state('blsp.cashregister.list', {
                     url: '/list',
                     data: { pageTitle: 'Caja' },
                     templateUrl: 'pages/cashregister/list.html'
                 })
-                .state('cms.cashregister.crud', {
+                .state('blsp.cashregister.crud', {
                     url: '/crud/:id',
                     data: { pageTitle: 'Caja CRUD' },
                     templateUrl: 'pages/cashregister/crud.html',
@@ -149,22 +139,22 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                 })
 
         /* Configuration */
-            .state('cms.config', {
+            .state('blsp.config', {
                 url: '/config',
                 template: '<div ui-view></div>',
                 abstract: true
             })
-                .state('cms.config.cars', {
+                .state('blsp.config.cars', {
                     url: '/cars',
                     template: '<div ui-view></div>',
                     abstract: true
                 })
-                .state('cms.config.cars.list', {
+                .state('blsp.config.cars.list', {
                     url: '/list',
                     data: { pageTitle: 'Vehiculos' },
                     templateUrl: 'pages/cars/list.html'
                 })
-                .state('cms.config.cars.crud', {
+                .state('blsp.config.cars.crud', {
                     url: '/crud/:id',
                     data: { pageTitle: 'Vehiculos CRUD' },
                     templateUrl: 'pages/cars/crud.html',
@@ -173,17 +163,17 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-                .state('cms.config.models', {
+                .state('blsp.config.models', {
                     url: '/models',
                     template: '<div ui-view></div>',
                     abstract: true
                 })
-                .state('cms.config.models.list', {
+                .state('blsp.config.models.list', {
                     url: '/list',
                     data: { pageTitle: 'Modelos' },
                     templateUrl: 'pages/models/list.html'
                 })
-                .state('cms.config.models.crud', {
+                .state('blsp.config.models.crud', {
                     url: '/crud/:id',
                     data: { pageTitle: 'Modelos CRUD' },
                     templateUrl: 'pages/models/crud.html',
@@ -192,17 +182,17 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-                .state('cms.config.concepts', {
+                .state('blsp.config.concepts', {
                     url: '/concepts',
                     template: '<div ui-view></div>',
                     abstract: true
                 })
-                .state('cms.config.concepts.list', {
+                .state('blsp.config.concepts.list', {
                     url: '/list',
                     data: { pageTitle: 'Conceptos' },
                     templateUrl: 'pages/concepts/list.html'
                 })
-                .state('cms.config.concepts.crud', {
+                .state('blsp.config.concepts.crud', {
                     url: '/crud/:id',
                     data: { pageTitle: 'Conceptos CRUD' },
                     templateUrl: 'pages/concepts/crud.html',
@@ -211,17 +201,17 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-                .state('cms.config.subconcepts', {
+                .state('blsp.config.subconcepts', {
                     url: '/subconcepts',
                     template: '<div ui-view></div>',
                     abstract: true
                 })
-                .state('cms.config.subconcepts.list', {
+                .state('blsp.config.subconcepts.list', {
                     url: '/list',
                     data: { pageTitle: 'SubConceptos' },
                     templateUrl: 'pages/subconcepts/list.html'
                 })
-                .state('cms.config.subconcepts.crud', {
+                .state('blsp.config.subconcepts.crud', {
                     url: '/crud/:id',
                     data: { pageTitle: 'SubConceptos CRUD' },
                     templateUrl: 'pages/subconcepts/crud.html',
@@ -230,17 +220,17 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-                .state('cms.config.servicetype', {
+                .state('blsp.config.servicetype', {
                     url: '/servicetype',
                     template: '<div ui-view></div>',
                     abstract: true
                 })
-                .state('cms.config.servicetype.list', {
+                .state('blsp.config.servicetype.list', {
                     url: '/list',
                     data: { pageTitle: 'Service type' },
                     templateUrl: 'pages/service-type/list.html'
                 })
-                .state('cms.config.servicetype.crud', {
+                .state('blsp.config.servicetype.crud', {
                     url: '/crud/:id',
                     data: { pageTitle: 'Service type CRUD' },
                     templateUrl: 'pages/service-type/crud.html',
@@ -250,17 +240,17 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                 })
 
     /* Profile */
-        .state('cms.profile', {
+        .state('blsp.profile', {
             url: '/profile',
             template: '<div ui-view></div>',
             abstract: true
         })
-        .state('cms.profile.edit', {
+        .state('blsp.profile.edit', {
             url: '/edit',
             templateUrl: 'pages/my-profile/profile.html',
             data: { pageTitle: 'Profile' }
         })
-        .state('cms.profile.reset', {
+        .state('blsp.profile.reset', {
             url: '/reset',
             templateUrl: 'pages/my-profile/reset-password.html',
             data: { pageTitle: 'Reset Password' }

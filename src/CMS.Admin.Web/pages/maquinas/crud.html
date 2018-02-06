@@ -1,10 +1,10 @@
-﻿<div ng-app="app" ng-controller="ClientCRUDController">
+﻿<div ng-app="app" ng-controller="MaquinasCRUDController">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
-                    <li><a href="/#/cms/dashboard">Home</a></li>
-                    <li><a ui-sref="cms.clients.list">Clientes</a></li>
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li><a ui-sref="blsp.clients.list">Maquinas</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}}<small></small></h1>
@@ -17,39 +17,77 @@
                 <div class="col-sm-12 col-md-8">
                     <div class="panel panel-inverse">
                         <div class="panel-heading">
-                            <h4 class="panel-title">Información del cliente</h4>
+                            <h4 class="panel-title">Información de la Maquina</h4>
                         </div>
                         <md-content layout-padding>
-                            <div layout-gt-xs="row">
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Email</label>
-                                    <input type="email" ng-model="clientData.Email" name="Email" required />
-                                    <div ng-messages="editAuthorForm.Email.$error">
-                                        <div ng-messages-include="pages/validation/email.html"></div>
-                                    </div>
-                                </md-input-container>
-                            </div>
+                         
                     
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Nombre</label>
-                                    <input type="text" ng-model="clientData.FirstName" name="FirstName" required />
+                                    <input type="text" ng-model="maquinaData.Descripcion" name="Nombre" required />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Apellido</label>
-                                    <input type="text" ng-model="clientData.LastName" name="LastName" required />
-                                    <div ng-messages="editAuthorForm.LastName.$error">
+                             
+
+                                <md-input-container class="md-block flex-50" flex-gt-xs>
+                                    <label>Area</label>
+                                    <md-select ng-init="maquinaData.PSSAreas.Descripcion" ng-model="maquinaData.PSSAreas" name="Areas" multiple="false" required>
+                                        <md-option ng-value="area" ng-repeat="area in areas track by area.IDArea" ng-selected="area.Descripcion == maquinaData.PSSAreas.Descripcion" >{{ area.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
+
+
+
+                             </div>
+
+
+                            <div layout-gt-xs="row">
+                                
+                                
+                                <md-input-container class="md-block flex-50" flex-gt-xs>
+                                    <label>Origenes de Scrap</label>
+                                    <md-select ng-init="maquinaData.PSSOrigenesScrap.Descripcion" ng-model="maquinaData.PSSOrigenesScrap" name="Areas" multiple="true" required>
+                                        <md-option ng-value="origen" ng-repeat="origen in origenes track by origen.IDOrigen" ng-selected="origen.Descripcion == maquinaData.PSSOrigenesScrap.Descripcion">{{ origen.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                
+                                
+
+                                <md-input-container class="md-block flex-50" flex-gt-xs>
+                                    <label>Tipos Materiales</label>
+                                    <md-select ng-init="maquinaData.PSSTiposMaterial.Descripcion" ng-model="maquinaData.PSSTiposMaterial" name="Areas" multiple="true" required>
+                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos track by tipo.IDTipoMat" ng-selected="tipo.Descripcion == maquinaData.PSSTiposMaterial.Descripcion">{{ tipo.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                
+                                
+                                
+                                
+                             
+
+                              
                             </div>
+
+
+
+
+
                         </md-content>
                     </div>
 
-                    <div class="panel panel-inverse">
+                    <!--<div class="panel panel-inverse">
                         <div class="panel-heading">
                             <h4 class="panel-title">Ultimos Servicios</h4>
                         </div>
@@ -73,7 +111,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="col-sm-12 col-md-4">
                     <div class="panel panel-inverse">
@@ -82,8 +120,8 @@
                         </div>
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
-                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, clientData.Id);" ng-show="clientData.Id">Borrar Cliente</button>
-                            <a class="btn btn-block btn-default" ui-sref="cms.clients.list">Volver</a>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, maquinaData.Id);" ng-show="maquinaData.Id">Borrar Maquina</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.maquinas.list">Volver</a>
                         </div>
                     </div>
 
@@ -99,7 +137,7 @@
                         </div>
                     </div>-->
 
-                    <!--<pre>{{clientData | json}}</pre>-->
+                    <!--<pre>{{maquinaData | json}}</pre>-->
                 </div>
             </form>
         </div>   

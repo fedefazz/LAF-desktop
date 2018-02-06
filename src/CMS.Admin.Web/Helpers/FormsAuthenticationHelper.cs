@@ -2,7 +2,7 @@
 using System.Web;
 using System.Web.Security;
 
-namespace CMS.Admin.Web.Helpers
+namespace blsp.Admin.Web.Helpers
 {
     public class FormsAuthenticationHelper
     {

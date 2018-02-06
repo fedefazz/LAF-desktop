@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
-namespace CMS.Admin.Web.Models
+namespace blsp.Admin.Web.Models
 {
     public class RssDto
     {

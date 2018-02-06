@@ -2,7 +2,7 @@
 using System.Net.Http;
 using System.Text;
 
-namespace CMS.Admin.Web.Helpers
+namespace blsp.Admin.Web.Helpers
 {
     internal static class HttpService
     {

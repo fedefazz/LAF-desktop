@@ -1,6 +1,6 @@
 ﻿using System.Web.Optimization;
 
-namespace CMS.Admin.Web
+namespace blsp.Admin.Web
 {
     public class BundleConfig
     {
@@ -56,7 +56,7 @@ namespace CMS.Admin.Web
                         //"~/js/app/controllers/AuthorController.js",
                         //"~/js/app/controllers/MediaLibraryController.js",
                         //"~/js/app/controllers/MediaGalleryController.js",
-                        "~/js/app/controllers/ClientsController.js",
+                        "~/js/app/controllers/MaquinasController.js",
                         //"~/js/app/controllers/LayoutController.js",
                         "~/js/app/controllers/CashRegisterController.js",
                         "~/js/app/controllers/CarsController.js",

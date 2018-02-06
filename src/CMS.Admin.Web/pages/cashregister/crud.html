@@ -4,7 +4,7 @@
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
                     <li><a href="/#/cms/dashboard">Home</a></li>
-                    <li><a ui-sref="cms.clients.list">Caja</a></li>
+                    <li><a ui-sref="blsp.clients.list">Caja</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}}<small></small></h1>
@@ -61,7 +61,7 @@
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
                             <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, clientData.Id);" ng-show="clientData.Id">Borrar Cliente</button>
-                            <a class="btn btn-block btn-default" ui-sref="cms.clients.list">Volver</a>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.clients.list">Volver</a>
                         </div>
                     </div>
 

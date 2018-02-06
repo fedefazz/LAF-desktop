@@ -2,7 +2,7 @@
 using System.Web.Optimization;
 using System.Web.Routing;
 
-namespace CMS.Admin.Web
+namespace blsp.Admin.Web
 {
     public class MvcApplication : System.Web.HttpApplication
     {

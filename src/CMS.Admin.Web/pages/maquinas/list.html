@@ -1,12 +1,12 @@
-﻿<div ng-app="app" ng-controller="ClientController as aCtrl">
+﻿<div ng-app="app" ng-controller="MaquinasController as aCtrl">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
-                    <li><a href="/#/cms/dashboard">Home</a></li>
-                    <li class="active">Clientes</li>
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Maquinas</li>
                 </ol>
-                <h1 class="page-header">Clientes <small></small></h1>
+                <h1 class="page-header">Maquinas <small></small></h1>
             </div>
             <div class="col-sm-12 col-md-12">
                 <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
@@ -15,7 +15,7 @@
             <div class="col-sm-12 col-md-8">
                 <div class="panel panel-inverse">
                     <div class="panel-heading">
-                        <h4 class="panel-title">Listado de Clientes</h4>
+                        <h4 class="panel-title">Listado de Maquinas</h4>
                     </div>
                     <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
                 </div>
@@ -27,7 +27,7 @@
                         <h4 class="panel-title">Acciones</h4>
                     </div>
                     <div class="panel-body">
-                        <a class="btn btn-block btn-primary" ui-sref="cms.clients.crud">Nuevo Cliente</a>
+                        <a class="btn btn-block btn-primary" ui-sref="blsp.maquinas.crud">Nueva Maquina</a>
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                     </div>
                     <div class="panel-body">
                          <md-input-container md-no-float class="md-block md-no-error search">
-                            <input type="text" ng-model="searchQuery" placeholder="Buscar clientes" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
+                            <input type="text" ng-model="searchQuery" placeholder="Buscar Maquina" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
                         </md-input-container>
                     </div>
                 </div>
