@@ -2,7 +2,7 @@
 angular
     .module('app.controllers')
 
-    .controller('MaquinasController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
+    .controller('OperadoresController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
 
         //Display message if necessary
         AlertService.ShowAlert($scope);
@@ -11,10 +11,9 @@ angular
         $scope.dtInstance = {};
 
         $scope.dtColumns = [
-            DTColumnBuilder.newColumn('Descripcion', 'Nombre').renderWith(renderTitle),
-            DTColumnBuilder.newColumn('PSSAreas.Descripcion', 'Area'),
-            DTColumnBuilder.newColumn('PSSOrigenesScrap.Descripcion', 'Origenes Scrap').renderWith(renderArrayOrigenes),
-            DTColumnBuilder.newColumn('PSSTiposMaterials.Materiales', 'Tipos Material').renderWith(renderArrayMateriales)
+            DTColumnBuilder.newColumn('Nombre', 'Nombre').renderWith(renderTitle),
+            DTColumnBuilder.newColumn('IdOperador', 'Legajo'),
+
 
         ];
 
@@ -50,7 +49,7 @@ angular
             //query execution
             $http({
                 method: 'GET',
-                url: $rootScope.webapiurl + "api/PSSMaquinas",
+                url: $rootScope.webapiurl + "api/PSSOperadores",
                 headers: {
                     'Content-type': 'application/json'
                 }
@@ -72,11 +71,11 @@ angular
         //datatables render name field
         function renderTitle(data, type, full, meta) {
             var css = "times-circle red";
-            if (full.IsEnabled == true)
+            if (full.Habilitado == true)
                 css = "check-circle blue";
 
-            var html = '<i class="fa fa-blue"></i>';
-            html += '<a href="/#/blsp/maquinas/crud/' + full.IDMaq + '"><strong>' + full.Descripcion + '</strong></a>';
+            var html = '<i class="fa fa-' + css + '"></i>';
+            html += '<a href="/#/blsp/operadores/crud/' + full.IdOperador + '"><strong>' + full.Nombre + ' ' + full.Apellido + '</strong></a>';
             return html;
         }
 
@@ -123,7 +122,7 @@ angular
 
     })
 
-    .controller('MaquinasCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('OperadoresCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 
 
 
@@ -132,41 +131,41 @@ angular
 
 
 
-        var CallAreas = APIService.GetAreas();
-        CallAreas.then(function (u) {
-            $scope.areas = u.data;
-            console.log($scope.areas);
+        //var CallAreas = APIService.GetAreas();
+        //CallAreas.then(function (u) {
+        //    $scope.areas = u.data;
+        //    console.log($scope.areas);
 
 
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/maquinas/list";
-        });
+        //    AlertService.ShowAlert($scope);
+        //}, function (error) {
+        //    $window.location.href = "/#/blsp/maquinas/list";
+        //});
 
 
-        var CallOrigenes = APIService.GetOrigenes();
-        CallOrigenes.then(function (u) {
-            $scope.origenes = u.data;
-            console.log("ORIGENES");
+        //var CallOrigenes = APIService.GetOrigenes();
+        //CallOrigenes.then(function (u) {
+        //    $scope.origenes = u.data;
+        //    console.log("ORIGENES");
 
-            console.log($scope.origenes);
-
-
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/maquinas/list";
-        });
-
-        var CallTipos = APIService.GetTipos();
-        CallTipos.then(function (u) {
-            $scope.tipos = u.data;
-            console.log($scope.tipos);
+        //    console.log($scope.origenes);
 
 
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/maquinas/list";
-        });
+        //    AlertService.ShowAlert($scope);
+        //}, function (error) {
+        //    $window.location.href = "/#/blsp/maquinas/list";
+        //});
+
+        //var CallTipos = APIService.GetTipos();
+        //CallTipos.then(function (u) {
+        //    $scope.tipos = u.data;
+        //    console.log($scope.tipos);
+
+
+        //    AlertService.ShowAlert($scope);
+        //}, function (error) {
+        //    $window.location.href = "/#/blsp/maquinas/list";
+        //});
 
 
 
@@ -183,8 +182,8 @@ angular
 
         //labels
         if (id) {
-            $scope.PageTitle = 'Editar Maquina';
-            $scope.SubmitButton = 'Actualizar Maquina';
+            $scope.PageTitle = 'Editar Operario';
+            $scope.SubmitButton = 'Actualizar Operario';
 
 
 
@@ -195,8 +194,8 @@ angular
 
 
         } else {
-            $scope.PageTitle = 'Crear Maquina';
-            $scope.SubmitButton = 'Crear Maquina';
+            $scope.PageTitle = 'Crear Operario';
+            $scope.SubmitButton = 'Crear Operario';
 
 
 
@@ -214,19 +213,19 @@ angular
 
         //Gets category by Id for edit fields
         if (id) {
-            var servCall = APIService.GetMaquinaById(id);
+            var servCall = APIService.GetOperadorById(id);
             servCall.then(function (u) {
-                $scope.maquinaData = u.data;
-                delete $scope.maquinaData.$id;
+                $scope.operadorData = u.data;
+                delete $scope.operadorData.$id;
                 console.log("DATA MAQUINA");
 
-                console.log($scope.maquinaData);
+                console.log($scope.operadorData);
 
-                //getLastestServices($scope.maquinaData.IDMaq);
+                //getLastestServices($scope.operadorData.IDMaq);
                 
                 AlertService.ShowAlert($scope);
             }, function (error) {
-                $window.location.href = "/#/blsp/maquinas/list";
+                $window.location.href = "/#/blsp/operadores/list";
             });
         }
 
@@ -237,23 +236,23 @@ angular
             //$scope.clientData.IsEnabled = true;
             //$scope.clientData.CompanyId = 2;
 
-            var data = $.param($scope.maquinaData);
+            var data = $.param($scope.operadorData);
             if (id) {
-                var servCall = APIService.updateMaquina(id, data);
+                var servCall = APIService.updateOperario(id, data);
                 servCall.then(function (u) {
                     //Set and display message
-                    AlertService.SetAlert("La maquina fue actualizada con éxito", "success");
+                    AlertService.SetAlert("El Operario fue actualizado con éxito", "success");
                     AlertService.ShowAlert($scope);
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
             } else {
-                var servCall = APIService.createMaquina(data);
+                var servCall = APIService.createOperador(data);
                 servCall.then(function (u) {
-                    var maquinaData = u.data;
+                    var operadorData = u.data;
                     //Set message
-                    AlertService.SetAlert("La maquina fue creada con éxito", "success");
-                    $window.location.href = "/#/blsp/maquinas/crud/" + maquinaData.Id;
+                    AlertService.SetAlert("El Operario fue creado con éxito", "success");
+                    $window.location.href = "/#/blsp/operadores/crud/" + operadorData.Id;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });

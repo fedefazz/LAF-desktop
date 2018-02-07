@@ -118,21 +118,21 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-         /* Cash Register */
-            .state('blsp.cashregister', {
-                url: '/cashregister',
+         /* Maquinas */
+            .state('blsp.operadores', {
+                url: '/operadores',
                 template: '<div ui-view></div>',
                 abstract: true
             })
-                .state('blsp.cashregister.list', {
+                .state('blsp.operadores.list', {
                     url: '/list',
-                    data: { pageTitle: 'Caja' },
-                    templateUrl: 'pages/cashregister/list.html'
+                    data: { pageTitle: 'Operadores' },
+                    templateUrl: 'pages/operadores/list.html'
                 })
-                .state('blsp.cashregister.crud', {
+                .state('blsp.operadores.crud', {
                     url: '/crud/:id',
-                    data: { pageTitle: 'Caja CRUD' },
-                    templateUrl: 'pages/cashregister/crud.html',
+                    data: { pageTitle: 'Operadores CRUD' },
+                    templateUrl: 'pages/operadores/crud.html',
                     params: {
                         id: { squash: true, value: null }
                     }

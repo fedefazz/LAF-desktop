@@ -33,6 +33,10 @@ angular
         this.GetMaquinaById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas?id=" + id + "&no-pace")
         }
+
+        this.GetOperadorById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSOperadores?id=" + id + "&no-pace")
+        }
         
         this.GetClientByDni = function (dni) {
             return $http.get($rootScope.webapiurl + "api/Clients/GetClientByDni?dni=" + dni)
@@ -196,8 +200,8 @@ angular
         }
 
         //PUT Requests
-        this.updateClient = function (id,data) {
-            return $http.put($rootScope.webapiurl + "api/Clients?id=" + id, data)
+        this.updateMaquina = function (id,data) {
+            return $http.put($rootScope.webapiurl + "api/PSSMaquinas?id=" + id, data)
         }
 
         this.updateVehicle = function (id, data) {
@@ -277,6 +281,10 @@ angular
 
         this.createMaquina = function (data) {
             return $http.post($rootScope.webapiurl + "api/PSSMaquinas", data)
+        }
+
+        this.createOperador = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSOperadores", data)
         }
 
         this.createVehicle = function (data) {

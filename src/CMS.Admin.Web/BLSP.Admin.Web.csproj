@@ -5013,6 +5013,7 @@
     <Content Include="js\angular-sanitize.js" />
     <Content Include="js\angular-sanitize.min.js" />
     <Content Include="js\angular-slugify.js" />
+    <Content Include="js\app\controllers\OperadoresController.js" />
     <Content Include="js\app\controllers\ServiceTypeController.js" />
     <Content Include="js\app\controllers\ConceptsController.js" />
     <Content Include="js\app\controllers\SubConceptsController.js" />
@@ -5037,6 +5038,8 @@
     <Content Include="Mail\Templates\CreateUserRequestEmailTemplate.html" />
     <Content Include="Mail\Templates\ForgotPasswordConfirmationEmailTemplate.html" />
     <Content Include="Mail\Templates\ResetPasswordEmailTemplate.html" />
+    <Content Include="pages\operadores\crud.html" />
+    <Content Include="pages\operadores\list.html" />
     <Content Include="pages\service-type\crud.html" />
     <Content Include="pages\service-type\list.html" />
     <Content Include="pages\concepts\crud.html" />

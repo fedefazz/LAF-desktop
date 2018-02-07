@@ -52,20 +52,26 @@
                                 
                                 <md-input-container class="md-block flex-50" flex-gt-xs>
                                     <label>Origenes de Scrap</label>
-                                    <md-select ng-init="maquinaData.PSSOrigenesScrap.Descripcion" ng-model="maquinaData.PSSOrigenesScrap" name="Areas" multiple="true" required>
-                                        <md-option ng-value="origen" ng-repeat="origen in origenes track by origen.IDOrigen" ng-selected="origen.Descripcion == maquinaData.PSSOrigenesScrap.Descripcion">{{ origen.Descripcion }}</md-option>
+                                    <md-select  ng-model="maquinaData.PSSOrigenesScrap" name="Origenes" multiple="true" required ng-model-options="{trackBy: '$value.IDOrigen' }">
+                                        <md-option ng-value="origen" ng-repeat="origen in origenes track by origen.IDOrigen">{{ origen.Descripcion }}</md-option>
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
+
+
+                              
+
+
+
                                 
                                 
 
                                 <md-input-container class="md-block flex-50" flex-gt-xs>
                                     <label>Tipos Materiales</label>
-                                    <md-select ng-init="maquinaData.PSSTiposMaterial.Descripcion" ng-model="maquinaData.PSSTiposMaterial" name="Areas" multiple="true" required>
-                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos track by tipo.IDTipoMat" ng-selected="tipo.Descripcion == maquinaData.PSSTiposMaterial.Descripcion">{{ tipo.Descripcion }}</md-option>
+                                    <md-select ng-model="maquinaData.PSSTiposMaterial" name="TiposMaterial" multiple="true" required ng-model-options="{trackBy: '$value.IDTipoMat' }">
+                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos track by tipo.IDTipoMat">{{ tipo.Descripcion }}</md-option>
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
