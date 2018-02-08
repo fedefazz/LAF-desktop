@@ -22,6 +22,10 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSAreas")
         }
 
+        this.GetMaquinas = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSMaquinas")
+        }
+
         this.GetOrigenes = function () {
             return $http.get($rootScope.webapiurl + "api/PSSOrigenesScraps")
         }
@@ -204,8 +208,8 @@ angular
             return $http.put($rootScope.webapiurl + "api/PSSMaquinas?id=" + id, data)
         }
 
-        this.updateVehicle = function (id, data) {
-            return $http.put($rootScope.webapiurl + "api/Vehicles?id=" + id, data)
+        this.updateOperador = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSOperadores?id=" + id, data)
         }
 
         this.UpdateService = function (id, data) {
@@ -355,7 +359,12 @@ angular
         //DELETE Requests
         this.deleteUsers = function (id, data) {
             return $http.delete($rootScope.webapiurl + "api/Users?id=" + id, data)
+        }
 
+            this.deleteOperador = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSOperadores?id=" + id)
+
+            }
             //return $http({
             //    url: $rootScope.webapiurl + "api/User/Delete",
             //    method: 'DELETE',
@@ -364,7 +373,7 @@ angular
             //        'Content-Type': 'application/x-www-form-urlencoded' // Note the appropriate header
             //    }
             //}).success(function (response) { /* do something here */ });
-        }
+        
         this.deleteCashRegister = function (data, id) {
             return $http({
                 url: $rootScope.webapiurl + "api/CashRegister/?id=" + id,

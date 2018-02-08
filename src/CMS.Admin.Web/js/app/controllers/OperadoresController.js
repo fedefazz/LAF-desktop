@@ -12,7 +12,7 @@ angular
 
         $scope.dtColumns = [
             DTColumnBuilder.newColumn('Nombre', 'Nombre').renderWith(renderTitle),
-            DTColumnBuilder.newColumn('IdOperador', 'Legajo'),
+            DTColumnBuilder.newColumn('Legajo', 'Legajo'),
 
 
         ];
@@ -211,17 +211,55 @@ angular
 
         }
 
+
+
+        var CallMaquinas = APIService.GetMaquinas();
+        CallMaquinas.then(function (u) {
+            $scope.maquinas = u.data;
+            console.log("MAQUINAS");
+
+            console.log($scope.maquinas);
+
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/operadores/list";
+        });
+
+
+
+
+
+
+        //Gets category by Id for edit fields
+            var servCall1 = APIService.GetMaquinas();
+            servCall1.then(function (u) {
+                $scope.maquinaData = u.data;
+                delete $scope.maquinaData.$id;
+                console.log("maquinola");
+
+                console.log($scope.maquinaData);
+
+
+                AlertService.ShowAlert($scope);
+            }, function (error) {
+                $window.location.href = "/#/blsp/maquinas/list";
+            });
+
+
+
+
+
+
         //Gets category by Id for edit fields
         if (id) {
             var servCall = APIService.GetOperadorById(id);
             servCall.then(function (u) {
                 $scope.operadorData = u.data;
                 delete $scope.operadorData.$id;
-                console.log("DATA MAQUINA");
 
                 console.log($scope.operadorData);
 
-                //getLastestServices($scope.operadorData.IDMaq);
                 
                 AlertService.ShowAlert($scope);
             }, function (error) {
@@ -238,7 +276,7 @@ angular
 
             var data = $.param($scope.operadorData);
             if (id) {
-                var servCall = APIService.updateOperario(id, data);
+                var servCall = APIService.updateOperador(id, data);
                 servCall.then(function (u) {
                     //Set and display message
                     AlertService.SetAlert("El Operario fue actualizado con éxito", "success");
@@ -252,7 +290,7 @@ angular
                     var operadorData = u.data;
                     //Set message
                     AlertService.SetAlert("El Operario fue creado con éxito", "success");
-                    $window.location.href = "/#/blsp/operadores/crud/" + operadorData.Id;
+                    $window.location.href = "/#/blsp/operadores/crud/" + operadorData.IdOperador;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
@@ -260,13 +298,13 @@ angular
         }
 
         //Delete User
-        $scope.deleteCategory = function (ev, id) {
+        $scope.deleteOperador = function (ev, id) {
             //var custName = id;
 
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
                   .title('Eliminar Maquina')
-                  .textContent('Esta seguro de eliminar esta Maquina?')
+                  .textContent('Esta seguro de eliminar este Operador?')
                   .ariaLabel('Delete')
                   .targetEvent(ev)
                   .ok('Delete')
@@ -277,11 +315,11 @@ angular
                 var data = $.param({
                     id: id,
                 })
-                var servCall = APIService.deleteMediaCategory(data);
+                var servCall = APIService.deleteOperador(id);
                 servCall.then(function (u) {
                     //Set message
-                    AlertService.SetAlert("La maquina ha sido eliminada con exito", "success");
-                    $window.location.href = "/#/blsp/maquinas/list";
+                    AlertService.SetAlert("El Operador ha sido eliminado con exito", "success");
+                    $window.location.href = "/#/blsp/operadores/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 })

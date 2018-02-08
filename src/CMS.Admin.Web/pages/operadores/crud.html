@@ -43,7 +43,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Legajo</label>
-                                    <input type="text" ng-model="operadorData.IdOperador" name="Legajo" required />
+                                    <input type="text" ng-model="operadorData.Legajo" name="Legajo" required />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
@@ -51,15 +51,26 @@
 
 
 
+                               
+
+
+
                              </div>
 
+                            <div layout-gt-xs="row">
 
-                            
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Maquinas que Opera</label>
+                                    <md-select ng-model="operadorData.PSSMaquinas" name="Origenes" multiple="true"  ng-model-options="{trackBy: '$value.IDMaq' }">
+                                        <md-option ng-value="maquina" ng-repeat="maquina in maquinas track by maquina.IDMaq">{{ maquina.Descripcion }} - ({{maquina.PSSAreas.Descripcion}}) </md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
 
 
-
-
-
+                            </div>
                         </md-content>
                     </div>
 
@@ -72,8 +83,8 @@
                         </div>
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
-                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, operadorData.Id);" ng-show="operadorData.Id">Borrar Maquina</button>
-                            <a class="btn btn-block btn-default" ui-sref="blsp.Operadores.list">Volver</a>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteOperador($event, operadorData.IdOperador);" ng-show="operadorData.IdOperador">Borrar Operador</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.operadores.list">Volver</a>
                         </div>
                     </div>
 
