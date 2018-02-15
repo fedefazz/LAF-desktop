@@ -41,6 +41,14 @@ angular
         this.GetOperadorById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSOperadores?id=" + id + "&no-pace")
         }
+
+        this.GetMaterialById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSTiposMaterials?id=" + id + "&no-pace")
+        }
+
+        this.GetOrigenById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id + "&no-pace")
+        }
         
         this.GetClientByDni = function (dni) {
             return $http.get($rootScope.webapiurl + "api/Clients/GetClientByDni?dni=" + dni)
@@ -212,6 +220,14 @@ angular
             return $http.put($rootScope.webapiurl + "api/PSSOperadores?id=" + id, data)
         }
 
+        this.updateMaterial = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSTiposMaterials?id=" + id, data)
+        }
+
+        this.updateOrigen = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id, data)
+        }
+
         this.UpdateService = function (id, data) {
             return $http.put($rootScope.webapiurl + "api/Services?id=" + id, data)
         }
@@ -289,6 +305,14 @@ angular
 
         this.createOperador = function (data) {
             return $http.post($rootScope.webapiurl + "api/PSSOperadores", data)
+        }
+
+        this.createOrigen = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSOrigenesScraps", data)
+        }
+
+        this.createMaterial = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSTiposMaterials", data)
         }
 
         this.createVehicle = function (data) {

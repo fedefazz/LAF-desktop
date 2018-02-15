@@ -58,7 +58,8 @@ namespace blsp.Admin.Web
                         //"~/js/app/controllers/MediaGalleryController.js",
                         "~/js/app/controllers/MaquinasController.js",
                         "~/js/app/controllers/OperadoresController.js",
-
+                         "~/js/app/controllers/tipoMaterialController.js",
+                        "~/js/app/controllers/origenScrapController.js",
                         //"~/js/app/controllers/LayoutController.js",
                         "~/js/app/controllers/CashRegisterController.js",
                         "~/js/app/controllers/CarsController.js",

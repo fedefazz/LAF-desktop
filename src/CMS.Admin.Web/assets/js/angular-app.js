@@ -118,7 +118,7 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-         /* Maquinas */
+         /* Operadores */
             .state('blsp.operadores', {
                 url: '/operadores',
                 template: '<div ui-view></div>',
@@ -137,6 +137,47 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                         id: { squash: true, value: null }
                     }
                 })
+
+         /* Tipo Material */
+            .state('blsp.tipoMaterial', {
+                url: '/tipoMaterial',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.tipoMaterial.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Tipo de material' },
+                    templateUrl: 'pages/tipoMaterial/list.html'
+                })
+                .state('blsp.tipoMaterial.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Tipo de Material CRUD' },
+                    templateUrl: 'pages/tipoMaterial/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
+          /* Origen de Scrap */
+            .state('blsp.origenScrap', {
+                url: '/origenScrap',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.origenScrap.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Origen de Scrap' },
+                    templateUrl: 'pages/origenScrap/list.html'
+                })
+                .state('blsp.origenScrap.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Origen de Scrap CRUD' },
+                    templateUrl: 'pages/origenScrap/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
 
         /* Configuration */
             .state('blsp.config', {

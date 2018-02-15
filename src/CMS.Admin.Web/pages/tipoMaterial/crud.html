@@ -1,0 +1,107 @@
+﻿<div ng-app="app" ng-controller="tipoMaterialCRUDController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li><a ui-sref="blsp.tipoMaterial.list">Tipos de Material</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}}<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="editAuthorForm.$valid && processForm()" class="form-horizontal" role="form" name="editAuthorForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Información del Material</h4>
+                        </div>
+                        <md-content layout-padding>
+                         
+                    
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Nombre</label>
+                                    <input type="text" ng-model="materialData.Descripcion" name="Nombre" required />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                             
+
+                              
+                                
+                                
+                                
+                                
+                             
+
+                              
+                            </div>
+
+
+
+
+
+                        </md-content>
+                    </div>
+
+                    <!--<div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Ultimos Servicios</h4>
+                        </div>
+                        <table class="table table-bordered dataTable" datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance">
+                            <thead>
+                                <tr>
+                                    <th>Dominio</th>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Servicio</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="serv in LastestServices">
+                                    <td>{{serv.License}}</td>
+                                    <td>{{serv.Brand}}</td>
+                                    <td>{{serv.Model}}</td>
+                                    <td><span ng-repeat="sertype in serv.ServiceTypeName" class="tag">{{ sertype }}</span></td>
+                                    <td>{{ serv.CreationDate | date : "d-MMM-yyyy" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>-->
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Acciones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, materialData.Id);" ng-show="materialData.Id">Borrar Material</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.tipoMaterial.list">Volver</a>
+                        </div>
+                    </div>
+
+                    <!--<div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Author Image</h4>
+                        </div>
+                        <div class="panel-body">
+                            <div class="img-holder">
+                                <img src="{{authorImage}}" alt="Featured Image" class="img-responsive img-preview" />
+                            </div>
+                            <a ng-click="ChooseFile()" class="btn btn-sm btn-block btn-primary">Change author image</a>
+                        </div>
+                    </div>-->
+
+                    <!--<pre>{{maquinaData | json}}</pre>-->
+                </div>
+            </form>
+        </div>   
+    </div>
+</div>
