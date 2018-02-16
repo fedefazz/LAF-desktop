@@ -5003,6 +5003,7 @@
     <Content Include="css\ng-croppie.min.css" />
     <Content Include="css\ngPrint.css" />
     <Content Include="css\ngPrint.min.css" />
+    <Content Include="images\bg.jpg" />
     <Content Include="images\logo-short.png" />
     <Content Include="images\logo.png" />
     <Content Include="js\angular-drag-and-drop-lists.js" />
@@ -5013,6 +5014,7 @@
     <Content Include="js\angular-sanitize.js" />
     <Content Include="js\angular-sanitize.min.js" />
     <Content Include="js\angular-slugify.js" />
+    <Content Include="js\app\controllers\ScrapController.js" />
     <Content Include="js\app\controllers\tipoMaterialController.js" />
     <Content Include="js\app\controllers\origenScrapController.js" />
     <Content Include="js\app\controllers\OperadoresController.js" />
@@ -5042,6 +5044,8 @@
     <Content Include="Mail\Templates\ResetPasswordEmailTemplate.html" />
     <Content Include="pages\origenScrap\crud.html" />
     <Content Include="pages\origenScrap\list.html" />
+    <Content Include="pages\scrap\crud.html" />
+    <Content Include="pages\scrap\list.html" />
     <Content Include="pages\tipoMaterial\crud.html" />
     <Content Include="pages\tipoMaterial\list.html" />
     <Content Include="pages\operadores\crud.html" />

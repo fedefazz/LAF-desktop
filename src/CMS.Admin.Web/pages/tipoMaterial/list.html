@@ -17,8 +17,20 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Listado de Tipos de Material</h4>
                     </div>
-                    <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
-                </div>
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Tipo Material</th>
+                                <th>Id</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="material in Materials | orderBy:sortUser:sortReverse | filter:searchMaterial">
+                                <td class="capitalize"><a href="/#/blsp/tipoMaterial/crud/{{material.IDTipoMat}}" class="title"><strong>{{material.Descripcion}}</strong></a></td>
+                                <td>{{material.IDTipoMat}}</td>
+                            </tr>
+                        </tbody>
+                    </table>                </div>
             </div>
             <div class="col-sm-12 col-md-4">
 
@@ -37,8 +49,9 @@
                     </div>
                     <div class="panel-body">
                          <md-input-container md-no-float class="md-block md-no-error search">
-                            <input type="text" ng-model="searchQuery" placeholder="Buscar Material" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
-                        </md-input-container>
+                             <label>Buscar Material</label>
+                             <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                          </md-input-container>
                     </div>
                 </div>
             </div>

@@ -7,66 +7,36 @@ angular
         //Display message if necessary
         AlertService.ShowAlert($scope);
 
-        //datatables configuration
+
+        GetTipos();
+
+        //TRAE TODOS LOS MATERIALES
+        function GetTipos() {
+            var servCallType = APIService.GetTipos();
+            servCallType.then(function (u) {
+                console.log(u);
+                $scope.Materials = u.data;
+            }, function (error) {
+                $scope.errorMessage = "Oops, something went wrong.";
+            });
+        };
+
+
+
         $scope.dtInstance = {};
-
-        $scope.dtColumns = [
-            DTColumnBuilder.newColumn('IDTipoMat', 'ID').renderWith(renderTitle),
-            DTColumnBuilder.newColumn('Descripcion', 'Nombre'),
-
-
-        ];
 
         $scope.dtOptions = DTOptionsBuilder
                     .newOptions()
                     .withLanguageSource('/js/angular-datatables-spanish.json')
-                    .withFnServerData(serverData)
-                    .withDataProp('data')
-                    .withOption('processing', true)
-                    .withOption('serverSide', true)
                     .withOption('paging', true)
-                    //.withOption('rowCallback', rowCallback)
                     .withPaginationType('full_numbers')
                     .withDisplayLength(20)
-                    .withOption('order', [0, 'asc']);
+                    .withOption('order', [1, 'asc']);
 
-        //Solr interface function
-        function serverData(sSource, aoData, fnCallback, oSettings) {
 
-            //sorting
-            var sortColumnIndex = aoData[2].value[0].column;
-            var sortDirection = aoData[2].value[0].dir;
-            var sortColumn = $scope.dtColumns[sortColumnIndex].mData;
-            var sort = sortColumn + " " + sortDirection;
+        
 
-            //search text
-            //var q = '*';
-            //if ($scope.searchQuery != undefined && $scope.searchQuery != "") {
-            //    q = $scope.searchQuery;
-            //}
 
-           
-            //query execution
-            $http({
-                method: 'GET',
-                url: $rootScope.webapiurl + "api/PSSTiposMaterials",
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(function (result) {
-
-                console.log(result);
-                var records = {
-                    'draw': result.data.draw,
-                    'recordsTotal': result.data.length,
-                    'recordsFiltered': result.data.length,
-                    'data': result.data
-                };
-                fnCallback(records);
-                $scope.total = result.data.length;
-            });
-        }
 
         //datatables render name field
         function renderTitle(data, type, full, meta) {
@@ -75,7 +45,7 @@ angular
                 css = "check-circle blue";
 
             var html = '<i class="fa fa-' + css + '"></i>';
-            html += '<a href="/#/blsp/tipoMaterial/crud/' + full.IDTipoMat + '"><strong>' + full.IDTipoMat + '</strong></a>';
+            html += '<a href="/#/blsp/tipoMaterial/crud/' + full.IDTipoMat + '"><strong>' + full.Descripcion + '</strong></a>';
             return html;
         }
 
@@ -114,58 +84,16 @@ angular
         }
 
       
-
+        
 
         $scope.doSearch = function () {
-            $scope.dtInstance.DataTable.search($scope.searchText).draw();
+            $scope.dtInstance.DataTable.search($scope.searchQuery).draw();
+
         }
 
     })
 
     .controller('tipoMaterialCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
-
-
-
-
-
-
-
-
-        //var CallAreas = APIService.GetAreas();
-        //CallAreas.then(function (u) {
-        //    $scope.areas = u.data;
-        //    console.log($scope.areas);
-
-
-        //    AlertService.ShowAlert($scope);
-        //}, function (error) {
-        //    $window.location.href = "/#/blsp/maquinas/list";
-        //});
-
-
-        //var CallOrigenes = APIService.GetOrigenes();
-        //CallOrigenes.then(function (u) {
-        //    $scope.origenes = u.data;
-        //    console.log("ORIGENES");
-
-        //    console.log($scope.origenes);
-
-
-        //    AlertService.ShowAlert($scope);
-        //}, function (error) {
-        //    $window.location.href = "/#/blsp/maquinas/list";
-        //});
-
-        //var CallTipos = APIService.GetTipos();
-        //CallTipos.then(function (u) {
-        //    $scope.tipos = u.data;
-        //    console.log($scope.tipos);
-
-
-        //    AlertService.ShowAlert($scope);
-        //}, function (error) {
-        //    $window.location.href = "/#/blsp/maquinas/list";
-        //});
 
 
 
@@ -269,13 +197,13 @@ angular
         }
 
         //Delete User
-        $scope.deleteOperador = function (ev, id) {
+        $scope.deleteMaterial = function (ev, id) {
             //var custName = id;
 
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
-                  .title('Eliminar Maquina')
-                  .textContent('Esta seguro de eliminar este Operador?')
+                  .title('Eliminar Material')
+                  .textContent('Esta seguro de eliminar este tipo de material?')
                   .ariaLabel('Delete')
                   .targetEvent(ev)
                   .ok('Delete')
@@ -286,11 +214,11 @@ angular
                 var data = $.param({
                     id: id,
                 })
-                var servCall = APIService.deleteOperador(id);
+                var servCall = APIService.deleteMaterial(id);
                 servCall.then(function (u) {
                     //Set message
-                    AlertService.SetAlert("El Operador ha sido eliminado con exito", "success");
-                    $window.location.href = "/#/blsp/operadores/list";
+                    AlertService.SetAlert("El Material ha sido eliminado con exito", "success");
+                    $window.location.href = "/#/blsp/tipoMaterial/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 })

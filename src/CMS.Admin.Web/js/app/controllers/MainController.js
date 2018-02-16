@@ -13,11 +13,11 @@ angular
         servCall.then(function (u) {
             $scope.currentUser = u.data;
             
-            //if ($scope.currentUser.ProfileImagePath) {
-            //    $rootScope.ProfileImagePath = $rootScope.mediaurl + $scope.currentUser.ProfileImagePath;
-            //} else {
-            //    $rootScope.ProfileImagePath = "/images/placeholders/user.png";
-            //}
+            if ($scope.currentUser.ProfileImagePath) {
+                $rootScope.ProfileImagePath = $rootScope.mediaurl + $scope.currentUser.ProfileImagePath;
+            } else {
+                $rootScope.ProfileImagePath = "/images/placeholders/user.png";
+            }
 
         }, function (error) {
             //$window.location.href = "/Login/LogOut";
@@ -42,11 +42,11 @@ angular
 
                     $scope.profileData = u.data;
 
-                    //if ($scope.profileData.ProfileImagePath) {
-                    //    $rootScope.ProfileImagePath = $scope.ImageProfilePath + $scope.profileData.ProfileImagePath;
-                    //} else {
-                    //    $rootScope.ProfileImagePath = "/images/placeholders/user.png";
-                    //}
+                    if ($scope.profileData.ProfileImagePath) {
+                        $rootScope.ProfileImagePath = $scope.ImageProfilePath + $scope.profileData.ProfileImagePath;
+                    } else {
+                        $rootScope.ProfileImagePath = "/images/placeholders/user.png";
+                    }
                 })
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
@@ -104,6 +104,7 @@ angular
                         GetLoggedUser();
                     });
                 }, function (response) {
+                    alert(response.status);
                     if (response.status > 0)
                         $scope.errorMsg = response.status + ': ' + response.data;
                 }, function (evt) {

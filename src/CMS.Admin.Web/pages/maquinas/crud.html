@@ -93,31 +93,7 @@
                         </md-content>
                     </div>
 
-                    <!--<div class="panel panel-inverse">
-                        <div class="panel-heading">
-                            <h4 class="panel-title">Ultimos Servicios</h4>
-                        </div>
-                        <table class="table table-bordered dataTable" datatable="ng" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance">
-                            <thead>
-                                <tr>
-                                    <th>Dominio</th>
-                                    <th>Marca</th>
-                                    <th>Modelo</th>
-                                    <th>Servicio</th>
-                                    <th>Fecha</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="serv in LastestServices">
-                                    <td>{{serv.License}}</td>
-                                    <td>{{serv.Brand}}</td>
-                                    <td>{{serv.Model}}</td>
-                                    <td><span ng-repeat="sertype in serv.ServiceTypeName" class="tag">{{ sertype }}</span></td>
-                                    <td>{{ serv.CreationDate | date : "d-MMM-yyyy" }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>-->
+                    
                 </div>
                 <div class="col-sm-12 col-md-4">
                     <div class="panel panel-inverse">
@@ -126,7 +102,7 @@
                         </div>
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
-                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteAuthor($event, maquinaData.Id);" ng-show="maquinaData.Id">Borrar Maquina</button>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteMaquina($event, maquinaData.IDMaq);" ng-show="maquinaData.IDMaq">Borrar Maquina</button>
                             <a class="btn btn-block btn-default" ui-sref="blsp.maquinas.list">Volver</a>
                         </div>
                     </div>

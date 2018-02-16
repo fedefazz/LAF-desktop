@@ -17,8 +17,26 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Listado de Usuarios</h4>
                     </div>
-                    <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
-                </div>
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Usuario</th>
+                                <th>Email / Username</th>
+                                <th>Fecha de Creacion</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="usuario in Usuarios | orderBy:sortUser:sortReverse">
+                                <td class="capitalize"><a href="/#/blsp/users/edit/{{usuario.Id}}" class="title"><strong>{{usuario.LastName}}, {{usuario.FirstName}}</strong></a></td>
+                                <td>{{usuario.Email}}</td>
+
+                                <td>{{usuario.CreationDate | date:"dd/MM/yyyy"}}</td>
+                            </tr>
+                        </tbody>
+                    </table>               
+                
+                
+                 </div>
             </div>
 
             <div class="col-sm-12 col-md-4">
@@ -36,8 +54,9 @@
                         <h4 class="panel-title">Buscar</h4>
                     </div>
                     <div class="panel-body">
-                         <md-input-container md-no-float class="md-block md-no-error search">
-                            <input type="text" ng-model="searchText" placeholder="Buscar usuarios" ng-change="doSearch()">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <label>Buscar Usuario</label>
+                            <input type="text" ng-model="searchQuery" ng-change="doSearch()">
                         </md-input-container>
                     </div>
                 </div>

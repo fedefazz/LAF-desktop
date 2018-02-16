@@ -7,77 +7,31 @@ angular
         //Display message if necessary
         AlertService.ShowAlert($scope);
 
-        //datatables configuration
+        GetOperadores();
+
+        //TRAE TODOS LOS MATERIALES
+        function GetOperadores() {
+            var servCallType = APIService.GetOperadores();
+            servCallType.then(function (u) {
+                console.log(u);
+                $scope.Operadores = u.data;
+            }, function (error) {
+                $scope.errorMessage = "Oops, something went wrong.";
+            });
+        };
+
+
+
         $scope.dtInstance = {};
-
-        $scope.dtColumns = [
-            DTColumnBuilder.newColumn('Nombre', 'Nombre').renderWith(renderTitle),
-            DTColumnBuilder.newColumn('Legajo', 'Legajo'),
-
-
-        ];
 
         $scope.dtOptions = DTOptionsBuilder
                     .newOptions()
                     .withLanguageSource('/js/angular-datatables-spanish.json')
-                    .withFnServerData(serverData)
-                    .withDataProp('data')
-                    .withOption('processing', true)
-                    .withOption('serverSide', true)
                     .withOption('paging', true)
-                    //.withOption('rowCallback', rowCallback)
                     .withPaginationType('full_numbers')
                     .withDisplayLength(20)
-                    .withOption('order', [0, 'asc']);
+                    .withOption('order', [1, 'asc']);
 
-        //Solr interface function
-        function serverData(sSource, aoData, fnCallback, oSettings) {
-
-            //sorting
-            var sortColumnIndex = aoData[2].value[0].column;
-            var sortDirection = aoData[2].value[0].dir;
-            var sortColumn = $scope.dtColumns[sortColumnIndex].mData;
-            var sort = sortColumn + " " + sortDirection;
-
-            //search text
-            //var q = '*';
-            //if ($scope.searchQuery != undefined && $scope.searchQuery != "") {
-            //    q = $scope.searchQuery;
-            //}
-
-           
-            //query execution
-            $http({
-                method: 'GET',
-                url: $rootScope.webapiurl + "api/PSSOperadores",
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(function (result) {
-
-                console.log(result);
-                var records = {
-                    'draw': result.data.draw,
-                    'recordsTotal': result.data.length,
-                    'recordsFiltered': result.data.length,
-                    'data': result.data
-                };
-                fnCallback(records);
-                $scope.total = result.data.length;
-            });
-        }
-
-        //datatables render name field
-        function renderTitle(data, type, full, meta) {
-            var css = "times-circle red";
-            if (full.Habilitado == true)
-                css = "check-circle blue";
-
-            var html = '<i class="fa fa-' + css + '"></i>';
-            html += '<a href="/#/blsp/operadores/crud/' + full.IdOperador + '"><strong>' + full.Nombre + ' ' + full.Apellido + '</strong></a>';
-            return html;
-        }
 
         //datatables render date field
         function renderDate(data, type, full, meta) {
@@ -117,7 +71,8 @@ angular
 
 
         $scope.doSearch = function () {
-            $scope.dtInstance.DataTable.search($scope.searchText).draw();
+            $scope.dtInstance.DataTable.search($scope.searchQuery).draw();
+
         }
 
     })

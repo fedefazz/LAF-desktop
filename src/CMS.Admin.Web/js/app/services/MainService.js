@@ -18,12 +18,22 @@ angular
             return $http.get($rootScope.webapiurl + "api/ServiceTypes/GetAllSolr?q=* AND IsDeleted:false AND IsEnabled:true&rows=50&sort=Name asc&no-pace", { cache: false })
         }
 
+
+        this.GetScrap = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSScraps")
+        }
+
+
         this.GetAreas = function () {
             return $http.get($rootScope.webapiurl + "api/PSSAreas")
         }
 
         this.GetMaquinas = function () {
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas")
+        }
+
+        this.GetOperadores = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSOperadores")
         }
 
         this.GetOrigenes = function () {
@@ -387,6 +397,22 @@ angular
 
             this.deleteOperador = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSOperadores?id=" + id)
+
+            }
+
+            this.deleteMaterial = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSTiposMaterials?id=" + id)
+
+            }
+
+            this.deleteMaquina = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSMaquinas?id=" + id)
+
+            }
+
+
+            this.deleteOrigen = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id)
 
             }
             //return $http({

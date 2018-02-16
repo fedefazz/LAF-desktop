@@ -2,25 +2,23 @@
 angular
     .module('app.controllers')
 
-    .controller('MaquinasController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
+    .controller('scrapController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
 
         //Display message if necessary
         AlertService.ShowAlert($scope);
+        GetScrap();
 
-
-        GetMaquinas();
-
-        //TRAE TODOS LAS MAQUINAS
-        function GetMaquinas() {
-            var servCallType = APIService.GetMaquinas();
+        //TRAE TODOS LOS ORIGENES
+        function GetScrap() {
+            var servCallType = APIService.GetScrap();
             servCallType.then(function (u) {
                 console.log(u);
-                $scope.Maquinas = u.data;
+                $scope.Scraps = u.data;
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
             });
         };
-      
+
 
 
         $scope.dtInstance = {};
@@ -35,24 +33,25 @@ angular
 
 
 
-
         //datatables render name field
-      
-
-        $scope.renderTitle = function (full) {
+        function renderTitle(data, type, full, meta) {
             var css = "times-circle red";
             if (full.Habilitado == true)
                 css = "check-circle blue";
 
-            var html = '<i class="fa fa-blue"></i>';
-            html += '<a href="/#/blsp/maquinas/crud/' + full.IDMaq + '"><strong>' + full.Descripcion + '</strong></a>';
+            var html = '<i class="fa fa-' + css + '"></i>';
+            html += '<a href="/#/blsp/origenScrap/crud/' + full.IDOrigen + '"><strong>' + full.Descripcion + '</strong></a>';
             return html;
         }
 
-     
+        //datatables render date field
+        function renderDate(data, type, full, meta) {
+            var html = $filter('date')(data, "d-MMM-yyyy");
+            return html;
+        }
 
         //datatables render Array Origenes
-        $scope.renderArrayOrigenes = function (full) {
+        function renderArrayOrigenes(data, type, full, meta) {
             var html = "<ul>";
             angular.forEach(full.PSSOrigenesScrap, function (value, key) {
 
@@ -66,7 +65,7 @@ angular
         }
 
         //datatables render Array Materiales
-        function renderArrayMateriales(full) {
+        function renderArrayMateriales(data, type, full, meta) {
             var html = "<ul>";
             angular.forEach(full.PSSTiposMaterial, function (value, key) {
 
@@ -82,6 +81,8 @@ angular
       
 
 
+
+
         $scope.doSearch = function () {
             $scope.dtInstance.DataTable.search($scope.searchQuery).draw();
 
@@ -89,50 +90,12 @@ angular
 
     })
 
-    .controller('MaquinasCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('origenScrapCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 
 
 
 
 
-
-
-
-        var CallAreas = APIService.GetAreas();
-        CallAreas.then(function (u) {
-            $scope.areas = u.data;
-            console.log($scope.areas);
-
-
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/maquinas/list";
-        });
-
-
-        var CallOrigenes = APIService.GetOrigenes();
-        CallOrigenes.then(function (u) {
-            $scope.origenes = u.data;
-            console.log("ORIGENES");
-
-            console.log($scope.origenes);
-
-
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/maquinas/list";
-        });
-
-        var CallTipos = APIService.GetTipos();
-        CallTipos.then(function (u) {
-            $scope.tipos = u.data;
-            console.log($scope.tipos);
-
-
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/maquinas/list";
-        });
 
 
 
@@ -149,8 +112,8 @@ angular
 
         //labels
         if (id) {
-            $scope.PageTitle = 'Editar Maquina';
-            $scope.SubmitButton = 'Actualizar Maquina';
+            $scope.PageTitle = 'Editar Origen Scrap';
+            $scope.SubmitButton = 'Actualizar Origen Scrap';
 
 
 
@@ -161,8 +124,8 @@ angular
 
 
         } else {
-            $scope.PageTitle = 'Crear Maquina';
-            $scope.SubmitButton = 'Crear Maquina';
+            $scope.PageTitle = 'Crear Origen Scrap';
+            $scope.SubmitButton = 'Crear Origen Scrap';
 
 
 
@@ -178,21 +141,22 @@ angular
 
         }
 
+
+
+
         //Gets category by Id for edit fields
         if (id) {
-            var servCall = APIService.GetMaquinaById(id);
+            var servCall = APIService.GetOrigenById(id);
             servCall.then(function (u) {
-                $scope.maquinaData = u.data;
-                delete $scope.maquinaData.$id;
-                console.log("DATA MAQUINA");
+                $scope.origenData = u.data;
+                delete $scope.origenData.$id;
 
-                console.log($scope.maquinaData);
+                console.log($scope.origenData);
 
-                //getLastestServices($scope.maquinaData.IDMaq);
                 
                 AlertService.ShowAlert($scope);
             }, function (error) {
-                $window.location.href = "/#/blsp/maquinas/list";
+                $window.location.href = "/#/blsp/origenScrap/list";
             });
         }
 
@@ -203,23 +167,23 @@ angular
             //$scope.clientData.IsEnabled = true;
             //$scope.clientData.CompanyId = 2;
 
-            var data = $.param($scope.maquinaData);
+            var data = $.param($scope.origenData);
             if (id) {
-                var servCall = APIService.updateMaquina(id, data);
+                var servCall = APIService.updateOrigen(id, data);
                 servCall.then(function (u) {
                     //Set and display message
-                    AlertService.SetAlert("La maquina fue actualizada con éxito", "success");
+                    AlertService.SetAlert("El Origen fue actualizado con éxito", "success");
                     AlertService.ShowAlert($scope);
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
             } else {
-                var servCall = APIService.createMaquina(data);
+                var servCall = APIService.createOrigen(data);
                 servCall.then(function (u) {
-                    var maquinaData = u.data;
+                    var origenData = u.data;
                     //Set message
-                    AlertService.SetAlert("La maquina fue creada con éxito", "success");
-                    $window.location.href = "/#/blsp/maquinas/crud/" + maquinaData.Id;
+                    AlertService.SetAlert("El Operario fue creado con éxito", "success");
+                    $window.location.href = "/#/blsp/origenScrap/crud/" + origenData.IDOrigen;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
@@ -227,13 +191,13 @@ angular
         }
 
         //Delete User
-        $scope.deleteMaquina = function (ev, id) {
+        $scope.deleteOrigen = function (ev, id) {
             //var custName = id;
 
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
-                  .title('Eliminar Maquina')
-                  .textContent('Esta seguro de eliminar esta Maquina?')
+                  .title('Eliminar Origen Scrap')
+                  .textContent('Esta seguro de eliminar este Origen de Scrap?')
                   .ariaLabel('Delete')
                   .targetEvent(ev)
                   .ok('Delete')
@@ -244,11 +208,11 @@ angular
                 var data = $.param({
                     id: id,
                 })
-                var servCall = APIService.deleteMaquina(id);
+                var servCall = APIService.deleteOrigen(id);
                 servCall.then(function (u) {
                     //Set message
-                    AlertService.SetAlert("La maquina ha sido eliminada con exito", "success");
-                    $window.location.href = "/#/blsp/maquinas/list";
+                    AlertService.SetAlert("El Origen de Scrap ha sido eliminado con exito", "success");
+                    $window.location.href = "/#/blsp/origenScrap/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 })

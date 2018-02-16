@@ -17,8 +17,33 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Listado de Maquinas</h4>
                     </div>
-                    <table class="table table-bordered dataTable" datatable="" dt-options="dtOptions" dt-columns="dtColumns" dt-instance="dtInstance"></table>
-                </div>
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Area</th>
+                                <th>Origenes Scrap</th>
+                                <th>Tipos de Material</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="maquina in Maquinas | orderBy:sortUser:sortReverse">
+                                <td class="capitalize"><a href="/#/blsp/maquinas/crud/{{maquina.IDMaq}}" class="title"><strong>{{maquina.Descripcion}}</strong></a></td>
+                                <td>{{maquina.PSSAreas.Descripcion}}</td>
+                                <td class="capitalize">
+                                <li class="listaTabla" ng-repeat="item in maquina.PSSOrigenesScrap">
+                                 {{item.Descripcion}}
+                                </li>
+                                </td>
+                                <td class="capitalize">
+                                <li class="listaTabla" ng-repeat="item in maquina.PSSTiposMaterial">
+                                {{item.Descripcion}}
+                                </li>
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>                    </div>
             </div>
             <div class="col-sm-12 col-md-4">
 
@@ -36,8 +61,9 @@
                         <h4 class="panel-title">Buscar</h4>
                     </div>
                     <div class="panel-body">
-                         <md-input-container md-no-float class="md-block md-no-error search">
-                            <input type="text" ng-model="searchQuery" placeholder="Buscar Maquina" ng-keydown="$event.keyCode === 13 && doSearch($event)" ng-blur="doSearch()">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <label>Buscar Maquina</label>
+                            <input type="text" ng-model="searchQuery" ng-change="doSearch()">
                         </md-input-container>
                     </div>
                 </div>

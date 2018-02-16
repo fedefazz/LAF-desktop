@@ -179,6 +179,27 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                 })
 
 
+         /*  Scrap */
+            .state('blsp.scrap', {
+                url: '/scrap',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.scrap.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Scrap' },
+                    templateUrl: 'pages/scrap/list.html'
+                })
+                .state('blsp.scrap.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Scrap CRUD' },
+                    templateUrl: 'pages/scrap/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
+
         /* Configuration */
             .state('blsp.config', {
                 url: '/config',

@@ -6,63 +6,32 @@ angular
         //reset local storage
         $localStorage.$reset();
 
-        //datatables configuration
-        $scope.dtInstance = {};
+        getUsers();
 
-        $scope.dtColumns = [
-            DTColumnBuilder.newColumn('FirstName', 'Nombre').renderWith(renderTitle),
-            DTColumnBuilder.newColumn('CreationDate', 'Fecha de Creación').renderWith(renderDate)
-        ];
+        //TRAE TODOS LOS USUARIOS
+        function getUsers() {
+            var servCallType = APIService.getUsers();
+            servCallType.then(function (u) {
+                console.log(u);
+                $scope.Usuarios = u.data;
+            }, function (error) {
+                $scope.errorMessage = "Oops, something went wrong.";
+            });
+        };
+
+
+
+        $scope.dtInstance = {};
 
         $scope.dtOptions = DTOptionsBuilder
                     .newOptions()
                     .withLanguageSource('/js/angular-datatables-spanish.json')
-                    .withFnServerData(serverData)
-                    .withDataProp('data')
-                    .withOption('processing', true)
-                    .withOption('serverSide', true)
                     .withOption('paging', true)
                     .withPaginationType('full_numbers')
                     .withDisplayLength(20)
-                    .withOption('order', [0, 'asc'])
+                    .withOption('order', [1, 'asc']);
 
-        //Solr interface function
-        function serverData(sSource, aoData, fnCallback, oSettings) {
 
-            //sorting
-            var sortColumnIndex = aoData[2].value[0].column;
-            var sortDirection = aoData[2].value[0].dir;
-            var sortColumn = $scope.dtColumns[sortColumnIndex].mData;
-            var sort = sortColumn + " " + sortDirection;
-
-            //search text
-            var q = '*';
-            if ($scope.searchQuery != undefined && $scope.searchQuery != "") {
-                q = $scope.searchQuery;
-            }
-
-            //query execution
-            $http({
-                method: 'GET',
-                url: $rootScope.webapiurl + "api/Users",
-                headers: {
-                    'Content-type': 'application/json'
-                }
-            })
-            .then(function (result) {
-                console.log("resultado");
-
-                console.log(result);
-                var records = {
-                    'draw': result.data.draw,
-                    'recordsTotal': result.data.length,
-                    'recordsFiltered': result.data.length,
-                    'data': result.data
-                };
-                fnCallback(records);
-                $scope.total = result.data.length;
-            });
-        }
 
         //datatables render name field
         function renderTitle(data, type, full, meta) {
@@ -82,12 +51,9 @@ angular
             return html;
         }
 
-        $scope.doSearch = function ($event) {
-            $scope.dtInstance.rerender();
-            if ($event != undefined) {
-                var target = $event.target;
-                target.blur();
-            }
+        $scope.doSearch = function () {
+            $scope.dtInstance.DataTable.search($scope.searchQuery).draw();
+
         }
     })
 
