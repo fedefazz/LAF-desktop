@@ -24,7 +24,8 @@
             'slugifier',
             'colorpicker.module',
             "isteven-multi-select",
-            "ngPrint"
+            "ngPrint",
+            "ngCsv"
 ]);
 
 app.run(function ($rootScope, $http, $window, $state, setting) {

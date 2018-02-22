@@ -20,6 +20,9 @@ angular
         };
 
 
+       
+
+
 
         $scope.dtInstance = {};
 
@@ -29,7 +32,9 @@ angular
                     .withOption('paging', true)
                     .withPaginationType('full_numbers')
                     .withDisplayLength(20)
-                    .withOption('order', [1, 'asc']);
+                    .withOption('order', [1, 'asc'])
+                   
+        
 
 
 

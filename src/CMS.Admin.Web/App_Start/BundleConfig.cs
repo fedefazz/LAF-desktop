@@ -13,7 +13,13 @@ namespace blsp.Admin.Web
                         "~/assets/plugins/jquery-cookie/jquery.cookie.js",
                         "~/js/jquery.dataTables.min.js",
                         "~/js/progressive-image.min.js",
-                        "~/assets/plugins/DataTables/media/js/dataTables.bootstrap.min.js"));
+                        "~/assets/plugins/DataTables/media/js/dataTables.bootstrap.min.js"
+                       
+
+
+
+
+                        ));
 
             bundles.Add(new ScriptBundle("~/bundles/angular").Include(
                     /* new theme */
@@ -110,13 +116,29 @@ namespace blsp.Admin.Web
                       "~/js/angular-datatables.min.js",
                       "~/js/multiselect-tpls.js",
                       "~/js/moment.min.js",
-                      "~/js/moment-with-locales.js"));
+                      "~/js/moment-with-locales.js",
+                      "~/js/ng-csv.js"
+
+
+                      ));
 
             bundles.Add(new ScriptBundle("~/bundles/site").Include(
                       "~/js/functions.js"));
 
             bundles.Add(new StyleBundle("~/styles/css").Include(
-                      "~/css/_include.css"));
+                      "~/css/_include.css",
+                      "~/DataTables/css/buttons.dataTables.css"
+
+
+
+
+
+                      )
+
+
+
+
+                      );
         }
     }
 }
