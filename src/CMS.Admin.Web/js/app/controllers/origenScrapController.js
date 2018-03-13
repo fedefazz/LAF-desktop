@@ -181,7 +181,7 @@ angular
                 servCall.then(function (u) {
                     var origenData = u.data;
                     //Set message
-                    AlertService.SetAlert("El Operario fue creado con éxito", "success");
+                    AlertService.SetAlert("El Origen de Scrap fue creado con éxito", "success");
                     $window.location.href = "/#/blsp/origenScrap/crud/" + origenData.IDOrigen;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";

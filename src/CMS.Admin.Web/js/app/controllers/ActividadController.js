@@ -2,7 +2,7 @@
 angular
     .module('app.controllers')
 
-    .controller('tipoMaterialController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
+    .controller('ActividadController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
 
         //Display message if necessary
         AlertService.ShowAlert($scope);
