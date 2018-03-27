@@ -8,14 +8,14 @@ angular
         AlertService.ShowAlert($scope);
 
 
-        GetTipos();
+        GetActividad();
 
         //TRAE TODOS LOS MATERIALES
-        function GetTipos() {
-            var servCallType = APIService.GetTipos();
+        function GetActividad() {
+            var servCallType = APIService.GetActividad();
             servCallType.then(function (u) {
                 console.log(u);
-                $scope.Materials = u.data;
+                $scope.Actividad = u.data;
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
             });
@@ -45,7 +45,7 @@ angular
                 css = "check-circle blue";
 
             var html = '<i class="fa fa-' + css + '"></i>';
-            html += '<a href="/#/blsp/tipoMaterial/crud/' + full.IDTipoMat + '"><strong>' + full.Descripcion + '</strong></a>';
+            html += '<a href="/#/blsp/tipoMaterial/crud/' + full.IdActividad + '"><strong>' + full.Descripcion + '</strong></a>';
             return html;
         }
 
@@ -93,7 +93,7 @@ angular
 
     })
 
-    .controller('tipoMaterialCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('ActividadCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 
 
 
@@ -110,8 +110,8 @@ angular
 
         //labels
         if (id) {
-            $scope.PageTitle = 'Editar Material';
-            $scope.SubmitButton = 'Actualizar Material';
+            $scope.PageTitle = 'Editar Actividad';
+            $scope.SubmitButton = 'Actualizar Actividad';
 
 
 
@@ -122,8 +122,8 @@ angular
 
 
         } else {
-            $scope.PageTitle = 'Crear Material';
-            $scope.SubmitButton = 'Crear Material';
+            $scope.PageTitle = 'Crear Actividad';
+            $scope.SubmitButton = 'Crear Actividad';
 
 
 
@@ -147,17 +147,17 @@ angular
 
         //Gets category by Id for edit fields
         if (id) {
-            var servCall = APIService.GetMaterialById(id);
+            var servCall = APIService.GetActividadById(id);
             servCall.then(function (u) {
-                $scope.materialData = u.data;
-                delete $scope.materialData.$id;
+                $scope.actividadData = u.data;
+                delete $scope.actividadData.$id;
 
-                console.log($scope.materialData);
+                console.log($scope.actividadData);
 
 
                 AlertService.ShowAlert($scope);
             }, function (error) {
-                $window.location.href = "/#/blsp/tipoMaterial/list";
+                $window.location.href = "/#/blsp/actividades/list";
             });
         }
 
@@ -173,23 +173,24 @@ angular
             //$scope.clientData.IsEnabled = true;
             //$scope.clientData.CompanyId = 2;
 
-            var data = $.param($scope.materialData);
+            var data = $.param($scope.actividadData);
             if (id) {
-                var servCall = APIService.updateMaterial(id, data);
+                var servCall = APIService.updateActividad(id, data);
                 servCall.then(function (u) {
                     //Set and display message
-                    AlertService.SetAlert("El material fue actualizado con éxito", "success");
+                    AlertService.SetAlert("La actividad fue actualizada con éxito", "success");
                     AlertService.ShowAlert($scope);
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
             } else {
-                var servCall = APIService.createMaterial(data);
+                var servCall = APIService.createActividad(data);
                 servCall.then(function (u) {
-                    var materialData = u.data;
+                    var actividadData = u.data;
                     //Set message
-                    AlertService.SetAlert("El material fue creado con éxito", "success");
-                    $window.location.href = "/#/blsp/tipoMaterial/crud/" + materialData.IDTipoMat;
+                    AlertService.SetAlert("La actividad fue creada con éxito", "success");
+                    alert("algo");
+                    $window.location.href = "/#/blsp/actividades/crud/" + actividadData.IdActividad;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
@@ -197,13 +198,13 @@ angular
         }
 
         //Delete User
-        $scope.deleteMaterial = function (ev, id) {
+        $scope.deleteActividad = function (ev, id) {
             //var custName = id;
 
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
-                  .title('Eliminar Material')
-                  .textContent('Esta seguro de eliminar este tipo de material?')
+                  .title('Eliminar Actividad')
+                  .textContent('Esta seguro de eliminar esta actividad?')
                   .ariaLabel('Delete')
                   .targetEvent(ev)
                   .ok('Delete')
@@ -214,11 +215,11 @@ angular
                 var data = $.param({
                     id: id,
                 })
-                var servCall = APIService.deleteMaterial(id);
+                var servCall = APIService.deleteActividad(id);
                 servCall.then(function (u) {
                     //Set message
-                    AlertService.SetAlert("El Material ha sido eliminado con exito", "success");
-                    $window.location.href = "/#/blsp/tipoMaterial/list";
+                    AlertService.SetAlert("La actividad ha sido eliminada con exito", "success");
+                    $window.location.href = "/#/blsp/actividades/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 })

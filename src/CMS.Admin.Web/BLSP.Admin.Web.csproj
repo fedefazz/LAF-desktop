@@ -5456,8 +5456,8 @@
     <Content Include="pages\origenScrap\list.html" />
     <Content Include="pages\scrap\crud.html" />
     <Content Include="pages\scrap\list.html" />
-    <Content Include="pages\actividad\crud.html" />
-    <Content Include="pages\actividad\list.html" />
+    <Content Include="pages\actividades\crud.html" />
+    <Content Include="pages\actividades\list.html" />
     <Content Include="pages\tipoMaterial\crud.html" />
     <Content Include="pages\tipoMaterial\list.html" />
     <Content Include="pages\operadores\crud.html" />

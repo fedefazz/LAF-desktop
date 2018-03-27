@@ -4,7 +4,7 @@
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
                     <li><a href="/#/blsp/dashboard">Home</a></li>
-                    <li><a ui-sref="blsp.tipoMaterial.list">Actividad</a></li>
+                    <li><a ui-sref="blsp.actividades.list">Actividad</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}}<small></small></h1>
@@ -58,8 +58,8 @@
                         </div>
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
-                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteMaterial($event, materialData.IDTipoMat);" ng-show="materialData.IDTipoMat">Borrar Material</button>
-                            <a class="btn btn-block btn-default" ui-sref="blsp.tipoMaterial.list">Volver</a>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteActividad($event, actividadData.IdActividad);" ng-show="actividadData.IdActividad">Borrar Actividad</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.actividades.list">Volver</a>
                         </div>
                     </div>
 

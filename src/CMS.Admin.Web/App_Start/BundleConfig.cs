@@ -55,7 +55,7 @@ namespace blsp.Admin.Web
                         "~/js/app/controllers/MainController.js",
                         "~/js/app/controllers/ServiceController.js",
                          "~/js/app/controllers/ModalDemoController.js",
-
+                          "~/js/app/controllers/ActividadController.js",
                         "~/js/app/controllers/DashboardController.js",
                         "~/js/app/controllers/UserController.js",
                         //"~/js/app/controllers/NewsController.js",

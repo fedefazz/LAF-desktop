@@ -70,7 +70,16 @@
                 </ul>
             </li>
 
-
+            <li class="has-sub" ng-class="{active:$state.includes('blsp.actividades')}">
+                <a href="javascript:;">
+                    <b class="caret pull-right"></b>
+                    <i class="fa fa-cart-plus"></i>
+                    <span>Actividades</span>
+                </a>
+                <ul class="sub-menu">
+                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.actividades')}"><a ui-sref="blsp.actividades.list">Actividades</a></li>
+                </ul>
+            </li>
 
 
             <li class="has-sub" ng-class="{active:$state.includes('blsp.users')}">

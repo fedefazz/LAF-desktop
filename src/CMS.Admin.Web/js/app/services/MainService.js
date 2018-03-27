@@ -40,12 +40,20 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSOrigenesScraps")
         }
 
+        this.GetActividad = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSActividades")
+        }
+
         this.GetTipos = function () {
             return $http.get($rootScope.webapiurl + "api/PSSTiposMaterials")
         }
 
         this.GetMaquinaById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas?id=" + id + "&no-pace")
+        }
+
+        this.GetActividadById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSActividades?id=" + id + "&no-pace")
         }
 
         this.GetOperadorById = function (id) {
@@ -234,6 +242,10 @@ angular
             return $http.put($rootScope.webapiurl + "api/PSSTiposMaterials?id=" + id, data)
         }
 
+        this.updateActividad = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSActividades?id=" + id, data)
+        }
+
         this.updateOrigen = function (id, data) {
             return $http.put($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id, data)
         }
@@ -325,6 +337,10 @@ angular
             return $http.post($rootScope.webapiurl + "api/PSSTiposMaterials", data)
         }
 
+        this.createActividad = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSActividades", data)
+        }
+
         this.createVehicle = function (data) {
             return $http.post($rootScope.webapiurl + "api/Vehicles", data)
         }
@@ -404,6 +420,12 @@ angular
                 return $http.delete($rootScope.webapiurl + "api/PSSTiposMaterials?id=" + id)
 
             }
+
+            this.deleteActividad = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSActividades?id=" + id)
+
+            }
+
 
             this.deleteMaquina = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSMaquinas?id=" + id)

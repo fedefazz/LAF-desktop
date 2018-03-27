@@ -135,7 +135,17 @@ angular
         });
 
 
+        var CallActividad = APIService.GetActividad();
+        CallActividad.then(function (u) {
+            $scope.actividades = u.data;
+            console.log("ACTIVIDADES");
+            console.log($scope.actividades);
 
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/maquinas/list";
+        });
 
 
 

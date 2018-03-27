@@ -25,9 +25,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="material in Materials | orderBy:sortUser:sortReverse | filter:searchMaterial">
-                                <td class="capitalize"><a href="/#/blsp/actividad/crud/{{material.IDTipoMat}}" class="title"><strong>{{material.Descripcion}}</strong></a></td>
-                                <td>{{material.IDTipoMat}}</td>
+                            <tr ng-repeat="actividad in Actividad | orderBy:sortUser:sortReverse | filter:searchActividad">
+                                <td class="capitalize"><a href="/#/blsp/actividades/crud/{{actividad.IdActividad}}" class="title"><strong>{{actividad.Descripcion}}</strong></a></td>
+                                <td>{{actividad.IdActividad}}</td>
                             </tr>
                         </tbody>
                     </table>                </div>
@@ -39,7 +39,7 @@
                         <h4 class="panel-title">Acciones</h4>
                     </div>
                     <div class="panel-body">
-                        <a class="btn btn-block btn-primary" ui-sref="blsp.tipoMaterial.crud">Nuevoa Actvidad</a>
+                        <a class="btn btn-block btn-primary" ui-sref="blsp.actividades.crud">Nueva Actividad</a>
                     </div>
                 </div>
 

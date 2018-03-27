@@ -179,6 +179,26 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
+         /* Origen de Scrap */
+            .state('blsp.actividades', {
+                url: '/actividades',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.actividades.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Actividades' },
+                    templateUrl: 'pages/actividades/list.html'
+                })
+                .state('blsp.actividades.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Actividades CRUD' },
+                    templateUrl: 'pages/actividades/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
 
          /*  Scrap */
             .state('blsp.scrap', {
