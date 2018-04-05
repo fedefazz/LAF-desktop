@@ -6571,6 +6571,7 @@
     <Content Include="DataTables\vendor\jquery\README.md" />
     <Content Include="DataTables\vendor\jquery\src\.eslintrc.json" />
     <None Include="Properties\PublishProfiles\Amazon LAF Front Api.pubxml" />
+    <None Include="Properties\PublishProfiles\AWS Desktop.pubxml" />
     <None Include="Properties\PublishProfiles\CMS-BACKEND.pubxml" />
     <Content Include="Views\Login\ConfirmUserRequestSuccess.cshtml" />
     <Content Include="Views\Login\ResetPasswordSuccess.cshtml" />
