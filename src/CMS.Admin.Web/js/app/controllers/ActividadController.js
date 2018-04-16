@@ -189,7 +189,6 @@ angular
                     var actividadData = u.data;
                     //Set message
                     AlertService.SetAlert("La actividad fue creada con éxito", "success");
-                    alert("algo");
                     $window.location.href = "/#/blsp/actividades/crud/" + actividadData.IdActividad;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";

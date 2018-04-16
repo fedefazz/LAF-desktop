@@ -147,7 +147,17 @@ angular
             $window.location.href = "/#/blsp/maquinas/list";
         });
 
+        var CallOperadores = APIService.GetOperadores();
+        CallOperadores.then(function (u) {
+            $scope.operadores = u.data;
+            console.log("OPERADORES");
+            console.log($scope.operadores);
 
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/maquinas/list";
+        });
 
         var id = $stateParams.id;
 

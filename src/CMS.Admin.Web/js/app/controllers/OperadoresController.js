@@ -168,41 +168,6 @@ angular
 
 
 
-        var CallMaquinas = APIService.GetMaquinas();
-        CallMaquinas.then(function (u) {
-            $scope.maquinas = u.data;
-            console.log("MAQUINAS");
-
-            console.log($scope.maquinas);
-
-
-            AlertService.ShowAlert($scope);
-        }, function (error) {
-            $window.location.href = "/#/blsp/operadores/list";
-        });
-
-
-
-
-
-
-        //Gets category by Id for edit fields
-            var servCall1 = APIService.GetMaquinas();
-            servCall1.then(function (u) {
-                $scope.maquinaData = u.data;
-                delete $scope.maquinaData.$id;
-                console.log("maquinola");
-
-                console.log($scope.maquinaData);
-
-
-                AlertService.ShowAlert($scope);
-            }, function (error) {
-                $window.location.href = "/#/blsp/maquinas/list";
-            });
-
-
-
 
 
 
@@ -258,7 +223,7 @@ angular
 
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
-                  .title('Eliminar Maquina')
+                  .title('Eliminar Operador')
                   .textContent('Esta seguro de eliminar este Operador?')
                   .ariaLabel('Delete')
                   .targetEvent(ev)

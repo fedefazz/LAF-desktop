@@ -69,53 +69,65 @@
 
 
                             </div>
-                                <div layout-gt-xs="row">
+                            <div layout-gt-xs="row">
 
 
-                                    <md-input-container class="md-block col-md-4" flex-gt-xs>
-                                        <label>Origenes de Scrap</label>
-                                        <md-select ng-model="maquinaData.PSSOrigenesScrap" name="Origenes" multiple="true" required ng-model-options="{trackBy: '$value.IDOrigen' }">
-                                            <md-option ng-value="origen" ng-repeat="origen in origenes track by origen.IDOrigen">{{ origen.Descripcion }}</md-option>
-                                        </md-select>
-                                        <div ng-messages="newUserForm.Roles.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
-
-
-
+                                <md-input-container class="md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Origenes de Scrap</label>
+                                    <md-select ng-model="maquinaData.PSSOrigenesScrap" name="Origenes" multiple="true" required ng-model-options="{trackBy: '$value.IDOrigen' }">
+                                        <md-option ng-value="origen" ng-repeat="origen in origenes track by origen.IDOrigen">{{ origen.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
 
 
 
 
 
 
-                                    <md-input-container class="md-block col-md-4" flex-gt-xs>
-                                        <label>Tipos Materiales</label>
-                                        <md-select ng-model="maquinaData.PSSTiposMaterial" name="TiposMaterial" multiple="true" required ng-model-options="{trackBy: '$value.IDTipoMat' }">
-                                            <md-option ng-value="tipo" ng-repeat="tipo in tipos track by tipo.IDTipoMat">{{ tipo.Descripcion }}</md-option>
-                                        </md-select>
-                                        <div ng-messages="newUserForm.Roles.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
 
 
 
+                                <md-input-container class="md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Tipos Materiales</label>
+                                    <md-select ng-model="maquinaData.PSSTiposMaterial" name="TiposMaterial" multiple="true" required ng-model-options="{trackBy: '$value.IDTipoMat' }">
+                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos track by tipo.IDTipoMat">{{ tipo.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
 
-                                    <md-input-container class="md-block col-md-4" flex-gt-xs>
-                                        <label>Actividad</label>
-                                        <md-select ng-model="maquinaData.PSSActividades" name="Actividad" multiple="true" required ng-model-options="{trackBy: '$value.IdActividad' }">
-                                            <md-option ng-value="actividad" ng-repeat="actividad in actividades track by actividad.IdActividad">{{ actividad.Descripcion }}</md-option>
-                                        </md-select>
-                                        <div ng-messages="newUserForm.Roles.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+
+
+                                <md-input-container class="md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Actividad</label>
+                                    <md-select ng-model="maquinaData.PSSActividades" name="Actividad" multiple="true" required ng-model-options="{trackBy: '$value.IdActividad' }">
+                                        <md-option ng-value="actividad" ng-repeat="actividad in actividades track by actividad.IdActividad">{{ actividad.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
 
 
 
-                                </div>
+                                <md-input-container class="md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Operadores de esta Maquina</label>
+                                    <md-select ng-model="maquinaData.PSSOperadores" name="Operadores" multiple="true" ng-model-options="{trackBy: '$value.IdOperador' }">
+                                        <md-option ng-value="operador" ng-repeat="operador in operadores track by operador.IdOperador">{{ operador.Nombre }}, {{ operador.Apellido }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                            </div>
 
 
 
