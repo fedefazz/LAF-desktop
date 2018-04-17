@@ -93,7 +93,64 @@ angular
 
         }
 
+
+
+        //Start*To Export SearchTable data in excel  
+        // create XLS template with your field.  
+        var mystyle = {
+            headers: true,
+            columns: [
+              { columnid: 'FechaRegistro', title: 'FechaRegistro' },
+              { columnid: 'Maquina', title: 'Maquina' },
+              { columnid: 'Material', title: 'Material' },
+              { columnid: 'NumOP', title: 'NumOP' },
+              { columnid: 'Operador', title: 'Operador' },
+              { columnid: 'Origen', title: 'Origen' },
+              { columnid: 'Peso', title: 'Peso' },
+              { columnid: 'Observaciones', title: 'Observaciones' },
+            ],
+        };
+
+
+        // function to use on ng-click.  
+        //$scope.searchCaseResult is your json data which cominmg from database or Controller.  
+        $scope.exportData = function () {
+
+            //get current system date.         
+            var date = new Date();
+            $scope.CurrentDateTime = $filter('date')(new Date().getTime(), 'MM/dd/yyyy HH:mm:ss');
+            //To convert Date[mm/dd/yyyy] from jsonDate "/Date(1355287447277)/"  
+            //for (var i = 0; i < $scope.Scraps.length; i++) {
+            //    $scope.Scraps[i].DocCreatedDate;
+            //    var dateString = $scope.Scraps[i].DocCreatedDate.substr(6);
+            //    var currentTime = new Date(parseInt(dateString));
+            //    var month = currentTime.getMonth() + 1;
+            //    var day = currentTime.getDate();
+            //    var year = currentTime.getFullYear();
+            //    var date = month + "/" + day + "/" + year;
+            //    $scope.Scraps[i].DocCreatedDate = date;
+            //}
+            //Create XLS format using alasql.js file.  
+            alasql('SELECT * INTO XLS("SCRAP' + $scope.CurrentDateTime + '.xls",?) FROM ?', [mystyle, $scope.Scraps]);
+        };
+        //End*To Export SearchTable data in excel  
+
+
+
+
+
     })
+
+
+
+
+
+
+
+
+
+
+
 
     .controller('origenScrapCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 

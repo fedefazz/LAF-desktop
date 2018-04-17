@@ -35,7 +35,9 @@
                         <h4 class="panel-title">Scrap</h4>
                     </div>
 
-                    <button style="position: absolute;top: 4px;right: 18px;" type="button" class="btn btn-default" ng-csv="Scraps" csv-header="['Id', 'Fecha', 'OP', 'Maquina', 'Operador', 'Mat', 'Origen', 'Peso', 'Observaciones', 'Fecha de Registro']" filename="Scrap.csv" charset="utf-8"><span class="glyphicon glyphicon-download-alt">&nbsp;</span>Descargar CSV</button>
+                    <!--<button style="position: absolute;top: 4px;right: 18px;" type="button" class="btn btn-default" ng-csv="Scraps" csv-header="['Id', 'Fecha', 'OP', 'Maquina', 'Operador', 'Mat', 'Origen', 'Peso', 'Observaciones', 'Fecha de Registro']" filename="Scrap.csv" charset="utf-8"><span class="glyphicon glyphicon-download-alt">&nbsp;</span>Descargar CSV</button>-->
+
+                    <button type="submit" style="position: absolute;top: 4px;right: 18px;" ng-click="exportData()" data-ng-disabled="!Scraps.length" class="btn btn-primary pull-right">Descargar XLS</button>  
 
                     <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
                         <thead>

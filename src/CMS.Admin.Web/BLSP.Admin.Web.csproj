@@ -5412,6 +5412,7 @@
     <Content Include="images\bg.jpg" />
     <Content Include="images\logo-short.png" />
     <Content Include="images\logo.png" />
+    <Content Include="js\alasql.js" />
     <Content Include="js\angular-drag-and-drop-lists.js" />
     <Content Include="js\angular-drag-and-drop-lists.min.js" />
     <Content Include="js\angular-image-cropper.js" />

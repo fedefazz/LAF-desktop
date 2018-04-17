@@ -104,7 +104,9 @@ namespace blsp.Admin.Web
                         "~/js/angular-locale_es-ar.js",
                         "~/js/angular-slugify.js",
                         "~/js/bootstrap-colorpicker-module.js",
-                        "~/js/ngPrint.min.js"
+                        "~/js/ngPrint.min.js",
+                        "~/js/alasql.js"
+
                       ));
 
 
