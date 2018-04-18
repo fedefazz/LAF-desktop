@@ -100,12 +100,15 @@ angular
         var mystyle = {
             headers: true,
             columns: [
-              { columnid: 'FechaRegistro', title: 'FechaRegistro' },
-              { columnid: 'Maquina', title: 'Maquina' },
-              { columnid: 'Material', title: 'Material' },
+
+                
+              { columnid: 'IdRegScrap', title: 'IdRegScrap' },
+              { columnid: 'Fecha', title: 'Fecha' },
               { columnid: 'NumOP', title: 'NumOP' },
+              { columnid: 'Maquina', title: 'Maquina' },
               { columnid: 'Operador', title: 'Operador' },
-              { columnid: 'Origen', title: 'Origen' },
+              { columnid: 'Material', title: 'TIpo Material' },
+              { columnid: 'Origen', title: 'Origen Scrap' },
               { columnid: 'Peso', title: 'Peso' },
               { columnid: 'Observaciones', title: 'Observaciones' },
             ],
@@ -130,8 +133,19 @@ angular
             //    var date = month + "/" + day + "/" + year;
             //    $scope.Scraps[i].DocCreatedDate = date;
             //}
+
+            for (var i = 0; i < $scope.Scraps.length; i++) {
+
+
+                $scope.Scraps[i].Fecha = moment($scope.Scraps[i].Fecha).format('DD/MM/YYYY HH:mm:ss');
+
+
+            }
+
+
+
             //Create XLS format using alasql.js file.  
-            alasql('SELECT * INTO XLS("SCRAP' + $scope.CurrentDateTime + '.xls",?) FROM ?', [mystyle, $scope.Scraps]);
+            alasql('SELECT * INTO XLSX("SCRAP' + $scope.CurrentDateTime + '.xlsx",?) FROM ?', [mystyle, $scope.Scraps]);
         };
         //End*To Export SearchTable data in excel  
 
@@ -191,16 +205,6 @@ angular
 
 
 
-
-
-
-        
-
-
-
-
-
-
         }
 
 
@@ -244,7 +248,7 @@ angular
                 servCall.then(function (u) {
                     var origenData = u.data;
                     //Set message
-                    AlertService.SetAlert("El Operario fue creado con éxito", "success");
+                    AlertService.SetAlert("El Origen fue creado con éxito", "success");
                     $window.location.href = "/#/blsp/origenScrap/crud/" + origenData.IDOrigen;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";

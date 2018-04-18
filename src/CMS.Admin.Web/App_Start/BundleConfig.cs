@@ -105,7 +105,9 @@ namespace blsp.Admin.Web
                         "~/js/angular-slugify.js",
                         "~/js/bootstrap-colorpicker-module.js",
                         "~/js/ngPrint.min.js",
-                        "~/js/alasql.js"
+                        "~/js/alasql.js",
+                        "~/js/xlsx.core.min.js"
+
 
                       ));
 
