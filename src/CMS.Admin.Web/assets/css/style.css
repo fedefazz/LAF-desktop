@@ -218,7 +218,15 @@ Website: http://www.seantheme.com/color-admin-v1.9/admin/
 
 }
 
+.cont-maquinas {
 
+    margin-left:10px !important;
+    margin-right:0px !important;
+    min-width:50% !important;
+    padding-left:0px !important;
+    padding-right:0px !important;
+
+}
 
 
 .slotHeader 

@@ -52,6 +52,11 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas?id=" + id + "&no-pace")
         }
 
+        this.GetMaquinaByOperador = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSMaquinas/GetPSSMaquinasPorOperador?id=" + id + "&no-pace")
+        }
+
+
         this.GetActividadById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSActividades?id=" + id + "&no-pace")
         }

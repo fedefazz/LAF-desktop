@@ -6,18 +6,36 @@ angular
     .module('app.controllers')
 
     .controller('headerController', function ($scope, APIService, $window, $rootScope) {
-        $rootScope.ProfileImagePath = "/images/placeholders/user.png";
+        //$rootScope.ProfileImagePath = "/images/placeholders/user.png";
 
         //Get Current User
         var servCall = APIService.getProfileInfo();
         servCall.then(function (u) {
-            $scope.currentUser = u.data;
-            
+            $scope._currentUser = u.data;
+
+
+            var servCallUser = APIService.getUserById($scope._currentUser.Id);
+            servCallUser.then(function (e) {
+                $scope.currentUser = e.data;
+                console.log("USER");
+
+                console.log($scope.currentUser);
+           
+
+
             if ($scope.currentUser.ProfileImagePath) {
+                console.log("IMAGEN");
+                console.log($scope.currentUser.ProfileImagePath);
                 $rootScope.ProfileImagePath = $rootScope.mediaurl + $scope.currentUser.ProfileImagePath;
             } else {
                 $rootScope.ProfileImagePath = "/images/placeholders/user.png";
             }
+            }, function (error) {
+                //$window.location.href = "/Login/LogOut";
+                //
+
+                $scope.errorMessage = "Oops, something went wrong.";
+            })
 
         }, function (error) {
             //$window.location.href = "/Login/LogOut";

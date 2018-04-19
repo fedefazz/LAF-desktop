@@ -14,6 +14,10 @@ angular
             servCallType.then(function (u) {
                 console.log(u);
                 $scope.Scraps = u.data;
+                for (var i = 0; i < $scope.Scraps.length; i++) {
+                $scope.Scraps[i].Fecha = moment($scope.Scraps[i].Fecha).format('DD/MM/YYYY HH:mm:ss');
+                }
+
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
             });
@@ -134,18 +138,18 @@ angular
             //    $scope.Scraps[i].DocCreatedDate = date;
             //}
 
-            for (var i = 0; i < $scope.Scraps.length; i++) {
+            //for (var i = 0; i < $scope.Scraps.length; i++) {
 
 
-                $scope.Scraps[i].Fecha = moment($scope.Scraps[i].Fecha).format('DD/MM/YYYY HH:mm:ss');
+            //    $scope.Scraps[i].Fecha = moment($scope.Scraps[i].Fecha).format('dd/MM/yyyy HH:mm:ss');
 
 
-            }
+            //}
 
 
 
             //Create XLS format using alasql.js file.  
-            alasql('SELECT * INTO XLSX("SCRAP' + $scope.CurrentDateTime + '.xlsx",?) FROM ?', [mystyle, $scope.Scraps]);
+            alasql('SELECT IdRegScrap,Fecha,NumOP,Maquina,Operador,Material,Origen,Peso,Observaciones INTO XLSX("SCRAP' + $scope.CurrentDateTime + '.xlsx",?) FROM ?', [mystyle, $scope.Scraps]);
         };
         //End*To Export SearchTable data in excel  
 

@@ -111,16 +111,7 @@ angular
         //    $window.location.href = "/#/blsp/maquinas/list";
         //});
 
-        //var CallTipos = APIService.GetTipos();
-        //CallTipos.then(function (u) {
-        //    $scope.tipos = u.data;
-        //    console.log($scope.tipos);
-
-
-        //    AlertService.ShowAlert($scope);
-        //}, function (error) {
-        //    $window.location.href = "/#/blsp/maquinas/list";
-        //});
+       
 
 
 
@@ -186,6 +177,19 @@ angular
                 $window.location.href = "/#/blsp/operadores/list";
             });
         }
+
+
+        var CallMaquinas = APIService.GetMaquinaByOperador(id);
+        CallMaquinas.then(function (u) {
+            $scope.maquinas = u.data;
+            console.log($scope.maquinas);
+
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/operadores/list";
+        });
+
 
 
         //User update

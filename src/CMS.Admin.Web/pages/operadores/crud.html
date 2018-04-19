@@ -61,6 +61,39 @@
                     </div>
 
                    
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Maquinas que puede Operar</h4>
+                        </div>
+                        <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Area</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="maquina in maquinas">
+                                    <td class="capitalize"><a href="/#/blsp/maquinas/crud/{{maquina.IDMaq}}" class="title"><strong>{{maquina.Descripcion}}</strong></a></td>
+                                    <td>{{maquina.PSSAreas.Descripcion}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
                 <div class="col-sm-12 col-md-4">
                     <div class="panel panel-inverse">
@@ -77,6 +110,11 @@
                    
                 </div>
             </form>
-        </div>   
+        </div>  
     </div>
+
+
+   
+
+
 </div>
