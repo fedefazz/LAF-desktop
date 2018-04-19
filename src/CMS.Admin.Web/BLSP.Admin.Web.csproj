@@ -5449,6 +5449,7 @@
     <Content Include="js\ngPrint.min.css" />
     <Content Include="js\ngPrint.min.js" />
     <Content Include="js\services\csv-service.js" />
+    <Content Include="js\xlsx.core.min.js" />
     <Content Include="Mail\Templates\ConfirmUserRequestEmailTemplate.html" />
     <Content Include="Mail\Templates\CreateUserRequestEmailTemplate.html" />
     <Content Include="Mail\Templates\ForgotPasswordConfirmationEmailTemplate.html" />

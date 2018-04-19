@@ -6,7 +6,7 @@ angular
     .module('app.controllers')
 
     .controller('headerController', function ($scope, APIService, $window, $rootScope) {
-        //$rootScope.ProfileImagePath = "/images/placeholders/user.png";
+        $rootScope.ProfileImagePath = "/images/placeholders/user.png";
 
         //Get Current User
         var servCall = APIService.getProfileInfo();
