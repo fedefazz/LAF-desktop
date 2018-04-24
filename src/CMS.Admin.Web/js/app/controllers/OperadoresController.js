@@ -176,7 +176,7 @@ angular
             }, function (error) {
                 $window.location.href = "/#/blsp/operadores/list";
             });
-        }
+        
 
 
         var CallMaquinas = APIService.GetMaquinaByOperador(id);
@@ -190,7 +190,7 @@ angular
             $window.location.href = "/#/blsp/operadores/list";
         });
 
-
+       }
 
         //User update
         $scope.processForm = function () {
