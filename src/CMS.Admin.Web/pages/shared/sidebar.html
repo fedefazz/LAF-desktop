@@ -8,89 +8,94 @@
                 <a ui-sref="blsp.dashboard" title="Dashboard"><i class="fa fa-clock-o"></i><span>Dashboard</span></a>
             </li>
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.scrap')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-trash-o"></i>
-                    <span>Scrap</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.scrap')}"><a ui-sref="blsp.scrap.list">Scrap</a></li>
-                </ul>
+
+            <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+
+                Scrap Manager
+
+            </li>
+
+            <li ng-class="{active:$state.includes('blsp.scrap')}">
+               
+                <a ui-sref="blsp.scrap.list" title="Scrap"><i class="fa fa-trash-o"></i><span>Listado Scrap</span></a>
+
             </li>
 
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.maquinas')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-building-o"></i>
-                    <span>Maquinas</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.maquinas')}"><a ui-sref="blsp.maquinas.list">Maquinas</a></li>
-                </ul>
+
+            <li ng-class="{active:$state.includes('blsp.origenScrap')}">
+
+
+                <a ui-sref="blsp.origenScrap.list" title="Origen Scrap"><i class="fa fa-lightbulb-o"></i><span>Origen Scrap</span></a>
+
+
+            </li>
+
+            <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+
+                Equipamiento
+
             </li>
 
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.operadores')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-users"></i>
-                    <span>Operarios</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.operadores')}"><a ui-sref="blsp.operadores.list">Operarios</a></li>
-                </ul>
+            <li ng-class="{active:$state.includes('blsp.maquinas')}">
+               
+                <a ui-sref="blsp.maquinas.list" title="Maquinas"><i class="fa fa-building-o"></i><span>Maquinas</span></a>
+
             </li>
+
+
+            
 
 
 
             <li class="has-sub" ng-class="{active:$state.includes('blsp.tipoMaterial')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-list"></i>
-                    <span>Material</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.tipoMaterial')}"><a ui-sref="blsp.tipoMaterial.list">Tipo de Material</a></li>
-                </ul>
+               
+                <a ui-sref="blsp.tipoMaterial.list" title="Tipo de Material"><i class="fa fa-list-ul"></i><span>Tipo de Material</span></a>
+
+
+
             </li>
 
            
 
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.origenScrap')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-cart-plus"></i>
-                    <span>Origen de Scrap</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.origenScrap')}"><a ui-sref="blsp.origenScrap.list">Origen de Scrap</a></li>
-                </ul>
+            <li class="has-sub" ng-class="{active:$state.includes('blsp.JobTrack')}">
+               
+                <a ui-sref="blsp.JobTrack.list" title="JobTrack"><i class="fa fa-floppy-o"></i><span>JobTrack</span></a>
+
+
+
+               
             </li>
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.actividades')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-cart-plus"></i>
-                    <span>Actividades</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.actividades')}"><a ui-sref="blsp.actividades.list">Actividades</a></li>
-                </ul>
+            <li  ng-class="{active:$state.includes('blsp.actividades')}">
+                
+                <a ui-sref="blsp.actividades.list" title="Actividades"><i class="fa fa-cart-plus"></i><span>Actividades</span></a>
+
+
             </li>
 
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.users')}">
-                <a href="javascript:;">
-                    <b class="caret pull-right"></b>
-                    <i class="fa fa-users"></i>
-                    <span>Usuarios</span>
-                </a>
-                <ul class="sub-menu">
-                    <li ui-sref-active="active" ng-class="{active:$state.includes('blsp.users')}"><a ui-sref="blsp.users.list">Usuarios</a></li>
-                </ul>
+            <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+
+                Personal
+
+            </li>
+
+            <li ng-class="{active:$state.includes('blsp.operadores')}">
+               
+
+                <a ui-sref="blsp.operadores.list" title="Operarios"><i class="fa fa-users"></i><span>Operarios</span></a>
+
+            </li>
+
+
+            <li ng-class="{active:$state.includes('blsp.users')}">
+               
+                <a ui-sref="blsp.users.list" title="Usuarios"><i class="fa fa-user-o"></i><span>Usuarios</span></a>
+
+
             </li>
 
             <li class="toggle"><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-arrow-left"></i></a></li>

@@ -47,23 +47,15 @@
                              </div>
                             <div layout-gt-xs="row">
 
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Job Track</label>
-                                    <input type="text" ng-model="maquinaData.JobTrack" name="JobTrack" required />
-                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>JobTrack</label>
+                                    <md-select ng-model="maquinaData.PSSJobTrack" name="JobTrack" multiple="true" required ng-model-options="{trackBy: '$value.IDJobTrack' }">
+                                        <md-option ng-value="jobtrack" ng-repeat="jobtrack in jobtrack track by jobtrack.IDJobTrack">{{ jobtrack.Descripcion }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
-
-
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Codigo de Recurso</label>
-                                    <input type="text" ng-model="maquinaData.Recurso" name="Recurso" required />
-                                    <div ng-messages="editAuthorForm.FirstName.$error">
-                                        <div ng-messages-include="pages/validation/text.html"></div>
-                                    </div>
-                                </md-input-container>
-
 
 
 
@@ -82,12 +74,14 @@
                                     </div>
                                 </md-input-container>
 
+                            </div>
 
 
 
 
 
 
+                            <div layout-gt-xs="row">
 
 
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
@@ -113,7 +107,8 @@
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
-
+                            </div>
+                            <div layout-gt-xs="row">
 
 
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>

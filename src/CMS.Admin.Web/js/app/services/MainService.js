@@ -40,6 +40,10 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSOrigenesScraps")
         }
 
+        this.GetJobTrack = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSJobTrack")
+        }
+
         this.GetActividad = function () {
             return $http.get($rootScope.webapiurl + "api/PSSActividades")
         }
@@ -71,6 +75,10 @@ angular
 
         this.GetOrigenById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id + "&no-pace")
+        }
+
+        this.GetJobTrackById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSJobTrack?id=" + id + "&no-pace")
         }
         
         this.GetClientByDni = function (dni) {
@@ -255,6 +263,11 @@ angular
             return $http.put($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id, data)
         }
 
+
+        this.updateJobTrack = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSJobTrack?id=" + id, data)
+        }
+
         this.UpdateService = function (id, data) {
             return $http.put($rootScope.webapiurl + "api/Services?id=" + id, data)
         }
@@ -336,6 +349,10 @@ angular
 
         this.createOrigen = function (data) {
             return $http.post($rootScope.webapiurl + "api/PSSOrigenesScraps", data)
+        }
+
+        this.createJobTrack = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSJobTrack", data)
         }
 
         this.createMaterial = function (data) {
@@ -433,13 +450,18 @@ angular
 
 
             this.deleteMaquina = function (id, data) {
-                return $http.delete($rootScope.webapiurl + "api/PSSMaquinas?id=" + id)
+                return $http.delete($rootScope.webapiurl + "api/PSSMaquinas?id=" + id, data)
 
             }
 
 
             this.deleteOrigen = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id)
+
+            }
+
+            this.deleteJobTrack = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSJobTrack?id=" + id)
 
             }
             //return $http({

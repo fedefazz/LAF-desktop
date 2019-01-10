@@ -2,18 +2,18 @@
 angular
     .module('app.controllers')
 
-    .controller('origenScrapController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
+    .controller('JobTrackController', function ($scope, APIService, $window, $cookies, $route, DTOptionsBuilder, DTColumnBuilder, AlertService, $rootScope, $filter, $http) {
 
         //Display message if necessary
         AlertService.ShowAlert($scope);
-        GetOrigenes();
+        GetJobTrack();
 
         //TRAE TODOS LOS ORIGENES
-        function GetOrigenes() {
-            var servCallType = APIService.GetOrigenes();
+        function GetJobTrack() {
+            var servCallType = APIService.GetJobTrack();
             servCallType.then(function (u) {
                 console.log(u);
-                $scope.Origenes = u.data;
+                $scope.JobTrack = u.data;
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
             });
@@ -89,7 +89,7 @@ angular
 
     })
 
-    .controller('origenScrapCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('JobTrackCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 
 
 
@@ -103,9 +103,6 @@ angular
 
         var id = $stateParams.id;
 
-        console.log("------------");
-        console.log(id);
-
         $scope.dtInstance = {};
 
         $scope.dtOptions = DTOptionsBuilder
@@ -114,8 +111,8 @@ angular
 
         //labels
         if (id) {
-            $scope.PageTitle = 'Edit Origen Scrap';
-            $scope.SubmitButton = 'Actualiz Origen Scrap';
+            $scope.PageTitle = 'Editar Job Track';
+            $scope.SubmitButton = 'Actualizar Job Track';
 
 
 
@@ -126,8 +123,8 @@ angular
 
 
         } else {
-            $scope.PageTitle = 'Crear Origen Scrap';
-            $scope.SubmitButton = 'Crear Origen Scrap';
+            $scope.PageTitle = 'Crear Job Track';
+            $scope.SubmitButton = 'Crear Job Track';
 
 
 
@@ -148,73 +145,20 @@ angular
 
         //Gets category by Id for edit fields
         if (id) {
-            console.log("llega1");
-
-            var servCall = APIService.GetOrigenById(id);
+            var servCall = APIService.GetJobTrackById(id);
             servCall.then(function (u) {
-                $scope.origenData = u.data;
-                delete $scope.origenData.$id;
+                $scope.JobTrackData = u.data;
+                delete $scope.JobTrackData.$id;
 
-                console.log($scope.origenData);
+                console.log($scope.JobTrackData);
 
-                if ($scope.origenData.idmaquina != 0) {
-
-                    console.log("llega");
-                    var CallMaquinasid = APIService.GetMaquinaById($scope.origenData.idmaquina);
-                    CallMaquinasid.then(function (u) {
-                        $scope.maquinasid = u.data;
-                        console.log($scope.maquinasid);
-
-                        $scope.origenData
-
-
-                        AlertService.ShowAlert($scope);
-                    }, function (error) {
-                        $window.location.href = "/#/blsp/maquinas/list";
-                    });
-
-
-                } else {
-
-                    var CallMaquinas = APIService.GetMaquinas();
-                    CallMaquinas.then(function (u) {
-                        $scope.maquinas = u.data;
-                        console.log($scope.maquinas);
-
-
-                        AlertService.ShowAlert($scope);
-                    }, function (error) {
-                        $window.location.href = "/#/blsp/maquinas/list";
-                    });
-
-
-
-                }
-
-
+                
                 AlertService.ShowAlert($scope);
             }, function (error) {
-                $window.location.href = "/#/blsp/origenScrap/list";
+                $window.location.href = "/#/blsp/JobTrack/list";
             });
-
-
-
-
-        } else {
-
-
-            var CallMaquinas = APIService.GetMaquinas();
-            CallMaquinas.then(function (u) {
-                $scope.maquinas = u.data;
-                console.log($scope.maquinas);
-
-
-                AlertService.ShowAlert($scope);
-            }, function (error) {
-                $window.location.href = "/#/blsp/maquinas/list";
-            });
-
         }
+
 
         //User update
         $scope.processForm = function () {
@@ -222,23 +166,24 @@ angular
             //$scope.clientData.IsEnabled = true;
             //$scope.clientData.CompanyId = 2;
 
-            var data = $.param($scope.origenData);
+            var data = $.param($scope.JobTrackData);
+
             if (id) {
-                var servCall = APIService.updateOrigen(id, data);
+                var servCall = APIService.updateJobTrack(id, data);
                 servCall.then(function (u) {
                     //Set and display message
-                    AlertService.SetAlert("El Origen fue actualizado con éxito", "success");
+                    AlertService.SetAlert("El JobTrack fue actualizado con éxito", "success");
                     AlertService.ShowAlert($scope);
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
             } else {
-                var servCall = APIService.createOrigen(data);
+                var servCall = APIService.createJobTrack(data);
                 servCall.then(function (u) {
-                    var origenData = u.data;
+                    var JobTrackData = u.data;
                     //Set message
-                    AlertService.SetAlert("El Origen fue creado con éxito", "success");
-                    $window.location.href = "/#/blsp/origenScrap/crud/" + origenData.IDOrigen;
+                    AlertService.SetAlert("El JobTrack fue creado con éxito", "success");
+                    $window.location.href = "/#/blsp/JobTrack/crud/" + JobTrackData.IdJobTrack;
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
@@ -246,13 +191,13 @@ angular
         }
 
         //Delete User
-        $scope.deleteOrigen = function (ev, id) {
+        $scope.deleteJobTrack = function (ev, id) {
             //var custName = id;
 
             // Appending dialog to document.body to cover sidenav in docs app
             var confirm = $mdDialog.confirm()
-                  .title('Eliminar Origen Scrap')
-                  .textContent('Esta seguro de eliminar este Origen de Scrap?')
+                  .title('Eliminar JobTrack')
+                  .textContent('Esta seguro de eliminar este JobTrack?')
                   .ariaLabel('Delete')
                   .targetEvent(ev)
                   .ok('Delete')
@@ -263,11 +208,11 @@ angular
                 var data = $.param({
                     id: id,
                 })
-                var servCall = APIService.deleteOrigen(id);
+                var servCall = APIService.deleteJobTrack(id);
                 servCall.then(function (u) {
                     //Set message
-                    AlertService.SetAlert("El Origen de Scrap ha sido eliminado con exito", "success");
-                    $window.location.href = "/#/blsp/origenScrap/list";
+                    AlertService.SetAlert("El JobTrack ha sido eliminado con exito", "success");
+                    $window.location.href = "/#/blsp/JobTrack/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 })

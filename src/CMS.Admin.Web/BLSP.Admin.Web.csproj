@@ -5421,6 +5421,7 @@
     <Content Include="js\angular-sanitize.js" />
     <Content Include="js\angular-sanitize.min.js" />
     <Content Include="js\angular-slugify.js" />
+    <Content Include="js\app\controllers\JobTrackController.js" />
     <Content Include="js\app\controllers\ScrapController.js" />
     <Content Include="js\app\controllers\ActividadController.js" />
     <Content Include="js\app\controllers\tipoMaterialController.js" />
@@ -5454,6 +5455,8 @@
     <Content Include="Mail\Templates\CreateUserRequestEmailTemplate.html" />
     <Content Include="Mail\Templates\ForgotPasswordConfirmationEmailTemplate.html" />
     <Content Include="Mail\Templates\ResetPasswordEmailTemplate.html" />
+    <Content Include="pages\JobTrack\crud.html" />
+    <Content Include="pages\JobTrack\list.html" />
     <Content Include="pages\origenScrap\crud.html" />
     <Content Include="pages\origenScrap\list.html" />
     <Content Include="pages\scrap\crud.html" />

@@ -1,10 +1,10 @@
-﻿<div ng-app="app" ng-controller="origenScrapCRUDController">
+﻿<div ng-app="app" ng-controller="JobTrackCRUDController">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
                     <li><a href="/#/blsp/dashboard">Home</a></li>
-                    <li><a ui-sref="blsp.origenScrap.list">Origen Scrap</a></li>
+                    <li><a ui-sref="blsp.JobTrack.list">JobTrack</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}}<small></small></h1>
@@ -17,7 +17,7 @@
                 <div class="col-sm-12 col-md-8">
                     <div class="panel panel-inverse">
                         <div class="panel-heading">
-                            <h4 class="panel-title">Origen de Scrap</h4>
+                            <h4 class="panel-title">JobTrack</h4>
                         </div>
                         <md-content layout-padding>
                          
@@ -25,27 +25,23 @@
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Nombre</label>
-                                    <input type="text" ng-model="origenData.Descripcion" name="Nombre" required />
+                                    <input type="text" ng-model="JobTrackData.Descripcion" name="Nombre" required />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
                             </div>
 
-
                             <div layout-gt-xs="row">
-
-
-                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
-                                    <label>Maquin</label>
-                                    <md-select ng-model="origenData.idmaquina" name="Maquinas" multiple="false" ng-model-options="{trackBy: '$value.IDMaq' }">
-                                        <md-option ng-value="maquina" ng-repeat="maquina in maquinas track by maquina.IDMaq">{{ maquina.Descripcion }}</md-option>
-                                    </md-select>
-                                    <div ng-messages="newUserForm.Roles.$error">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>JobTrack</label>
+                                    <input type="text" ng-model="JobTrackData.JobTrack" name="JobTrack" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
                             </div>
+
 
 
                         </md-content>
@@ -59,8 +55,8 @@
                         </div>
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
-                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteOrigen($event, origenData.IDOrigen);" ng-show="origenData.IDOrigen">Borrar Origen Scrap</button>
-                            <a class="btn btn-block btn-default" ui-sref="blsp.origenScrap.list">Volver</a>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteJobTrack($event, JobTrackData.IDJobTrack);" ng-show="JobTrackData.IDJobTrack">Borrar JobTrack</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.JobTrack.list">Volver</a>
                         </div>
                     </div>
 

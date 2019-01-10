@@ -123,6 +123,25 @@ angular
             $window.location.href = "/#/blsp/maquinas/list";
         });
 
+
+
+
+        var CallJobTrack = APIService.GetJobTrack();
+        CallJobTrack.then(function (u) {
+            $scope.jobtrack = u.data;
+            console.log("JobTrack");
+
+            console.log($scope.jobtrack);
+
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/maquinas/list";
+        });
+
+
+
+
         var CallTipos = APIService.GetTipos();
         CallTipos.then(function (u) {
             $scope.tipos = u.data;
@@ -246,6 +265,8 @@ angular
             }
         }
 
+       
+
         //Delete User
         $scope.deleteMaquina = function (ev, id) {
             //var custName = id;
@@ -254,9 +275,9 @@ angular
             var confirm = $mdDialog.confirm()
                   .title('Eliminar Maquina')
                   .textContent('Esta seguro de eliminar esta Maquina?')
-                  .ariaLabel('Delete')
+                  .ariaLabel('Borrar')
                   .targetEvent(ev)
-                  .ok('Delete')
+                  .ok('Borrar')
                   .cancel('Cancel');
 
             $mdDialog.show(confirm).then(function () {

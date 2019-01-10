@@ -179,6 +179,28 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
+
+         /* Origen de Scrap */
+            .state('blsp.JobTrack', {
+                url: '/JobTrack',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.JobTrack.list', {
+                    url: '/list',
+                    data: { pageTitle: 'JobTrack' },
+                    templateUrl: 'pages/JobTrack/list.html'
+                })
+                .state('blsp.JobTrack.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'JobTrack CRUD' },
+                    templateUrl: 'pages/JobTrack/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
+
          /* Origen de Scrap */
             .state('blsp.actividades', {
                 url: '/actividades',
