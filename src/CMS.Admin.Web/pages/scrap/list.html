@@ -12,12 +12,12 @@
                 <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
                 <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
             </div>
-
-
-            <div class="col-sm-12 col-md-4 right" style="float:right">
-                <div class="panel-heading">
-                    <h4 class="panel-title">Buscar</h4>
-                </div>
+            <div class="col-sm-12 col-md-12" style=" display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0px;
+">
+              
                 <div class="panel-body">
                     <md-input-container md-no-float class="md-block md-no-error search">
                         <label>Buscar...</label>
@@ -29,58 +29,144 @@
 
 
 
+
             <div class="col-sm-12 col-md-12">
                 <div class="panel panel-inverse">
                     <div class="panel-heading">
                         <h4 class="panel-title">Scrap</h4>
                     </div>
 
-                    <!--<button style="position: absolute;top: 4px;right: 18px;" type="button" class="btn btn-default" ng-csv="Scraps" csv-header="['Id', 'Fecha', 'OP', 'Maquina', 'Operador', 'Mat', 'Origen', 'Peso', 'Observaciones', 'Fecha de Registro']" filename="Scrap.csv" charset="utf-8"><span class="glyphicon glyphicon-download-alt">&nbsp;</span>Descargar CSV</button>-->
+                    <button style="position: absolute;top: 4px;right: 160px;" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary pull-right ">Filtrar Por Fecha</button>
 
-                    <button type="submit" style="position: absolute;top: 4px;right: 18px;" ng-click="exportData()" data-ng-disabled="!Scraps.length" class="btn btn-primary pull-right">Descargar XLS</button>  
+                    <button style="position: absolute;top: 4px;right: 18px;"data-toggle="modal" data-target="#exampleModal2" class="btn btn-primary pull-right ">Descargar XLS</button>
 
-                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
-                        <thead>
-                            <tr>
-                                <th>Id</th>
-                                <th>Fecha</th>
-                                <th>OP</th>
-                                <th>Maquina</th>
-                                <th>Operador</th>
-                                <th>Mat</th>
-                                <th>Origen</th>
-                                <th>Peso (kls)</th>
-                                <th>Observaciones</th>
+                    <!--<button type="submit" style="position: absolute;top: 4px;right: 58px;" ng-click="deleteMultiple(selected)"  class="btn btn-primary pull-right ">Borrar Registros</button>-->
+
+                    <button style="position: absolute;top: 4px;right: 324px;" class="btn btn-primary pull-right  btn-danger" type="button" ng-click="deleteMultiple($event, selected);" ng-show="show">Borrar Registros</button>
 
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="scrap in Scraps | orderBy:sortUser:sortReverse">
-                                <td>{{scrap.IdRegScrap}}</td>
-                                <td>{{scrap.Fecha}}</td>
-                                <td>{{scrap.NumOP}}</td>
-                                <td>{{scrap.Maquina}}</td>
-                                <td>{{scrap.Operador}}</td>
-                                <td>{{scrap.Material}}</td>
-                                <td>{{scrap.Origen}}</td>
-                                <td>{{scrap.Peso}}</td>
-                                <td>{{scrap.Observaciones}}</td>
+                    <table class="table table-bordered dataTable" datatable="" dt-options="aCtrl.dtOptions" dt-columns="aCtrl.dtColumns" dt-instance="aCtrl.dtInstance"></table>  <!--dt-column-defs="dtColumnDefs"-->
 
 
 
-                            </tr>
-                        </tbody>
-                    </table> 
-                    
-                   
-                
-                
 
-                
-                           </div>
+
+
+
+
+                </div>
             </div>
-           
+
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Seleccionar Fechas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 col-md-12 no-padding">
+
+                        <div class="panel col-sm-12 col-md-6 panel-inverse" style="padding:0px">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Desde</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container md-no-float class="md-block md-no-error">
+                                    <input type="date" ng-model="dateDesdeinp" value="{{dateDesdeinp}}">
+
+                                </md-input-container>
+                            </div>
+                        </div>
+                        <div class="panel col-sm-12 col-md-6 panel-inverse" style="padding:0px">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Hasta</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container md-no-float class="md-block md-no-error">
+                                    <input type="date" ng-model="dateHastainp">
+
+                                </md-input-container>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" ng-click="doSearch2()" data-dismiss="modal" class="btn btn-primary">Buscar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal 2 -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Seleccionar Fechas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 col-md-12 no-padding">
+
+                        <div class="panel col-sm-12 col-md-6 panel-inverse" style="padding:0px">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Desde</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container md-no-float class="md-block md-no-error">
+                                    <input type="date" ng-model="dateDesdeinp2" value="{{dateDesdeinp2}}">
+
+                                </md-input-container>
+                            </div>
+                        </div>
+                        <div class="panel col-sm-12 col-md-6 panel-inverse" style="padding:0px">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Hasta</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container md-no-float class="md-block md-no-error">
+                                    <input type="date" ng-model="dateHastainp2">
+
+                                </md-input-container>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                    <div class="col-sm-12 col-md-12">
+                        <div ng-model="successMessage2" class="alert alert-success" role="alert" ng-show="successMessage2">{{ successMessage2 }}<div ng-show="butonVisible" style="" class="pace-activity2"></div></div>
+                        <div ng-model="errorMessage2" class="alert alert-danger" role="alert" ng-show="errorMessage2">{{ errorMessage2 }}</div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" ng-disabled="butonVisible" ng-click="doSearch3()"  class="btn btn-primary">Descargar Reporte</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

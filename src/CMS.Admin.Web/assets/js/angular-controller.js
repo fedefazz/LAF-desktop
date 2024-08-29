@@ -155,8 +155,48 @@ app.controller('appController', ['$rootScope', '$scope', function ($rootScope, $
 /* -------------------------------
    2.0 CONTROLLER - Sidebar
 ------------------------------- */
-app.controller('sidebarController', function($scope, $rootScope, $state) {
-    App.initSidebar();
+app.controller('sidebarController', function ($scope, $rootScope, $state, APIService) {
+            $scope.esempleado = false;
+
+
+     //Get Current User
+        var servCall = APIService.getProfileInfo();
+        servCall.then(function (u) {
+            $scope._currentUser = u.data;
+
+
+            var servCallUser = APIService.getUserById($scope._currentUser.Id);
+            servCallUser.then(function (e) {
+                $scope.currentUser = e.data;
+                console.log("USER");
+
+                console.log($scope.currentUser);
+                console.log($scope.currentUser.Role)
+
+                angular.forEach($scope.currentUser.Role, function (element) {
+
+                    if (element.Name != 'Employee') {
+
+                        $scope.esempleado = false;
+
+
+                    }
+
+
+                }
+
+                )
+
+                console.log($scope.currentUser);
+
+               // App.initSidebar();
+
+            })
+
+
+        })
+
+
 });
 
 

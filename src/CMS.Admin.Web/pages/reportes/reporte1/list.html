@@ -1,0 +1,123 @@
+﻿<div ng-app="app" ng-controller="ReporteController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Reporte OP</li>
+                </ol>
+                <h1 class="page-header">Reporte OP<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+
+            <div class="col-sm-12 col-md-3">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar OP</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <input type="number" ng-model="searchQuery">
+                            <button style="margin-top:10px;float: left" class="btn button btn-primary" ng-click="doSearch()">BUSCAR OP</button>
+                            <span style="color: red;margin-left: 20px;margin-top: 18px;float: left">{{mensaje}}</span>
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-3" ng-show="show">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Kilos Producidos</h4>
+                    </div>
+                    <div class="panel-body">
+
+                        <h1 class="h1total">{{totalOp[0].QtdProduzidaKg | number}}</h1>
+                    </div>
+
+
+                    </div>
+            </div>
+            <div class="col-sm-12 col-md-3" ng-show="show">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Kilos de Scrap</h4>
+                    </div><div class="panel-body">
+
+                              <h1 class="h1total">{{totalOp[0].KGTOTALSCRAP | number}}</h1>
+</div>
+
+</div>
+            </div>
+            <div class="col-sm-12 col-md-3" ng-show="show">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Porcentaje Incidencia</h4>
+                    </div>
+                <div class="panel-body">
+
+                    <h1 class="h1total">{{totalOp[0].porcentajescrap | number}} %</h1>
+                </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="col-sm-12 col-md-12" ng-show="show">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">OP {{searchQuery}}</h4>
+                    </div>
+
+                    <button type="submit" style="position: absolute;top: 4px;right: 18px;" ng-click="exportData()" data-ng-disabled="!reporte1.length" class="btn btn-primary pull-right ">Descargar XLS</button>
+
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>N Orden</th>
+                                <th>Cod Actividad</th>
+                                <th>Cod Recurso</th>
+                                <th>Descripcion</th>
+                                <th>Factor peso Producc</th>
+                                <th>KG Scrap</th>
+                                
+                                <th>Kilos Producidos</th>
+                                <th>Cantidad Producida</th>
+                                <th>Incidencia</th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reporte in reporte1 | orderBy:sortUser:sortReverse">
+
+                                <td>{{reporte.NUMORDEM}}</td>
+
+                                <td>{{reporte.CodAtiv}}</td>
+                                <td>{{reporte.CodRecurso}}</td>
+                                <td>{{reporte.DescripcionOP}}</td>
+                                <td>{{reporte.FatorPesoProducao}}</td>
+                                <td>{{reporte.KGScrap | number}}</td>
+                                <td>{{reporte.QtdProduzidaKg | number}}</td>
+                                <td>{{reporte.QtdProduzidaMts | number}}</td>
+                                <td>{{reporte.incidencia | number}}</td>
+
+                               
+
+                            </tr>
+                        </tbody>
+                    </table>
+               </div>
+            </div>
+           
+        </div>
+    </div>
+</div>

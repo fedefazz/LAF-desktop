@@ -228,6 +228,40 @@ Website: http://www.seantheme.com/color-admin-v1.9/admin/
 
 }
 
+.h1total{
+    font-weight: 100;
+    color: #0472ee;
+    text-align: right;
+    font-size:40px
+}
+
+#visitors-donut-chart text tspan:after {
+    content:'%';
+
+}
+
+
+.selectdemoSelectHeader {
+  /* Please note: All these selectors are only applied to children of elements with the 'selectdemoSelectHeader' class */ }
+  .selectdemoSelectHeader .demo-header-searchbox {
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+    padding: 0; }
+  .selectdemoSelectHeader .demo-select-header {
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.1), 0 0 0 0 rgba(0, 0, 0, 0.14), 0 0 0 0 rgba(0, 0, 0, 0.12);
+    padding-left: 10.667px;
+    height: 48px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: auto; }
+  .selectdemoSelectHeader md-content._md {
+    max-height: 240px; }
+
+
 
 .divider{font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;}
 
@@ -281,6 +315,9 @@ Website: http://www.seantheme.com/color-admin-v1.9/admin/
 
 
 }
+
+.DTFC_LeftBodyWrapper {
+background:white}
 
 .PENDIENTE {
     background-color: #fff;
@@ -1005,7 +1042,7 @@ label {
 
 .content {
     margin-left: 200px;
-    padding: 20px 25px 0px 25px;
+    padding: 20px 25px 50px 25px;
 }
 .content.content-full-width {
     padding: 0;
@@ -3028,9 +3065,7 @@ a.text-white:focus {
 .panel [class*="col-"].ui-sortable {
     min-height: 0px;
 }
-.ui-sortable .panel-heading {
-    cursor: move;
-}
+
 .ui-sortable.ui-sortable-disabled .panel-heading {
     cursor: default;
 }
@@ -3935,7 +3970,7 @@ body .fc button:active {
 .widget {
     border-radius: 3px;
     margin-bottom: 20px;
-    color: #5b5b5b;
+    color: #fff;
     padding: 15px;
     overflow: hidden;
 }
@@ -5127,18 +5162,22 @@ body .fc button:active {
 }
 .widget-chart .widget-chart-content {
     padding: 15px;
-    margin-right: 230px;
+    margin-right: 260px;
 }
+
+    .widget-chart .widget-chart-content2 {
+        padding: 15px;
+    }
 .widget-chart .widget-chart-sidebar {
     position: absolute;
     right: 0;
     top: 0;
     bottom: 0;
-    width: 230px;
+    width: 285px;
     padding: 15px;
 }
 .widget-chart-sidebar .chart-number {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 300;
     color: #fff;
     margin-bottom: 10px;
@@ -5146,7 +5185,7 @@ body .fc button:active {
 .widget-chart-sidebar .chart-number small {
     font-size: 12px;
     color: #616D72;
-    color: rgba(255,255,255,0.3);
+    color: rgb(114, 253, 22);
     display: block;
 }
 .widget-chart-sidebar .chart-legend {
@@ -5164,11 +5203,11 @@ body .fc button:active {
 }
 .widget-chart-sidebar .chart-legend > li span {
     color: #616D72;
-    color: rgba(255,255,255,0.3);
+    color: rgb(114, 253, 22);;
 }
 .morris-inverse .morris-hover {
     background: url('../img/transparent/black-0.4.png');
-    background: rgba(0,0,0,0.4) !important;
+    background: rgba(0,0,0,08) !important;
     border: none !important;
     padding: 8px !important;
     color: #ccc !important;
@@ -6034,7 +6073,7 @@ z-index:9999;
     display: none;
 }
 .pace {
-    background: #eaebf0;
+    background: transparent;
     position: fixed;
     bottom: 0;
     top: 0;
@@ -7243,4 +7282,246 @@ div.credit {
 div.debit {
     text-align: right;
     color: red;
+}
+
+.tablaromaneospan {
+    font-size: 12px;
+    font-weight: bold;
+    color: #0472ee;
+}
+
+.tablaromaneo {
+    font-size: 12px;
+}
+
+.pace-activity2 {
+    height: 40px;
+    width: 40px;
+    margin: 0px auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -20px 0 0 -20px;
+    border: 2px solid #fff;
+    border-top: 2px solid #24B498;
+    border-radius: 100%;
+    -webkit-animation: rotation .6s infinite linear;
+    -moz-animation: rotation .6s infinite linear;
+    -o-animation: rotation .6s infinite linear;
+    animation: rotation .6s infinite linear;
+}
+
+
+.blue-bold {
+    color: blue;
+    font-weight: bold;
+}
+
+.red-bold {
+    color: red;
+    font-weight: bold;
+}
+
+
+td {
+    align-items: center; /* Centrado vertical */
+    vertical-align : middle !important
+}
+
+.semaforo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinear verticalmente */
+    column-gap: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.06)
+}
+
+.luz {
+    position: relative;
+    width: 20px; /* Ancho de cada luz */
+    height: 20px; /* Altura de cada luz */
+    border-radius: 50%; /* Forma circular */
+    overflow: hidden; /* Ocultar desbordamiento */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Sombra para simular profundidad */
+    background: white;
+}
+
+.borde {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    bottom: 1px;
+    border-radius: 50%; /* Forma circular */
+
+    border: 2px solid rgba(0, 0, 0, 0.1); /* Borde para todas las luces */
+}
+
+.roja.encendida .borde {
+    background-color: #FF6347 !important; /* Color rojo apagado */
+}
+
+.amarilla.encendida .borde {
+    background-color: #FFD700 !important; /* Color amarillo apagado */
+}
+
+.verde.encendida .borde {
+    background-color: #32CD32 !important; /* Color verde apagado */
+}
+
+.borde {
+    background-color: inherit; /* Mantener el color de fondo encendido */
+}
+
+.tr-gray {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+    .tr-gray td {
+        border: 1px solid #cccccc !important;
+    }
+
+
+
+.td-semaforo {
+    width: 105px;
+}
+
+.flex-03 {
+    flex: 0.3;
+}
+
+.panel-content {
+    overflow: hidden;
+    transition: height 0.3s ease;
+}
+
+    .panel-content.ng-hide {
+        height: 0;
+    }
+
+
+.md-switch {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5em;
+}
+
+    .panel-heading .semaforo {
+        display: flex;
+        justify-content: end;
+    }
+
+    .panel-heading .panel-title {
+        flex: 1
+    }
+
+    .panel-heading h5 {
+        color: white;
+        font-size: 12px
+    }
+
+
+
+    .panel-heading .actualizacion {
+        flex: 1;
+        display: flex;
+        justify-content: end;
+        font-size: 12px;
+        color: #a6e0ff;
+    }
+
+.campo-invalido input {
+    border: 1px solid red;
+}
+
+.customerRojo{
+    color: red !important;
+    border: 1px solid red !important
+}
+
+/* Estilo para input deshabilitado */
+.customerRojo:disabled {
+        /* Ajusta los estilos según sea necesario */
+        opacity: 1; /* Asegura que el input deshabilitado sea completamente visible */
+    }
+
+/* Estilo para placeholder en input con clase 'customerRojo' */
+.customerRojo::placeholder {
+    color: red; /* Cambia 'red' por el color que desees */
+}
+
+.filter-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    border: 1px solid gray;
+    padding: 0.5em;
+    column-gap: 0.5em;
+    align-items: stretch;
+    
+   
+}
+
+.filter-section button {
+    flex: 0;
+}
+
+    .filter-section .newdiv {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.3em;
+    }
+
+    .filter-section .form-group {
+       margin-bottom: 0 !important
+    }
+
+.filter-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    column-gap: 5px;
+}
+
+.fecha-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    column-gap: 5px;
+}
+
+.fecha-group-imsode {
+    display: flex;
+    flex-direction: column;
+    flex:auto
+}
+
+
+
+
+.form-group {
+    flex: 1;
+}
+
+.boton-filtros {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.form-group-container {
+    display: flex;
+    margin-bottom: 8px;
+    column-gap: 1.5em;
+    align-items: flex-start;
 }

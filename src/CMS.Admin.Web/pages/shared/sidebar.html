@@ -1,9 +1,9 @@
 <!-- begin #sidebar -->
-<div id="sidebar" class="sidebar" ng-controller="sidebarController" ng-class="{ 'sidebar-transparent': setting.layout.pageSidebarTransparent }">
+<div id="sidebar" class="sidebar" ng-controller="headerController" ng-class="{ 'sidebar-transparent': setting.layout.pageSidebarTransparent }">
     <!-- begin sidebar scrollbar -->
     <div data-scrollbar="true" data-height="100%">
 
-        <ul class="nav">
+        <ul class="nav" ng-if="hasRole('Admin') || hasRole('Employee')">
             <li ng-class="{active:$state.includes('blsp.services')}">
                 <a ui-sref="blsp.dashboard" title="Dashboard"><i class="fa fa-clock-o"></i><span>Dashboard</span></a>
             </li>
@@ -16,14 +16,14 @@
             </li>
 
             <li ng-class="{active:$state.includes('blsp.scrap')}">
-               
-                <a ui-sref="blsp.scrap.list" title="Scrap"><i class="fa fa-trash-o"></i><span>Listado Scrap</span></a>
+
+                <a ui-sref="blsp.scrap.list" title="Scrap"><i class="fa fa-trash-o"></i><span>Listado Scrap {{esempleado}}</span></a>
 
             </li>
 
 
 
-            <li ng-class="{active:$state.includes('blsp.origenScrap')}">
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.origenScrap')}">
 
 
                 <a ui-sref="blsp.origenScrap.list" title="Origen Scrap"><i class="fa fa-lightbulb-o"></i><span>Origen Scrap</span></a>
@@ -31,28 +31,105 @@
 
             </li>
 
-            <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+            <li ng-class="{active:$state.includes('blsp.reporte1')}">
+
+
+                <a ui-sref="blsp.reporte1.list" title="Reportes"><i class="fa fa-file-archive-o"></i><span>Seg. de OP</span></a>
+
+
+            </li>
+
+            <li ng-class="{active:$state.includes('blsp.reporte2')}">
+
+
+                <a ui-sref="blsp.reporte2.list" title="Reportes"><i class="fa fa-file-archive-o"></i><span>Seg. de OP x fecha</span></a>
+
+
+            </li>
+
+
+            <li ng-if="hasRole('Admin')" class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+
+                Empaque
+
+            </li>
+
+
+            <li ng-class="{active:$state.includes('blsp.reporteRomaneo')}">
+
+                <a ui-sref="blsp.reporteRomaneo.list" title="reporteRomaneo"><i class="fa fa-file-archive-o"></i><span>Reporte Romaneo</span></a>
+
+            </li>
+
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.etiquetas')}">
+
+                <a ui-sref="blsp.etiquetas.list" title="Etiquetas"><i class="fa fa-ticket"></i><span>Etiquetas</span></a>
+
+            </li>
+
+            <li ng-if="hasRole('Admin')" class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
 
                 Equipamiento
 
             </li>
 
 
-            <li ng-class="{active:$state.includes('blsp.maquinas')}">
-               
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.maquinas')}">
+
                 <a ui-sref="blsp.maquinas.list" title="Maquinas"><i class="fa fa-building-o"></i><span>Maquinas</span></a>
 
             </li>
 
 
-            
 
 
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.tipoMaterial')}">
-               
+
+            <li ng-if="hasRole('Admin')" class="has-sub" ng-class="{active:$state.includes('blsp.tipoMaterial')}">
+
                 <a ui-sref="blsp.tipoMaterial.list" title="Tipo de Material"><i class="fa fa-list-ul"></i><span>Tipo de Material</span></a>
 
+
+
+            </li>
+
+
+
+
+            <li ng-if="hasRole('Admin')" class="has-sub" ng-class="{active:$state.includes('blsp.JobTrack')}">
+
+                <a ui-sref="blsp.JobTrack.list" title="JobTrack"><i class="fa fa-floppy-o"></i><span>JobTrack</span></a>
+
+
+
+
+            </li>
+
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.actividades')}">
+
+                <a ui-sref="blsp.actividades.list" title="Actividades"><i class="fa fa-cart-plus"></i><span>Actividades</span></a>
+
+
+            </li>
+
+
+            <li ng-if="hasRole('Admin')" class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+
+                Personal
+
+            </li>
+
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.operadores')}">
+
+
+                <a ui-sref="blsp.operadores.list" title="Operarios"><i class="fa fa-users"></i><span>Operarios</span></a>
+
+            </li>
+
+
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.users')}">
+
+                <a ui-sref="blsp.users.list" title="Usuarios"><i class="fa fa-user-o"></i><span>Usuarios</span></a>
 
 
             </li>
@@ -60,47 +137,35 @@
            
 
 
-            <li class="has-sub" ng-class="{active:$state.includes('blsp.JobTrack')}">
-               
-                <a ui-sref="blsp.JobTrack.list" title="JobTrack"><i class="fa fa-floppy-o"></i><span>JobTrack</span></a>
 
 
-
-               
-            </li>
-
-            <li  ng-class="{active:$state.includes('blsp.actividades')}">
-                
-                <a ui-sref="blsp.actividades.list" title="Actividades"><i class="fa fa-cart-plus"></i><span>Actividades</span></a>
-
-
-            </li>
-
-
-            <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
-
-                Personal
-
-            </li>
-
-            <li ng-class="{active:$state.includes('blsp.operadores')}">
-               
-
-                <a ui-sref="blsp.operadores.list" title="Operarios"><i class="fa fa-users"></i><span>Operarios</span></a>
-
-            </li>
-
-
-            <li ng-class="{active:$state.includes('blsp.users')}">
-               
-                <a ui-sref="blsp.users.list" title="Usuarios"><i class="fa fa-user-o"></i><span>Usuarios</span></a>
-
-
-            </li>
 
             <li class="toggle"><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-arrow-left"></i></a></li>
         </ul>
-        <!-- end sidebar nav -->
+
+
+        <ul class="nav" ng-if="hasRole('Admin') || hasRole('Producto') || hasRole('Pre Prensa') || hasRole('Ingenieria')">
+            <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
+
+                Productos
+
+            </li>
+
+            <li ng-class="{active:$state.includes('blsp.productos')}">
+
+
+                <a ui-sref="blsp.productos.list" title="Productos"><i class="fa fa-cube"></i><span>Productos</span></a>
+
+            </li>
+
+            <li ng-class="{active:$state.includes('blsp.dashboardProductos.dashboard')}">
+
+
+                <a ui-sref="blsp.dashboardProductos.dashboard" title="Dahboard Productos"><i class="fa fa-cubes"></i><span>KPI productos</span></a>
+
+            </li>
+        </ul>
+            <!-- end sidebar nav -->
     </div>
     <!-- end sidebar scrollbar -->
 </div>

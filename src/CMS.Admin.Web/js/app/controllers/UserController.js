@@ -12,8 +12,26 @@ angular
         function getUsers() {
             var servCallType = APIService.getUsers();
             servCallType.then(function (u) {
+
                 console.log(u);
+
+
+
                 $scope.Usuarios = u.data;
+                angular.forEach($scope.Usuarios, function (value, key) {
+
+
+                    if (value.IsDeleted) {
+                        value.habilitado = "Deshabilitado";
+                    } else {
+
+                        value.habilitado = "Habilitado";
+                    }
+
+
+                });
+
+
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
             });
@@ -40,7 +58,7 @@ angular
                 css = "check-circle blue";
 
             var html = '<i class="fa fa-' + css + '"></i>';
-            html += '<a href="/#/cms/users/edit/' + full.Id + '"><strong>' + full.FirstName + ' ' + full.LastName + '</strong></a>';
+            html += '<a href="/#/blsp/users/edit/' + full.Id + '"><strong>' + full.FirstName + ' ' + full.LastName + '</strong></a>';
             html += '<em>' + full.Email + '</em>';
             return html;
         }
@@ -61,7 +79,7 @@ angular
 
         //Submit NewUser form
         $scope.newUserData = {};
-        $scope.roles = ["Admin", "Employee"];
+        $scope.roles = ["Admin", "Ingenieria", "Producto", "Employee", "Pre Prensa", "Admin Producto", "Herramental"];
         $scope.processForm = function () {
 
             var data = $.param($scope.newUserData)
@@ -70,12 +88,21 @@ angular
 
                 var userData = u.data;
                 //Set message
-
                 AlertService.SetAlert("El usuario ha sido creado con éxito", "success");
-                $window.location.href = "/#/cms/users/edit/" + userData.Id;
-            }, function (error) {
+                $window.location.href = "/#/blsp/users/edit/" + userData.Id;
+            }, function (response) {
+                if (response.status == 400) {
+
+                    //AlertService.SetAlert("El usuario no pudo ser creado, el email ya existe", "success");
+                    //$window.location.href = "/#/blsp/users/new";
+                    $scope.errorMessage3 = true;
+
+                    $scope.errorMessage2 = Object.values(response.data.ModelState)[0];
+                    //$scope.errorMessage = "";
+
+                }
+
                 //console.log(error.data.ModelState.Model);
-                //$scope.errorMessage = error.data.ModelState.Model[0];
             })
         }
     })
@@ -87,27 +114,45 @@ angular
         //Gets User by Id for edit fields
         var id = $stateParams.id;
 
+
+
+
+
+        $scope.Roles = [{
+            Id: 2, Name: "Admin"
+            },
+            {
+                Id: 3, Name: "Ingenieria"
+            },
+            {
+                Id: 4, Name: "Producto"
+            },
+            {
+                Id: 5, Name: "Employee"
+            },
+             {
+                 Id: 6, Name: "Pre Prensa"
+            },
+            {
+                Id: 7, Name: "Admin Producto"
+                
+            },
+            {
+                Id: 8, Name: "Herramental"
+
+            }
+
+        ]
+
+
         var servCall = APIService.getUserById(id);
         servCall.then(function (u) {
             $scope.userData = u.data;
-            delete $scope.userData.$id;
-            delete $scope.userData.UserClaim;
-            delete $scope.userData.UserLogin;
-            delete $scope.userData.Role;
-            delete $scope.userData.CashRegister;
-            //delete $scope.userData.PasswordHash;
-            //delete $scope.userData.SecurityStamp;
 
-
-            //if ($scope.userData.ProfileImagePath) {
-            //    $scope.userData.ProfileImagePath = $scope.ImageProfilePath + $scope.userData.ProfileImagePath;
-            //} else {
-            //    $scope.userData.ProfileImagePath = "/images/placeholders/user.png";
-            //}
 
             AlertService.ShowAlert($scope);
         }, function (error) {
-            $window.location.href = "/#/cms/users/list";
+            $window.location.href = "/#/blsp/users/list";
             //$scope.errorMessage = "Oops, something went wrong.";
         })
 
@@ -124,26 +169,7 @@ angular
             })
         }
 
-        //Enable User
-        $scope.enableUser = function (id) {
-
-            $scope.successMessage = null;
-            $scope.errorMessage = null;
-
-            var data = $.param({
-                id: id,
-            })
-            var servCall = APIService.enableUsers(data);
-            servCall.then(function (u) {
-                $scope.userData.IsEnabled = true;
-                //Set and display message
-                AlertService.SetAlert("The user has been enabled successfully", "success");
-                AlertService.ShowAlert($scope);
-                //$route.reload();
-            }, function (error) {
-                $scope.errorMessage = "Oops, something went wrong.";
-            })
-        }
+      
 
         //Disable User
         $scope.disableUser = function (id) {
@@ -207,7 +233,7 @@ angular
                 servCall.then(function (u) {
                     //Set message
                     AlertService.SetAlert("El usuario ha sido eliminado con éxito", "success");
-                    $window.location.href = "/#/cms/users/list";
+                    $window.location.href = "/#/blsp/users/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 })
@@ -215,12 +241,42 @@ angular
                 //cancel
             });
         }
-    })
+    
 
+//Delete User
+$scope.enableUser = function (ev, id) {
+    //var custName = id;
+    // Appending dialog to document.body to cover sidenav in docs app
+    var confirm = $mdDialog.confirm()
+        .title('Rehabilitar Usuario')
+        .textContent('Está seguro que desea rehabilitar este usuario?')
+        .ariaLabel('Rehabilitar')
+        .targetEvent(ev)
+        .ok('Rehabilitar')
+        .cancel('Cancel');
+
+    $mdDialog.show(confirm).then(function () {
+        //confirmed
+        $scope.userData.IsDeleted = false;
+        $scope.userData.IsEnabled = true;
+        var data = $.param($scope.userData)
+        var servCall = APIService.updateUsers(id, data);
+        servCall.then(function (u) {
+            //Set message
+            AlertService.SetAlert("El usuario ha sido habilitado", "success");
+            $window.location.href = "/#/blsp/users/list";
+        }, function (error) {
+            $scope.errorMessage = "Oops, something went wrong.";
+        })
+    }, function () {
+        //cancel
+    });
+}
+    })
     .controller('APIController', function ($scope, APIService, $controller, AlertService) {
 
         angular.extend(this, $controller('UserListController', { $scope: $scope })); //Could be useful later
 
-        
+
 
     })

@@ -27,17 +27,17 @@
                           </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="maquina in Maquinas | orderBy:sortUser:sortReverse">
-                                <td class="capitalize"><a href="/#/blsp/maquinas/crud/{{maquina.IDMaq}}" class="title"><strong>{{maquina.Descripcion}}</strong></a></td>
-                                <td>{{maquina.PSSAreas.Descripcion}}</td>
+                            <tr ng-repeat="maquina in Maquinas | filter:'!'+'maquina sin asignar' | orderBy:sortUser:sortReverse">
+                                <td class="capitalize"><a href="/#/blsp/maquinas/crud/{{maquina.IDMaq}}" class="title"><strong>{{maquina.Descripcion | capitalize}}</strong></a></td>
+                                <td>{{maquina.PSSAreas.Descripcion | capitalize}}</td>
                                 <td class="capitalize">
-                                <li class="listaTabla" ng-repeat="item in maquina.PSSOrigenesScrap">
-                                 {{item.Descripcion}}
+                                <li class="listaTabla" ng-repeat="item in maquina.PSSOrigenesScrap | filter:{Habilitado:true}">
+                                 {{item.Descripcion | capitalize}}
                                 </li>
                                 </td>
                                 <td class="capitalize">
-                                <li class="listaTabla" ng-repeat="item in maquina.PSSTiposMaterial">
-                                {{item.Descripcion}}
+                                <li class="listaTabla" ng-repeat="item in maquina.PSSTiposMaterial | filter:{Habilitado:true}">
+                                {{item.Descripcion | capitalize}}
                                 </li>
                                 </td>
 

@@ -1,0 +1,156 @@
+﻿<div ng-app="app" ng-controller="Reporte2Controller as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Reporte OP por Fecha</li>
+                </ol>
+                <h1 class="page-header">Reporte OP por Fecha<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+
+            <div class="col-sm-12 col-md-12 no-padding">
+
+                <div class="panel col-sm-12 col-md-3 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Desde</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <input type="date" ng-model="dateDesdeinp">
+
+                        </md-input-container>
+                    </div>
+                </div>
+                <div class="panel col-sm-12 col-md-3 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Hasta</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <input type="date" ng-model="dateHastainp">
+
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel col-sm-12 col-md-3 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Estado</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <select name="mySelect" id="mySelect"
+                                    ng-options="option.label for option in data.estados track by option.valor"
+                                    ng-model="data.selectedOption"></select>
+                        </md-input-container>
+                    </div>
+                </div>
+
+
+                <div class="panel col-sm-12 col-md-3 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body" style="padding: 13px;">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            
+
+                            <button style="float:left" class="btn button btn-primary" ng-click="doSearch()">BUSCAR</button>
+                            <span style="color: red;margin-left: 20px;margin-top: 8px;padding-top: px;float: left;">{{mensaje}}</span>
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-12" id="tablaOculta" ng-show="show">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">OP desde ({{dateDesdeinp | date :  "dd/MM/y"}}) hasta ({{dateHastainp | date :  "dd/MM/y"}})</h4>
+                    </div>
+
+                    <button type="submit" style="position: absolute;top: 4px;right: 18px;" ng-click="exportData()" data-ng-disabled="!reporte2.length" class="btn btn-primary pull-right ">Descargar XLS</button>
+
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>OP</th>
+
+                                <th>PorcentajeTotalScrap</th>
+                                <th>TotalKgProducidos</th>
+                                <th>TotalScrap</th>
+
+                                <th>CORTE_N1</th>
+                                <th>CORTE_N2</th>
+                                <th>CORTE_N3</th>
+                                <th>DOYPACK</th>
+                                <th>EMBOSSING</th>
+                                <th>IMPRESION_F</th>
+                                <th>IMPRESION_H</th>
+                                <th>LAMINACION_1</th>
+
+                                <th>LAMINACION_2</th>
+                                <th>LAMINACION_3</th>
+                                <th>MANGAS_COR</th>
+                                <th>MANGAS_PEG</th>
+                                <th>MANGAS_REV</th>
+                                <th>PLIEGOS_COR</th>
+                                <th>PLIEGOS_EMB</th>
+                                <th>PLIEGOS_TROQ</th>
+
+                                <th>REVISADO_N1</th>
+                                <th>REVISADO_N2</th>
+                                <th>REVISADO_N3</th>
+                                <th>REVISADO_N4</th>
+                                
+                                
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reporte in reporte2 | orderBy:sortUser:sortReverse">
+                                <td>{{reporte.NUMOP}}</td>
+                                <td>{{reporte.PorcentajeTotalScrap}}</td>
+                                <td>{{reporte.TotalKgProducidos | number}}</td>
+                                <td>{{reporte.TotalScrap | number}}</td>
+
+
+                                <td>{{reporte.CORTE_N1}}</td>
+                                <td>{{reporte.CORTE_N2}}</td>
+                                <td>{{reporte.CORTE_N3}}</td>
+                                <td>{{reporte.DOYPACK}}</td>
+                                <td>{{reporte.EMBOSSING}}</td>
+                                <td>{{reporte.IMPRESION_F}}</td>
+                                <td>{{reporte.IMPRESION_H}}</td>
+                                <td>{{reporte.LAMINACION_1}}</td>
+
+                                <td>{{reporte.LAMINACION_2}}</td>
+                                <td>{{reporte.LAMINACION_3}}</td>
+                                <td>{{reporte.MANGAS_COR}}</td>
+                                <td>{{reporte.MANGAS_PEG}}</td>
+                                <td>{{reporte.MANGAS_REV}}</td>
+                                <td>{{reporte.PLIEGOS_COR}}</td>
+                                <td>{{reporte.PLIEGOS_EMB}}</td>
+                                <td>{{reporte.PLIEGOS_TROQ}}</td>
+
+                                <td>{{reporte.REVISADO_N1}}</td>
+                                <td>{{reporte.REVISADO_N2}}</td>
+                                <td>{{reporte.REVISADO_N3}}</td>
+                                <td>{{reporte.REVISADO_N4}}</td>
+
+                                
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

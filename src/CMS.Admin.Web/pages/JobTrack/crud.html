@@ -20,8 +20,8 @@
                             <h4 class="panel-title">JobTrack</h4>
                         </div>
                         <md-content layout-padding>
-                         
-                    
+
+
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Nombre</label>
@@ -40,6 +40,48 @@
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Printer Default</label>
+                                    <input type="text" ng-model="JobTrackData.PrinterDefault" name="PrinterDefault" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Printer Etiquetas</label>
+                                    <input type="text" ng-model="JobTrackData.PrinterEtiquetas" name="PrinterEtiquetas" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+
+
+
+
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Modulos</label>
+                                    <md-select ng-model="selectedModules" name="selectedModules" multiple="true" md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" ng-model-options="{ trackBy: '$value.IdModuloApp' }">
+
+                                        <!-- Iterar sobre todas las opciones disponibles -->
+                                        <md-option ng-repeat="opcion in todasLasOpciones" ng-value="opcion">
+                                            {{ opcion.Descripcion | capitalize }}
+                                        </md-option>
+
+                                    </md-select>
+                                </md-input-container>
+
+
+
                             </div>
 
 

@@ -1,0 +1,200 @@
+﻿<div ng-app="app" ng-controller="ReporteRomaneoController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Reporte Romaneo</li>
+                </ol>
+                <h1 class="page-header">Reporte Romaneo<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+
+            <div class="col-sm-12 col-md-12 no-padding">
+
+                <div class="panel col-sm-12 col-md-1 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Num Of</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <input type="text" ng-model="pNroOf">
+
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel col-sm-12 col-md-2 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Cod Producto</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <input type="text" ng-model="pCodProducto">
+
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel col-sm-12 col-md-2 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Desde</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <input type="date" ng-model="dateDesdeinp">
+
+                        </md-input-container>
+                    </div>
+                </div>
+                <div class="panel col-sm-12 col-md-2 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Hasta</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <input type="date" ng-model="dateHastainp">
+
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel col-sm-12 col-md-1 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Turno</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <select name="mySelect" id="mySelect"
+                                    ng-options="option.label for option in data.turnos track by option.valor"
+                                    ng-model="data.selectedOption"></select>
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel col-sm-12 col-md-2 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Tipo</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            <select name="mySelect" id="mySelect"
+                                    ng-options="option.label for option in data2.tipos track by option.valor"
+                                    ng-model="data2.selectedOption"></select>
+                        </md-input-container>
+                    </div>
+                </div>
+
+
+                <div class="panel col-sm-12 col-md-2 panel-inverse" style="padding:0px">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body" style="padding: 13px;">
+                        <md-input-container md-no-float class="md-block md-no-error">
+                            
+
+                            <button style="float:left" class="btn button btn-primary" ng-click="doSearch()">BUSCAR</button>
+                            <span style="color: red;margin-left: 20px;margin-top: 8px;padding-top: px;float: left;">{{mensaje}}</span>
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-12" id="tablaOculta" ng-show="show">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Romaneo desde ({{dateDesdeinp | date :  "dd/MM/y"}}) hasta ({{dateHastainp | date :  "dd/MM/y"}})</h4>
+                    </div>
+
+                    <button type="submit" style="position: absolute;top: 4px;right: 18px;" ng-click="exportData()" data-ng-disabled="!reporteRomaneo.length" class="btn btn-primary pull-right ">Descargar XLS</button>
+
+                    <table class="table table-bordered dataTable tablaromaneo" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th><i class="fa fa-trash"></i></th>
+
+                                <th>Nro OF</th>
+
+                                <th>Codigo</th>
+                                <th>Descripcion</th>
+                                <th>Legajo</th>
+
+                                <th>Fecha</th>
+                                <th>Turno</th>
+                                <th>Tipo</th>
+                                <th>Pallets</th>
+                                <th>Bultos</th>
+                                <th>Unidades</th>
+                                <th>Bobinas</th>
+                                <th>MTS</th>
+                                <th>MTS2</th>
+
+                                <th>Peso Bruto</th>
+                                <th>Peso Neto</th>
+                                <th>Obs</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reporte in reporteRomaneo | orderBy:sortUser:sortReverse">
+                                <td><a ng-click="deleteRomaneo($event, reporte.IdRomaneo);"><i class="fa fa-trash"></i></a></td>
+
+                                <td class="tablaromaneospan">{{reporte.NroOf}}</td>
+                                <td>{{reporte.CodProducto}}</td>
+                                <td>{{reporte.DescProducto}}</td>
+                                <td>{{reporte.Legajo | number}}</td>
+                                <td style="width:50px">
+                                    {{reporte.Fecha | date:'dd/MM/yyyy'}}<br />
+                                    <span class="tablaromaneospan">{{reporte.Fecha | date:'HH:mm:ss'}}</span>
+                                </td>
+                                <td>{{reporte.Turno}}</td>
+                                <td>{{reporte.TipoRomaneo}}</td>
+                                <td>{{reporte.NroPallet}}</td>
+                                <td>{{reporte.CantBultos}}</td>
+                                <td>{{reporte.Unidades | number : fractionSize}}</td>
+                                <td>{{reporte.Bobinas}}</td>
+                                <td>{{reporte.MTS }}</td>
+                                <td>{{reporte.MTS2 }}</td>
+
+                                <td>{{reporte.PesoBruto}}</td>
+                                <td>{{reporte.PesoNeto}}</td>
+                                <td>{{reporte.Obs}}</td>
+
+
+
+
+
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -22,6 +22,8 @@
                             <tr>
                                 <th>Usuario</th>
                                 <th>Email / Username</th>
+                                <th>Estado</th>
+
                                 <th>Fecha de Creacion</th>
                             </tr>
                         </thead>
@@ -29,6 +31,7 @@
                             <tr ng-repeat="usuario in Usuarios | orderBy:sortUser:sortReverse">
                                 <td class="capitalize"><a href="/#/blsp/users/edit/{{usuario.Id}}" class="title"><strong>{{usuario.LastName}}, {{usuario.FirstName}}</strong></a></td>
                                 <td>{{usuario.Email}}</td>
+                                <td>{{usuario.habilitado}}</td>
 
                                 <td>{{usuario.CreationDate | date:"dd/MM/yyyy"}}</td>
                             </tr>

@@ -15,7 +15,10 @@ angular
             var servCallType = APIService.GetMaquinas();
             servCallType.then(function (u) {
                 console.log(u);
+
+
                 $scope.Maquinas = u.data;
+
             }, function (error) {
                 $scope.errorMessage = "Oops, something went wrong.";
             });
@@ -89,12 +92,12 @@ angular
 
     })
 
-    .controller('MaquinasCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('MaquinasCRUDController', function ($element, $scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 
 
 
 
-
+       
 
 
 
@@ -236,6 +239,17 @@ angular
         }
 
 
+        $scope.vegetables = ['Corn', 'Onions', 'Kale', 'Arugula', 'Peas', 'Zucchini'];
+        $scope.searchTerm;
+        $scope.clearSearchTerm = function () {
+            $scope.searchTerm = '';
+        };
+        // The md-select directive eats keydown events for some quick select
+        // logic. Since we have a search input here, we don't need that logic.
+        $element.find('input').on('keydown', function (ev) {
+            ev.stopPropagation();
+        });
+
         //User update
         $scope.processForm = function () {
             
@@ -248,6 +262,8 @@ angular
                 servCall.then(function (u) {
                     //Set and display message
                     AlertService.SetAlert("La maquina fue actualizada con éxito", "success");
+                    $window.location.href = "/#/blsp/maquinas/list";
+
                     AlertService.ShowAlert($scope);
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";

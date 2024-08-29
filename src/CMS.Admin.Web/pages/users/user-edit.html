@@ -46,6 +46,25 @@
                                         </div>
                                     </md-input-container>
                                 </div>
+
+                                <div layout-gt-xs="row">
+                                    <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                        <label>Rol</label>
+
+
+                                        <md-select ng-model="userData.Role" name="Roles" multiple="true" required md-on-close="clearSearchTerm()"
+                                                   data-md-container-class="selectdemoSelectHeader" ng-model-options="{trackBy: '$value.Id' }">
+
+                                           
+                                            <md-option ng-value="Role" ng-repeat="Role in Roles | orderBy:'Name' | filter:searchTerm track by Role.Id">{{ Role.Name | capitalize }}</md-option>
+
+
+                                        </md-select>
+                                        <div ng-messages="newUserForm.Roles.$error">
+                                            <div ng-messages-include="pages/validation/text.html"></div>
+                                        </div>
+                                    </md-input-container>
+                                </div>
                             </md-content>
                         </div>
                         <!--<div class="panel panel-inverse">
@@ -123,9 +142,12 @@
                             <div class="panel-body">
                                 <button class="btn btn-block btn-primary" type="submit">Actualizar Usuario</button>
                                 <!--<button class="btn btn-block btn-warning" type="button" ng-show="userData.IsEnabled == true" ng-click="disableUser(userData.Id);">Disable User</button>
-                                <button class="btn btn-block btn-success" type="button" ng-show="userData.IsEnabled == false" ng-click="enableUser(userData.Id);">Enable User</button>
-                                <button class="btn btn-block btn-primary" type="button" ng-show="userData.EmailConfirmed == false" ng-click="resendUserRequest(userData.UserName);">Notify User</button>-->
-                                <button class="btn btn-block btn-danger" type="button" ng-click="deleteUser($event, userData.Id);">Borrar Usuario</button>
+    <button class="btn btn-block btn-success" type="button" ng-show="userData.IsEnabled == false" ng-click="enableUser(userData.Id);">Enable User</button>
+    <button class="btn btn-block btn-primary" type="button" ng-show="userData.EmailConfirmed == false" ng-click="resendUserRequest(userData.UserName);">Notify User</button>-->
+
+                                <button ng-show="!userData.IsDeleted" class="btn btn-block btn-danger" type="button" ng-click="deleteUser($event, userData.Id);">Borrar Usuario</button>
+                                <button ng-show="userData.IsDeleted" class="btn btn-block btn-danger" type="button" ng-click="enableUser($event, userData.Id);">Habilitar Usuario</button>
+
                                 <a class="btn btn-block btn-default" ui-sref="blsp.users.list">Volver</a>
                             </div>
                         </div>

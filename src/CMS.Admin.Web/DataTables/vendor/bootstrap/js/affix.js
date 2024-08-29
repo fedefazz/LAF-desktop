@@ -102,7 +102,7 @@
       this.$element
         .removeClass(Affix.RESET)
         .addClass(affixType)
-        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
+        .trigger(affixType?.replace('affix', 'affixed') + '.bs.affix')
     }
 
     if (affix == 'bottom') {

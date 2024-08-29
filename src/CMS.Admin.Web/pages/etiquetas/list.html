@@ -1,0 +1,64 @@
+﻿<div ng-app="app" ng-controller="etiquetasController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Eiquetas</li>
+                </ol>
+                <h1 class="page-header">Eiquetas<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Listado de Etiquetas</h4>
+                    </div>
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Id Etiqueta</th>
+                                <th>Descripcion</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="etiqueta in Etiquetas | orderBy:sortUser:sortReverse | filter:searchEtiqueta">
+                                <td class="capitalize"><a href="/#/blsp/etiquetas/crud/{{etiqueta.id}}" class="title"><strong>{{etiqueta.nombre | capitalize}}</strong></a></td>
+                                <td>{{etiqueta.id_etiqueta}}</td>
+                                <td>{{etiqueta.descripcion}}</td>
+
+                            </tr>
+                        </tbody>
+                    </table>                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Acciones</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="blsp.etiquetas.crud">Nueva Etiqueta</a>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body">
+                         <md-input-container md-no-float class="md-block md-no-error search">
+                             <label>Buscar Etiqueta</label>
+                             <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                          </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

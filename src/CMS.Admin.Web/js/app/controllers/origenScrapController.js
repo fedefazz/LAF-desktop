@@ -89,22 +89,26 @@ angular
 
     })
 
-    .controller('origenScrapCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+
+
+    .controller('origenScrapCRUDController', function ($element,$scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
 
 
 
 
+        var CallTipos = APIService.GetTipos();
+        CallTipos.then(function (u) {
+            $scope.tipos = u.data;
+            console.log($scope.tipos);
 
 
-
-
-
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/origenScrap/list";
+        });
 
 
         var id = $stateParams.id;
-
-        console.log("------------");
-        console.log(id);
 
         $scope.dtInstance = {};
 
@@ -114,12 +118,12 @@ angular
 
         //labels
         if (id) {
-            $scope.PageTitle = 'Edit Origen Scrap';
-            $scope.SubmitButton = 'Actualiz Origen Scrap';
+            $scope.PageTitle = 'Editar Origen Scrap';
+            $scope.SubmitButton = 'Actualizar Origen Scrap';
 
 
 
-         
+
 
 
 
@@ -131,104 +135,94 @@ angular
 
 
 
-
-
-
-        
-
-
-
-
-
-
         }
 
 
+        var CallMaquinas= APIService.GetMaquinas();
+        CallMaquinas.then(function (u) {
+            $scope.maquinas = u.data;
+            console.log($scope.maquinas);
 
+
+            AlertService.ShowAlert($scope);
+        }, function (error) {
+            $window.location.href = "/#/blsp/origenScrap/list";
+        });
 
         //Gets category by Id for edit fields
         if (id) {
-            console.log("llega1");
-
             var servCall = APIService.GetOrigenById(id);
             servCall.then(function (u) {
                 $scope.origenData = u.data;
                 delete $scope.origenData.$id;
-
                 console.log($scope.origenData);
+
+                
 
                 if ($scope.origenData.idmaquina != 0) {
 
-                    console.log("llega");
-                    var CallMaquinasid = APIService.GetMaquinaById($scope.origenData.idmaquina);
-                    CallMaquinasid.then(function (u) {
-                        $scope.maquinasid = u.data;
-                        console.log($scope.maquinasid);
 
-                        $scope.origenData
+                    var CallAreas = APIService.GetMaquinaById($scope.origenData.idmaquina);
+                    CallAreas.then(function (u) {
+                        $scope.areas = u.data;
+                        console.log($scope.areas);
 
-
-                        AlertService.ShowAlert($scope);
-                    }, function (error) {
-                        $window.location.href = "/#/blsp/maquinas/list";
-                    });
-
-
-                } else {
-
-                    var CallMaquinas = APIService.GetMaquinas();
-                    CallMaquinas.then(function (u) {
-                        $scope.maquinas = u.data;
-                        console.log($scope.maquinas);
+                        $scope.origenData.Maquina = $scope.areas;
+                        console.log($scope.origenData.Maquina.Descripcion);
 
 
                         AlertService.ShowAlert($scope);
                     }, function (error) {
-                        $window.location.href = "/#/blsp/maquinas/list";
+                        $window.location.href = "/#/blsp/origenScrap/list";
                     });
-
-
-
                 }
+
+
+
+
 
 
                 AlertService.ShowAlert($scope);
             }, function (error) {
                 $window.location.href = "/#/blsp/origenScrap/list";
             });
-
-
-
-
-        } else {
-
-
-            var CallMaquinas = APIService.GetMaquinas();
-            CallMaquinas.then(function (u) {
-                $scope.maquinas = u.data;
-                console.log($scope.maquinas);
-
-
-                AlertService.ShowAlert($scope);
-            }, function (error) {
-                $window.location.href = "/#/blsp/maquinas/list";
-            });
-
         }
+
+        $scope.vegetables = ['Corn', 'Onions', 'Kale', 'Arugula', 'Peas', 'Zucchini'];
+        $scope.searchTerm;
+        $scope.clearSearchTerm = function () {
+            $scope.searchTerm = '';
+        };
+        // The md-select directive eats keydown events for some quick select
+        // logic. Since we have a search input here, we don't need that logic.
+        $element.find('input').on('keydown', function (ev) {
+            ev.stopPropagation();
+        });
+
 
         //User update
         $scope.processForm = function () {
-            
+
             //$scope.clientData.IsEnabled = true;
             //$scope.clientData.CompanyId = 2;
+            if ($scope.origenData.Maquina) {
+
+
+                $scope.origenData.idmaquina = $scope.origenData.Maquina.IDMaq;
+                delete $scope.origenData.Maquina;
+            }
 
             var data = $.param($scope.origenData);
             if (id) {
+
+
+                console.log(data);
                 var servCall = APIService.updateOrigen(id, data);
                 servCall.then(function (u) {
                     //Set and display message
                     AlertService.SetAlert("El Origen fue actualizado con éxito", "success");
-                    AlertService.ShowAlert($scope);
+                    $window.location.href = "/#/blsp/origenScrap/list";
+
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });
@@ -238,7 +232,7 @@ angular
                     var origenData = u.data;
                     //Set message
                     AlertService.SetAlert("El Origen fue creado con éxito", "success");
-                    $window.location.href = "/#/blsp/origenScrap/crud/" + origenData.IDOrigen;
+                    $window.location.href = "/#/blsp/origenScrap/list";
                 }, function (error) {
                     $scope.errorMessage = "Oops, something went wrong.";
                 });

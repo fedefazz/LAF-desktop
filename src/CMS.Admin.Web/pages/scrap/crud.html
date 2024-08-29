@@ -1,10 +1,10 @@
-﻿<div ng-app="app" ng-controller="tipoMaterialCRUDController">
+﻿<div ng-app="app" ng-controller="scrapCRUDController">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
                     <li><a href="/#/blsp/dashboard">Home</a></li>
-                    <li><a ui-sref="blsp.tipoMaterial.list">Tipos de Material</a></li>
+                    <li><a ui-sref="blsp.tipoMaterial.list">Scrap</a></li>
                     <li class="active">{{PageTitle}}</li>
                 </ol>
                 <h1 class="page-header">{{PageTitle}}<small></small></h1>
@@ -17,30 +17,216 @@
                 <div class="col-sm-12 col-md-8">
                     <div class="panel panel-inverse">
                         <div class="panel-heading">
-                            <h4 class="panel-title">Información del Material</h4>
+                            <h4 class="panel-title">Información del Scrap</h4>
                         </div>
                         <md-content layout-padding>
-                         
-                    
+
+
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Nombre</label>
-                                    <input type="text" ng-model="materialData.Descripcion" name="Nombre" required />
+                                    <label>ID</label>
+                                    <input type="text" ng-model="scrapData.IdRegScrap" name="Nombre" disabled />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
-                             
 
-                              
-                                
-                                
-                                
-                                
-                             
 
-                              
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha</label>
+                                    <input type="text" ng-model="scrapData.Fecha" name="Fecha" disabled />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>OP</label>
+                                    <input type="text" ng-model="scrapData.NumOP" name="OP" disabled />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+
                             </div>
+                            
+
+                           
+                            <div layout-gt-xs="row">
+
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Maquina</label>
+                                    <md-select ng-model="scrapData.PSSMaquinas" name="Origenes" multiple="false" required md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" required ng-model-options="{trackBy: '$value.IDMaq' }">
+                                        
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Maquina.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        
+                                        <md-option ng-value="maquina" ng-repeat="maquina in maquinas | orderBy:'Descripcion' | filter:searchTerm track by maquina.IDMaq">{{ maquina.Descripcion | capitalize }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                            </div>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Origenes de Scrap</label>
+                                   
+
+                                    <md-select ng-model="scrapData.PSSOrigenesScrap" name="Origenes" multiple="false" required md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" ng-model-options="{trackBy: '$value.IDOrigen' }">
+                                        
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Origen de Scrap.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-option ng-value="origen" ng-repeat="origen in origenes | orderBy:'Descripcion' | filter:searchTerm track by origen.IDOrigen">{{ origen.Descripcion | capitalize }}</md-option>
+
+
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+
+                              
+
+                            </div>
+
+                          
+
+
+
+
+                            <div layout-gt-xs="row">
+
+
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Tipos Materiales</label>
+                                    <md-select ng-model="scrapData.PSSTiposMaterial" name="TiposMaterial" multiple="false" required md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader"  ng-model-options="{trackBy: '$value.IDTipoMat' }">
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Tipos de materiales.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        
+                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos | orderBy:'Descripcion' | filter:searchTerm track by tipo.IDTipoMat">{{ tipo.Descripcion | capitalize }}</md-option>
+                                    
+
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                            </div>
+                            <div layout-gt-xs="row">
+
+
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Actividad</label>
+                                    <md-select ng-model="scrapData.PSSActividades" name="Actividad" multiple="false" md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" required ng-model-options="{trackBy: '$value.IdActividad' }">
+                                        
+                                        
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Actividad.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        
+                                        <md-option ng-value="actividad" ng-repeat="actividad in actividades | orderBy:'Descripcion' | filter:searchTerm track by actividad.IdActividad">{{ actividad.Descripcion | capitalize }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+
+
+                                <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
+                                    <label>Operadores</label>
+                                    <md-select ng-model="scrapData.PSSOperadores" name="Operadores" multiple="false" md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" required ng-model-options="{trackBy: '$value.IdOperador' }">
+                                        
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Operador.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-option ng-value="operador" ng-repeat="operador in operadores | orderBy:'Apellido' | filter:searchTerm track by operador.IdOperador">{{ operador.Apellido | capitalize }}, {{ operador.Nombre | capitalize }}</md-option>
+                                    </md-select>
+                                    <div ng-messages="newUserForm.Roles.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                            </div>
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Peso</label>
+                                    <input type="text" multiple ng-model="scrapData.Peso" name="Peso" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+
+
+
+
+                            </div>
+
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Observaciones</label>
+                                    <input type="text" multiple ng-model="scrapData.Observaciones" name="Observaciones" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                              
+
+
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -49,7 +235,7 @@
                         </md-content>
                     </div>
 
-                  
+
                 </div>
                 <div class="col-sm-12 col-md-4">
                     <div class="panel panel-inverse">
@@ -58,12 +244,23 @@
                         </div>
                         <div class="panel-body">
                             <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
-                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteMaterial($event, materialData.IDTipoMat);" ng-show="materialData.IDTipoMat">Borrar Material</button>
-                            <a class="btn btn-block btn-default" ui-sref="blsp.tipoMaterial.list">Volver</a>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteScrap($event, scrapData.IdRegScrap);" ng-show="scrapData.IdRegScrap">Borrar Scrap</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.scrap.list">Volver</a>
                         </div>
                     </div>
 
-               
+                    <!--<div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Author Image</h4>
+                </div>
+                <div class="panel-body">
+                    <div class="img-holder">
+                        <img src="{{authorImage}}" alt="Featured Image" class="img-responsive img-preview" />
+                    </div>
+                    <a ng-click="ChooseFile()" class="btn btn-sm btn-block btn-primary">Change author image</a>
+                </div>
+            </div>-->
+                    <!--<pre>{{maquinaData | json}}</pre>-->
                 </div>
             </form>
         </div>   

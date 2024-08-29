@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--[if lt IE 7]> <html class="no-js ie6 ie9-and-less ie8-and-less ie7-and-less" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 ie9-and-less ie8-and-less ie7-and-less" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8 ie9-and-less ie8-and-less" lang="en"> <![endif]-->
@@ -554,27 +554,27 @@
                                 location.href = 'data:text/css,' + encodeURIComponent(cssCache[theme]);
                             };
 
-                            $('.browser iframe').each(function(){
-                                var _this = this;
+                            //$('.browser iframe').each(function(){
+                            //    var _this = this;
 
-                                doc = (this.contentWindow || this.documentWindow).document;
-                                doc.open();
-                                doc.write('' +
-                                    '<div class="pace">' +
-                                        '<div class="pace-progress" data-progress="50" data-progress-text="50%" style="width: 50%;">' +
-                                            '<div class="pace-progress-inner"></div>' +
-                                        '</div>' +
-                                        '<div class="pace-activity"></div>' +
-                                    '</div>' +
-                                '');
-                                doc.close();
+                            //    doc = (this.contentWindow || this.documentWindow).document;
+                            //    doc.open();
+                            //    doc.write('' +
+                            //        '<div class="pace">' +
+                            //            '<div class="pace-progress" data-progress="50" data-progress-text="50%" style="width: 50%;">' +
+                            //                '<div class="pace-progress-inner"></div>' +
+                            //            '</div>' +
+                            //            '<div class="pace-activity"></div>' +
+                            //        '</div>' +
+                            //    '');
+                            //    doc.close();
 
-                                // For some strange reason, the Color library we depend on defines itself
-                                // asyncronously
-                                setTimeout(function(){
-                                    initFrame(_this);
-                                }, 0);
-                            });
+                            //    // For some strange reason, the Color library we depend on defines itself
+                            //    // asyncronously
+                            //    setTimeout(function(){
+                            //        initFrame(_this);
+                            //    }, 0);
+                            //});
 
                             $color.on('change keyup', function(){
                                 var color = $(this).val();

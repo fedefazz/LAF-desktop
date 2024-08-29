@@ -1,0 +1,95 @@
+﻿<div ng-app="app" ng-controller="ProductoDashboardController">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/cms/dashboard">Home</a></li>
+                    <li class="active">KPI Productos</li>
+                </ol>
+                <h1 class="page-header">KPI Productos<small></small></h1>
+            </div>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="widget-chart bg-black">
+                    <div class="widget-chart-content">
+                        <h4 class="chart-title">
+                            Lead Time Nuevos Productos Hueco
+                            <small>Incidencias de los ultimos 12 meses</small>
+                        </h4>
+                        <div id="visitors-line-chart2" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                    </div>
+
+                    <div class="widget-chart-sidebar bg-black-darker">
+                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses:</span> {{totals.totalQTY}} 
+
+                        <ul class="chart-legend">
+                            <span style="color:rgb(114, 253, 22);">Cantidad total por Producto</span>
+                            <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> SCP - últimos 12 meses: {{totals.QTY_SCP}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-warning m-r-5" style="color:#348fe2 !important"></i> SND - últimos 12 meses: {{totals.QTY_SND}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-danger m-r-5" style="color:yellow !important"></i> SNP - últimos 12 meses: {{totals.QTY_SNP}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-danger m-r-5" style="color:#00ACAC !important"></i> SNPS - últimos 12 meses: {{totals.QTY_SNPS}} </li>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="col-sm-12 col-md-12">
+                <div class="widget-chart bg-black">
+                    <div class="widget-chart-content">
+                        <h4 class="chart-title">
+                            Lead Time Nuevos Productos Flexo
+                            <small>Incidencias de los ultimos 12 meses</small>
+                        </h4>
+                        <div id="visitors-line-chart3" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                    </div>
+
+                    <div class="widget-chart-sidebar bg-black-darker">
+                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses:</span> {{totalsflexo.totalQTY}} 
+
+                        <ul class="chart-legend">
+                            <span style="color:rgb(114, 253, 22);">Cantidad total por Producto</span>
+                            <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> SCP - últimos 12 meses: {{totalsflexo.QTY_SCP}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-warning m-r-5" style="color:#348fe2 !important"></i> SND - últimos 12 meses: {{totalsflexo.QTY_SND}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-danger m-r-5" style="color:yellow !important"></i> SNP - últimos 12 meses: {{totalsflexo.QTY_SNP}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-danger m-r-5" style="color:#00ACAC !important"></i> SNPS - últimos 12 meses: {{totalsflexo.QTY_SNPS}} </li>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="widget-chart bg-black">
+                    <div class="widget-chart-content">
+                        <h4 class="chart-title">
+                            Lead Time Nuevos Productos
+                            <small>Incidencias de los ultimos 12 meses</small>
+                        </h4>
+                        <div id="visitors-line-chart4" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                    </div>
+
+                    <div class="widget-chart-sidebar bg-black-darker">
+                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses: {{totalsgeneral.totalQTY}} </span>
+
+                        <ul class="chart-legend">
+                            <span style="color:rgb(114, 253, 22);">Cantidad total por Impresora</span>
+                            <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> FLEXO - últimos 12 meses: {{totalsgeneral.QTY_FLEXO}} </li>
+                            <li><i class="fa fa-circle-o fa-fw text-danger m-r-5" style="color:yellow !important"></i> HUECO - últimos 12 meses: {{totalsgeneral.QTY_HUECO}} </li>
+
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>

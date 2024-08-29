@@ -6,7 +6,7 @@ namespace blsp.Admin.Web
     {
         public static void RegisterBundles(BundleCollection bundles)
         {
-            bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
+            bundles.Add(new Bundle("~/bundles/jquery").Include(
                         "~/js/jquery-3.1.1.min.js",
                         "~/js/jquery-ui.min.js",
                         "~/assets/plugins/slimscroll/jquery.slimscroll.min.js",
@@ -21,7 +21,7 @@ namespace blsp.Admin.Web
 
                         ));
 
-            bundles.Add(new ScriptBundle("~/bundles/angular").Include(
+            bundles.Add(new Bundle("~/bundles/angular").Include(
                     /* new theme */
                         "~/assets/plugins/angularjs/angular.min.js",
                         "~/assets/plugins/angularjs/angular-ui-route.min.js",
@@ -69,6 +69,10 @@ namespace blsp.Admin.Web
                          "~/js/app/controllers/tipoMaterialController.js",
                         "~/js/app/controllers/origenScrapController.js",
                         "~/js/app/controllers/scrapController.js",
+                         "~/js/app/controllers/ReporteController.js",
+                         "~/js/app/controllers/ReporteRomaneoController.js",
+                           "~/js/app/controllers/etiquetasController.js",
+                         "~/js/app/controllers/productosController.js",
 
                         //"~/js/app/controllers/LayoutController.js",
                         "~/js/app/controllers/CashRegisterController.js",
@@ -109,31 +113,39 @@ namespace blsp.Admin.Web
                         "~/js/ngPrint.min.js",
                         "~/js/alasql.js",
                         "~/js/xlsx.core.min.js"
+                                               
+
+
 
 
                       ));
 
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+            bundles.Add(new Bundle("~/bundles/bootstrap").Include(
                       "~/js/bootstrap.min.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/plugins").Include(
+            bundles.Add(new Bundle("~/bundles/plugins").Include(
                       "~/js/loading-bar.min.js",
                       "~/js/angular-datatables.min.js",
                       "~/js/multiselect-tpls.js",
                       "~/js/moment.min.js",
                       "~/js/moment-with-locales.js",
-                      "~/js/ng-csv.js"
-
+                      "~/js/ng-csv.js",
+                      "~/js/dataTables.fixedColumns.min.js",
+                      "~/js/angular-datatables.fixedcolumns.min.js"
+                      //"~/js/dataTables.fixedColumns.js",
+                     // "~/js/angular-datatables.fixedcolumns.js"
 
                       ));
 
-            bundles.Add(new ScriptBundle("~/bundles/site").Include(
+            bundles.Add(new Bundle("~/bundles/site").Include(
                       "~/js/functions.js"));
 
-            bundles.Add(new StyleBundle("~/styles/css").Include(
+            bundles.Add(new Bundle("~/styles/css").Include(
                       "~/css/_include.css",
-                      "~/DataTables/css/buttons.dataTables.css"
+                      "~/DataTables/css/buttons.dataTables.css",
+                                            "~/css/fixedColumns.dataTables.min.css"
+
 
 
 

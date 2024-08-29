@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CMS.Admin.Web</RootNamespace>
     <AssemblyName>CMS.Admin.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort>44307</IISExpressSSLPort>
@@ -21,6 +21,8 @@
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +45,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
@@ -50,11 +53,8 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -96,6 +96,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebGrease">
       <Private>True</Private>
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
@@ -141,6 +142,99 @@
     <Content Include="assets\css\animate.min.css" />
     <Content Include="assets\css\prism.css" />
     <Content Include="assets\js\prism.js" />
+    <Content Include="css\angular-multi-select-master\doc\css\bootstrap.min.css" />
+    <Content Include="css\angular-multi-select-master\doc\css\isteven-multi-select.css" />
+    <Content Include="css\angular-multi-select-master\doc\css\simple-sidebar.css" />
+    <Content Include="css\angular-multi-select-master\doc\css\style.css" />
+    <Content Include="css\angular-multi-select-master\doc\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\highlight.pack.js" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\arta.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\ascetic.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-dune.dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-dune.light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-forest.dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-forest.light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-heath.dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-heath.light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-lakeside.dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-lakeside.light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-seaside.dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\atelier-seaside.light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\brown_paper.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\brown_papersq.png" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\default.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\docco.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\far.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\foundation.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\github.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\googlecode.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\idea.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\ir_black.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\magula.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\mono-blue.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\monokai.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\monokai_sublime.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\obsidian.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\paraiso.dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\paraiso.light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\pojoaque.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\pojoaque.jpg" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\railscasts.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\rainbow.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\school_book.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\school_book.png" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\solarized_dark.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\solarized_light.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\sunburst.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\tomorrow-night-blue.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\tomorrow-night-bright.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\tomorrow-night-eighties.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\tomorrow-night.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\tomorrow.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\vs.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\xcode.css" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\styles\zenburn.css" />
+    <Content Include="css\angular-multi-select-master\doc\index.htm" />
+    <Content Include="css\angular-multi-select-master\doc\js\app.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-callbacks.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-disabling-enabling.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-dynamic-update.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-grouping.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-horizontal-layout.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-minimum.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\controllers\demo-single-selection-mode.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\angular-route.min.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\angular.min.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\bootstrap.min.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\helper.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\isteven-multi-select.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\jquery.min.js" />
+    <Content Include="css\angular-multi-select-master\doc\js\libs\paypal-button.min.js" />
+    <Content Include="css\angular-multi-select-master\doc\views\breaking-changes.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\bug-reporting-contributing.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\configs-options.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\contributing.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-callbacks.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-disabling-enabling.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-dynamic-update.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-grouping.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-helper-elements.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-horizontal-layout.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-minimum.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-output-properties.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\demo-single-selection-mode.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\dependency-compatibility.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\faq.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\getting-started.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\issues-bug-reporting.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\main.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\mit-license.htm" />
+    <Content Include="css\angular-multi-select-master\doc\views\other-cool-stuffs.htm" />
+    <Content Include="css\angular-multi-select-master\isteven-multi-select.css" />
+    <Content Include="css\angular-multi-select-master\isteven-multi-select.js" />
+    <Content Include="css\angular-multi-select-master\LICENSE.txt" />
+    <Content Include="css\angular-multi-select-master\screenshot.png" />
     <Content Include="css\colorpicker.css" />
     <Content Include="assets\css\invoice-print.css" />
     <Content Include="assets\css\invoice-print.min.css" />
@@ -4996,6 +5090,7 @@
     <Content Include="assets\plugins\switchery\switchery.min.js" />
     <Content Include="css\angular-image-cropper.css" />
     <Content Include="css\croppie.css" />
+    <Content Include="css\fixedColumns.dataTables.min.css" />
     <Content Include="css\isteven-multi-select.css" />
     <Content Include="css\login.css" />
     <Content Include="css\material-datetimepicker.css" />
@@ -5413,6 +5508,8 @@
     <Content Include="images\logo-short.png" />
     <Content Include="images\logo.png" />
     <Content Include="js\alasql.js" />
+    <Content Include="js\angular-datatables.fixedcolumns.js" />
+    <Content Include="js\angular-datatables.fixedcolumns.min.js" />
     <Content Include="js\angular-drag-and-drop-lists.js" />
     <Content Include="js\angular-drag-and-drop-lists.min.js" />
     <Content Include="js\angular-image-cropper.js" />
@@ -5422,8 +5519,11 @@
     <Content Include="js\angular-sanitize.min.js" />
     <Content Include="js\angular-slugify.js" />
     <Content Include="js\app\controllers\JobTrackController.js" />
+    <Content Include="js\app\controllers\ReporteController.js" />
+    <Content Include="js\app\controllers\ProductosController.js" />
     <Content Include="js\app\controllers\ScrapController.js" />
     <Content Include="js\app\controllers\ActividadController.js" />
+    <Content Include="js\app\controllers\etiquetasController.js" />
     <Content Include="js\app\controllers\tipoMaterialController.js" />
     <Content Include="js\app\controllers\origenScrapController.js" />
     <Content Include="js\app\controllers\OperadoresController.js" />
@@ -5455,14 +5555,25 @@
     <Content Include="Mail\Templates\CreateUserRequestEmailTemplate.html" />
     <Content Include="Mail\Templates\ForgotPasswordConfirmationEmailTemplate.html" />
     <Content Include="Mail\Templates\ResetPasswordEmailTemplate.html" />
+    <Content Include="pages\dashboardProductos\dashboard.html" />
     <Content Include="pages\JobTrack\crud.html" />
     <Content Include="pages\JobTrack\list.html" />
     <Content Include="pages\origenScrap\crud.html" />
     <Content Include="pages\origenScrap\list.html" />
+    <Content Include="pages\productos\crud.html" />
+    <Content Include="pages\reportes\reporteRomaneo\crud.html" />
+    <Content Include="pages\reportes\reporteRomaneo\list.html" />
+    <Content Include="pages\reportes\reporte2\crud.html" />
+    <Content Include="pages\reportes\reporte2\list.html" />
+    <Content Include="pages\reportes\reporte1\crud.html" />
+    <Content Include="pages\reportes\reporte1\list.html" />
+    <Content Include="pages\productos\list.html" />
     <Content Include="pages\scrap\crud.html" />
     <Content Include="pages\scrap\list.html" />
     <Content Include="pages\actividades\crud.html" />
     <Content Include="pages\actividades\list.html" />
+    <Content Include="pages\etiquetas\crud.html" />
+    <Content Include="pages\etiquetas\list.html" />
     <Content Include="pages\tipoMaterial\crud.html" />
     <Content Include="pages\tipoMaterial\list.html" />
     <Content Include="pages\operadores\crud.html" />
@@ -6575,6 +6686,19 @@
     <Content Include="DataTables\vendor\jquery\external\sizzle\dist\sizzle.min.map" />
     <Content Include="DataTables\vendor\jquery\README.md" />
     <Content Include="DataTables\vendor\jquery\src\.eslintrc.json" />
+    <Content Include="js\app\controllers\data.json" />
+    <Content Include="css\angular-multi-select-master\.npmignore" />
+    <Content Include="css\angular-multi-select-master\bower.json" />
+    <Content Include="css\angular-multi-select-master\CHANGELOG.md" />
+    <Content Include="css\angular-multi-select-master\doc\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="css\angular-multi-select-master\doc\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="css\angular-multi-select-master\doc\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\CHANGES.md" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\LICENSE" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\README.md" />
+    <Content Include="css\angular-multi-select-master\doc\highlight\README.ru.md" />
+    <Content Include="css\angular-multi-select-master\package.json" />
+    <Content Include="css\angular-multi-select-master\README.md" />
     <None Include="Properties\PublishProfiles\Amazon LAF Front Api.pubxml" />
     <None Include="Properties\PublishProfiles\AWS Desktop.pubxml" />
     <None Include="Properties\PublishProfiles\CMS-BACKEND.pubxml" />

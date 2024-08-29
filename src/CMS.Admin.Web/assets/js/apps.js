@@ -293,7 +293,7 @@ var handlePanelAction = function() {
             $(this).attr('data-init', true);
         }
     });
-    $(document).on('click', '[data-click=panel-reload]', function(e) {
+    $(document).on('load', '[data-click=panel-reload]', function(e) {
         e.preventDefault();
         var target = $(this).closest('.panel');
         if (!$(target).hasClass('panel-loading')) {
@@ -359,23 +359,6 @@ var handlePanelAction = function() {
 };
 
 
-/* 07. Handle Panel - Draggable
------------------------------------------------- */
-var handleDraggablePanel = function() {
-    "use strict";
-    var target = $('.panel').parent('[class*=col]');
-    var targetHandle = '.panel-heading';
-    var connectedTarget = '.row > [class*=col]';
-    
-    $(target).sortable({
-        handle: targetHandle,
-        connectWith: connectedTarget,
-        stop: function(event, ui) {
-            ui.item.find('.panel-title').append('<i class="fa fa-refresh fa-spin m-l-5" data-id="title-spinner"></i>');
-            handleSavePanelPosition(ui.item);
-        }
-    });
-};
 
 
 /* 08. Handle Tooltip & Popover Activation
@@ -599,73 +582,8 @@ var handleAfterPageLoadAddClass = function() {
 };
 
 
-/* 13. Handle Save Panel Position Function - added in V1.5
------------------------------------------------- */
-var handleSavePanelPosition = function(element) {
-    "use strict";
-    if ($('.ui-sortable').length !== 0) {
-        var newValue = [];
-        var index = 0;
-        $.when($('.ui-sortable').each(function() {
-            var panelSortableElement = $(this).find('[data-sortable-id]');
-            if (panelSortableElement.length !== 0) {
-                var columnValue = [];
-                $(panelSortableElement).each(function() {
-                    var targetSortId = $(this).attr('data-sortable-id');
-                    columnValue.push({id: targetSortId});
-                });
-                newValue.push(columnValue);
-            } else {
-                newValue.push([]);
-            }
-            index++;
-        })).done(function() {
-            var targetPage = window.location.href;
-                targetPage = targetPage.split('?');
-                targetPage = targetPage[0];
-            localStorage.setItem(targetPage, JSON.stringify(newValue));
-            $(element).find('[data-id="title-spinner"]').delay(500).fadeOut(500, function() {
-                $(this).remove();
-            });
-        });
-    }
-};
 
 
-/* 14. Handle Draggable Panel Local Storage Function - added in V1.5
------------------------------------------------- */
-var handleLocalStorage = function() {
-    "use strict";
-    if (typeof(Storage) !== 'undefined' && typeof(localStorage) !== 'undefined') {
-        var targetPage = window.location.href;
-            targetPage = targetPage.split('?');
-            targetPage = targetPage[0];
-        var panelPositionData = localStorage.getItem(targetPage);
-        
-        if (panelPositionData) {
-            panelPositionData = JSON.parse(panelPositionData);
-            var i = 0;
-            $('.panel').parent('[class*="col-"]').each(function() {
-                var storageData = panelPositionData[i]; 
-                var targetColumn = $(this);
-                if (storageData) {
-                    $.each(storageData, function(index, data) {
-                        var targetId = $('[data-sortable-id="'+ data.id +'"]').not('[data-init="true"]');
-                        if ($(targetId).length !== 0) {
-                            var targetHtml = $(targetId).clone();
-                            $(targetId).remove();
-                            $(targetColumn).append(targetHtml);
-                            $('[data-sortable-id="'+ data.id +'"]').attr('data-init','true');
-                        }
-                    });
-                }
-                i++;
-            });
-        }
-    } else {
-        alert('Your browser is not supported with the local storage'); 
-    }
-};
 
 
 /* 15. Handle Reset Local Storage - added in V1.5
@@ -1135,7 +1053,6 @@ var App = function () {
 			handlePageContentView();
 		},
 		initComponent: function() {
-			handleDraggablePanel();
 			handleIEFullHeightContent();
 			handleSlimScroll();
 			handleUnlimitedTabsRender();

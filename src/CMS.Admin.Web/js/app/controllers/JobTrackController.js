@@ -103,6 +103,17 @@ angular
 
         var id = $stateParams.id;
 
+        $scope.todasLasOpciones = [
+            { IdModuloApp: '1', Descripcion: 'Empaque' },
+            { IdModuloApp: '2', Descripcion: 'Tabaco Pallets' },
+            { IdModuloApp: '3', Descripcion: 'Tabaco Bobinas' },
+            { IdModuloApp: '4', Descripcion: 'Scrap' },
+
+
+        ];
+
+        $scope.selectedModules = [];
+
         $scope.dtInstance = {};
 
         $scope.dtOptions = DTOptionsBuilder
@@ -145,14 +156,19 @@ angular
 
         //Gets category by Id for edit fields
         if (id) {
+            console.log("llamar por ID");
+
             var servCall = APIService.GetJobTrackById(id);
             servCall.then(function (u) {
                 $scope.JobTrackData = u.data;
                 delete $scope.JobTrackData.$id;
 
                 console.log($scope.JobTrackData);
+                console.log("$scope.JobTrackData $scope.JobTrackData $scope.JobTrackData", $scope.JobTrackData);
+                $scope.selectedModules = angular.copy($scope.JobTrackData.PSSJobtrackModulos);
+                console.log("$scope.selectedModulesa", $scope.selectedModules);
+                console.log("  $scope.todasLasOpciones", $scope.todasLasOpciones);
 
-                
                 AlertService.ShowAlert($scope);
             }, function (error) {
                 $window.location.href = "/#/blsp/JobTrack/list";
@@ -160,16 +176,33 @@ angular
         }
 
 
+        
+
+
         //User update
         $scope.processForm = function () {
-            
-            //$scope.clientData.IsEnabled = true;
-            //$scope.clientData.CompanyId = 2;
+            $scope.JobTrackData.PSSJobtrackModulos = $scope.selectedModules;
 
+
+            if (id) {
+                console.log("$scope.selectedModules antes", $scope.JobTrackData)
+
+                angular.forEach($scope.JobTrackData.PSSJobtrackModulos, function (value, key) {
+
+                    value.IdJobtrack = $scope.JobTrackData.IDJobTrack;
+
+
+                });
+            }
+            
             var data = $.param($scope.JobTrackData);
+            console.log($scope.JobTrackData)
+            console.log("$scope.selectedModules",$scope.selectedModules)
 
             if (id) {
                 var servCall = APIService.updateJobTrack(id, data);
+              
+
                 servCall.then(function (u) {
                     //Set and display message
                     AlertService.SetAlert("El JobTrack fue actualizado con éxito", "success");

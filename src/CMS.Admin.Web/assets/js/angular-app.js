@@ -25,7 +25,8 @@
             'colorpicker.module',
             "isteven-multi-select",
             "ngPrint",
-            "ngCsv"
+            "ngCsv",
+            "datatables.fixedcolumns"
 ]);
 
 app.run(function ($rootScope, $http, $window, $state, setting) {
@@ -56,6 +57,8 @@ app.run(function ($rootScope, $http, $window, $state, setting) {
 
 
 app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRouterProvider) {
+
+
 
     $urlRouterProvider.otherwise('/blsp/dashboard');
 
@@ -119,6 +122,27 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
+
+        /* Etiquetas */
+            .state('blsp.etiquetas', {
+                url: '/etiquetas',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.etiquetas.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Etiquetas' },
+                    templateUrl: 'pages/etiquetas/list.html'
+                })
+                .state('blsp.etiquetas.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Etiquetas CRUD' },
+                    templateUrl: 'pages/etiquetas/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
          /* Operadores */
             .state('blsp.operadores', {
                 url: '/operadores',
@@ -138,6 +162,8 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                         id: { squash: true, value: null }
                     }
                 })
+
+      
 
          /* Tipo Material */
             .state('blsp.tipoMaterial', {
@@ -159,6 +185,43 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
+        /* Productos */
+        .state('blsp.productos', {
+            url: '/productos',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.productos.list', {
+            url: '/list',
+            data: { pageTitle: 'Productos' },
+            templateUrl: 'pages/productos/list.html'
+        })
+        .state('blsp.productos.crud', {
+            url: '/crud/:id',
+            data: { pageTitle: 'Productos' },
+            templateUrl: 'pages/productos/crud.html',
+            params: {
+                id: { squash: true, value: null }
+            }
+        })
+        .state('blsp.productos.dashboard', {
+            url: '/dashboard',
+            data: { pageTitle: 'Productos Dashboard' },
+            templateUrl: 'pages/productos/dashboard.html'
+        })
+
+        .state('blsp.dashboardProductos', {
+            url: '/dashboardProductos',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.dashboardProductos.dashboard', {
+            url: '/dashboard',
+            data: { pageTitle: 'Dashboard Productos' },
+            templateUrl: 'pages/dashboardProductos/dashboard.html'
+        })
+    
+
           /* Origen de Scrap */
             .state('blsp.origenScrap', {
                 url: '/origenScrap',
@@ -179,6 +242,68 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
+
+
+         /* Reporte 1 */
+            .state('blsp.reporte1', {
+                url: '/reporte1',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.reporte1.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Reporte Scrap 1' },
+                    templateUrl: 'pages/reportes/reporte1/list.html'
+                })
+                .state('blsp.reporte1.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Origen de Scrap CRUD' },
+                    templateUrl: 'pages/reportes/reporte1/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
+         /* Reporte 2 */
+            .state('blsp.reporte2', {
+                url: '/reporte2',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.reporte2.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Reporte Scrap 2' },
+                    templateUrl: 'pages/reportes/reporte2/list.html'
+                })
+                .state('blsp.reporte2.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Origen de Scrap CRUD' },
+                    templateUrl: 'pages/reportes/reporte2/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
+
+
+          /* Reporte 2 */
+            .state('blsp.reporteRomaneo', {
+                url: '/reporteRomaneo',
+                template: '<div ui-view></div>',
+                abstract: true
+            })
+                .state('blsp.reporteRomaneo.list', {
+                    url: '/list',
+                    data: { pageTitle: 'Reporte Romaneo' },
+                    templateUrl: 'pages/reportes/reporteRomaneo/list.html'
+                })
+                .state('blsp.reporteRomaneo.crud', {
+                    url: '/crud/:id',
+                    data: { pageTitle: 'Origen de Scrap CRUD' },
+                    templateUrl: 'pages/reportes/reporte2/crud.html',
+                    params: {
+                        id: { squash: true, value: null }
+                    }
+                })
 
          /* Origen de Scrap */
             .state('blsp.JobTrack', {
@@ -386,7 +511,7 @@ var url = 'http://api.admin.stg.teletica.ray.media/api/Backload/';
 
 app.config(function ($httpProvider, fileUploadProvider) {
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
-    fileUploadProvider.defaults.redirect = window.location.href.replace(
+    fileUploadProvider.defaults.redirect = window?.location?.href?.replace(
         /\/[^\/]*$/,
         '/cors/result.html?%s'
     );
@@ -470,7 +595,7 @@ app.config(function ($provide) {
 
 app.filter('capitalize', function () {
     return function (input) {
-        input = input.replace(/_/g, " ");
+        input = input?.replace(/_/g, " ");
         return (!!input) ? input.charAt(0).toUpperCase() + input.substr(1).toLowerCase() : '';
     }
 });
@@ -478,7 +603,7 @@ app.filter('capitalize', function () {
 app.filter('weekday', function () {
     return function (input) {
         var days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-        input = input.replace(/_/g, " ");
+        input = input?.replace(/_/g, " ");
         return (!!input) ? days[input] : '';
     }
 });
@@ -663,7 +788,6 @@ app.directive('treednd', function () {
                         var idx;
                         if (fromParentNode && toParent) {
                             idx = fromParentNode.Childs.indexOf(fromNode);
-                            console.log(idx);
 
                             if (idx != -1) {
                                 fromParentNode.Childs.splice(idx, 1);
@@ -679,7 +803,6 @@ app.directive('treednd', function () {
                             }
                         } else if (position === 'up') {
                             if (toParent) {
-                                console.log(scope.$parentNode);
                                 //scope.createNodeData['ParentNode.Id'] = scope.$parentNode.Id;
                                 fromNode.ParentNode = scope.$parentNode.Id;
                                 idx = toParent.indexOf(toNode);
@@ -720,7 +843,6 @@ app.directive('treednd', function () {
                                 scope.updatedParentNodes.push(toParent);
                             }
 
-                            console.log(scope.showSaveOrder);
                             scope.showSaveOrder = true;
 
                            $('#SaveOrder').removeClass('ng-hide');

@@ -1,0 +1,426 @@
+﻿<div ng-app="app" ng-controller="productosController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Productos</li>
+                </ol>
+                <h1 class="page-header">Productos<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <!-- Filtros y búsqueda -->
+            <div class="col-sm-12 col-md-12" style="align-items: center; justify-content: space-between; padding: 0px;">
+                <div class="panel-body">
+                    <div>
+                       
+                        <div class="form-group">
+                            <div class="form-group-container">
+                                <md-input-container class="md-block flex search">
+                                    <label>Buscar...</label>
+                                    <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                                </md-input-container>
+                                <!-- Filtro de Estado dentro de filtros dinámicos -->
+                                <div class="boton-filtros">
+                                    <!-- Botón para mostrar/ocultar el div -->
+                                    <button ng-click="toggleDiv()" class="btn btn-primary">
+                                        <i class="fa" ng-class="{'fa-chevron-up': isDivVisible, 'fa-chevron-down': !isDivVisible}"></i>
+                                        Filtros Avanzados
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="filterSection" ng-show="isDivVisible" class="filter-section">
+                                <button type="button" ng-click="addFilter()" class="btn btn-primary">+</button>
+                                <div class="newdiv">
+                                    <div ng-repeat="filter in filters track by $index" class="filter-row">
+                                        <!-- Selector de Columna -->
+                                        <div class="form-group">
+                                            <select id="columnFilter{{$index}}" ng-model="filter.selectedColumn" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar columna</option>
+                                                <optgroup ng-repeat="(group, columns) in filterOptions" label="{{group}}">
+                                                    <option ng-repeat="columna in columns" value="{{columna}}">{{columna}}</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+
+                                        <!-- Campo de Valor de Filtro -->
+                                        <div class="form-group fecha-group" ng-if="filter.selectedColumn && (filter.selectedColumn.startsWith('Fecha') || filter.selectedColumn === 'LastRefreshDate')">
+                                            <div class="fecha-group-imsode">
+                                                <select id="comparisonFilter{{$index}}" ng-model="filter.dateComparison" ng-change="applyFilters()" class="form-control">
+                                                    <option selected value="equals">Igual a</option>
+                                                    <option value="greater">Mayor que</option>
+                                                    <option value="less">Menor que</option>
+                                                </select>
+                                            </div>
+                                            <div class="fecha-group-imsode">
+                                                <input type="date" id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control" placeholder="Valor">
+                                            </div>
+                                        </div>
+                                        <div class="form-group fecha-group" ng-if="filter.selectedColumn && (filter.selectedColumn === 'Dias' || filter.selectedColumn === 'DiasStandby')">
+                                            <div class="fecha-group-imsode">
+                                                <select id="comparisonFilter{{$index}}" ng-model="filter.dateComparison" ng-change="applyFilters()" class="form-control">
+                                                    <option selected value="equals">Igual a</option>
+                                                    <option value="greater">Mayor que</option>
+                                                    <option value="less">Menor que</option>
+                                                </select>
+                                            </div>
+                                            <div class="fecha-group-imsode">
+                                                <input type="text" id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control" placeholder="Valor">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Estado'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in estados" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Cod_Producto'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in codProductoValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'ResponsableComercial'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ResponsableComercialValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Categoria'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in categoriaValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'EstadoPrePrensa'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in EstadoPrePrensaValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Nombre_Cliente'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in Nombre_ClienteValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Tipo_Adm'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in Tipo_AdmValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'ResponsableCustomer'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ResponsableCustomerlValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Cilindros'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in CilindrosValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Liberacion'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in LiberacionValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'ResponsableConfeccionIng'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ResponsableConfeccionIngValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'ResponsableLiberacionLet'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ResponsableLiberacionLetValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'TipoImpresora'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in TipoImpresoraValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'PerfilImpresion'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in PerfilImpresionValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'TipoCilindros'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in TipoCilindrosValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'CodigosCilindros'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in CodigosCilindrosValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'ResponsablePrePrensa'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ResponsablePrePrensaValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Proveedor'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ProveedorValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'Impresora'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ImpresoraValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'ResponsableLiberacionFinalIng'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in ResponsableLiberacionFinalIngValues" value="{{valor}}">{{valor}}</option>
+                                            </select>
+                                        </div>
+
+
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'CerradoIng' || filter.selectedColumn === 'CerradoPrePrensa' || filter.selectedColumn === 'ArteModificado' || filter.selectedColumn === 'RushOrder'">
+                                            <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
+                                                <option value="">Seleccionar valor</option>
+                                                <option ng-repeat="valor in booleans" value="{{valor.key}}">{{valor.value}}</option>
+                                            </select>
+                                        </div>
+
+                                        <button type="button" ng-click="removeFilter($index)" class="btn btn-link">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Listado de Productos</h4>
+                    </div>
+                    <button style="position: absolute;top: 4px;right: 18px;" data-toggle="modal" data-target="#exampleModal2" class="btn btn-primary pull-right">Descargar XLS</button>
+
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th ng-click="sortBy('Cod_Producto')">Cod Producto</th>
+                                <th ng-click="sortBy('Descripcion')">Descripcion</th>
+                                <th ng-click="sortBy('Dias')">Dias</th>
+                                <th ng-click="sortBy('Fecha_Inicial')">Fecha Inicial</th>
+                                <th ng-click="sortBy('SemaforoCustomer')">Estado Customer</th>
+                                <th ng-click="sortBy('SemaforoIngenieria')">Estado Ingenieria</th>
+                                <th ng-click="sortBy('SemaforoPreprensa')">Estado Preprensa</th>
+                                <th ng-click="sortBy('SemaforoHerramental')">Estado Herramental</th>
+                                <th ng-click="sortBy('SemaforoGeneral')">Estado General</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="producto in filteredProductos | filter: searchQuery">
+                                <td><a href="/#/blsp/productos/crud/{{producto.Cod_Producto}}" class="title"><strong>{{producto.Cod_Producto}}</strong></a></td>
+                                <td>{{producto.Descripcion}}</td>
+                                <td>
+                                    <span uib-tooltip="{{producto.DiasStandby > 0 ? 'Días Standby: ' + producto.DiasStandby : ''}}" ng-class="{ 'red-bold': producto.DiasStandby > 0 }">
+                                        {{producto.Dias}}
+                                    </span>
+                                </td>
+                                <td>{{producto.Fecha_Inicial | date : "dd/MM/y"}}</td>
+                                <td class="td-semaforo">
+                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                         uib-tooltip="{{ producto.MensajeSemaforoCustomer != '' ? producto.MensajeSemaforoCustomer: '' }}" tooltip-html-unsafe="true"
+                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoCustomer == 1 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoCustomer == 2 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoCustomer == 3 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="td-semaforo">
+                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                         uib-tooltip="{{ producto.MensajeSemaforoIngenieria != '' ? producto.MensajeSemaforoIngenieria: '' }}" tooltip-html-unsafe="true"
+                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false" ">
+                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoIngenieria == 1 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoIngenieria == 2 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoIngenieria == 3 }">
+                                            <div class="borde"></div>
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                                <td class="td-semaforo">
+                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                         uib-tooltip="{{ producto.MensajeSemaforoPreprensa != '' ? producto.MensajeSemaforoPreprensa: '' }}" tooltip-html-unsafe="true"
+                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoPreprensa == 1 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoPreprensa == 2 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoPreprensa == 3 }">
+                                            <div class="borde"></div>
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                                <td class="td-semaforo">
+                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                         uib-tooltip="{{ producto.MensajeSemaforoHerramental != '' ? producto.MensajeSemaforoHerramental: '' }}" tooltip-html-unsafe="true"
+                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoHerramental == 1 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoHerramental == 2 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoHerramental == 3 }">
+                                            <div class="borde"></div>
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                                <td class="td-semaforo">
+                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                         uib-tooltip="{{ producto.MensajeSemaforoGeneral != '' ? producto.MensajeSemaforoGeneral: '' }}" tooltip-html-unsafe="true"
+                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoGeneral == 1 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoGeneral == 2 }">
+                                            <div class="borde"></div>
+                                        </div>
+                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoGeneral == 3 }">
+                                            <div class="borde"></div>
+                                        </div>
+
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    <!-- Modal 2 -->
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Seleccionar Fechas</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 col-md-12 no-padding">
+
+                        <div class="panel col-sm-12 col-md-4 panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Desde</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container class="md-block flex">
+                                    <label>Filtrar por estado:</label>
+                                    <md-select ng-model="filtroEstadoParamandar" placeholder="Selecciona un estado">
+                                        <md-option value=0>Todos</md-option>
+                                        <md-option value=1>Abierto</md-option>
+                                        <md-option value=2>Stand By</md-option>
+                                        <md-option value=3>Cerrado</md-option>
+                                        <md-option value=4>Cancelado</md-option>
+
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </div>
+
+
+                        <div class="panel col-sm-12 col-md-4 panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Desde</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container md-no-float class="md-block md-no-error">
+                                    <input type="date" ng-init="dateDesdeinp2 = '1900-01-01'" ng-model="dateDesdeinp2" value="{{dateDesdeinp2}}">
+
+                                </md-input-container>
+                            </div>
+                        </div>
+                        <div class="panel col-sm-12 col-md-4 panel-inverse">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">Hasta</h4>
+                            </div>
+                            <div class="panel-body">
+                                <md-input-container md-no-float class="md-block md-no-error">
+                                    <input ng-init="dateHastainp2 = '1900-01-01'" type="date" ng-model="dateHastainp2" value="{{dateHastainp2}}">
+
+                                </md-input-container>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                            <div class="col-sm-12 col-md-12">
+                                <div ng-model="successMessage2" class="alert alert-success" role="alert" ng-show="successMessage2">{{ successMessage2 }}<div ng-show="butonVisible" style="" class="pace-activity2"></div></div>
+                                <div ng-model="errorMessage2" class="alert alert-danger" role="alert" ng-show="errorMessage2">{{ errorMessage2 }}</div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" ng-disabled="butonVisible" ng-click="exportExcel()" class="btn btn-primary">Descargar Reporte</button>
+                        </div>
+                    </div>
+        </div>
+    </div>
+</div>

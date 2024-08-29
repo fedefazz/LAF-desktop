@@ -12,6 +12,8 @@
             <div class="col-sm-12 col-md-12">
                 <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
                 <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+                <div ng-model="errorMessage2" class="alert alert-danger" role="alert" ng-show="errorMessage3">{{ errorMessage2 }}</div>
+
             </div>         
             <form ng-submit="newUserForm.$valid && processForm()" name="newUserForm" novalidate>
                 <div class="col-sm-12 col-md-8">

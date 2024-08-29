@@ -9,37 +9,38 @@
     <meta name="author" content="">
     <link rel="icon" href="~/images/favicon.png">
 
-    <title>Bolsapel | Scrap Manager</title>
+    <title>Bolsapel | Administracion de Planta</title>
 
     @Styles.Render("~/styles/css")
 
-	<!-- ================== BEGIN BASE JS ================== -->
 
-	<!--[if lt IE 9]>
-	    <script src="~/assets/crossbrowserjs/excanvas.min.js"></script>
-	<![endif]-->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <!--[if lt IE 9]>
+        <script src="~/assets/crossbrowserjs/excanvas.min.js"></script>
+    <![endif]-->
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/angular")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/plugins")
     @Scripts.Render("~/bundles/site")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
 
     <!-- must include this library here because conflicts with ng-upload plugin -->
     <script src="~/assets/plugins/pace/pace.js"></script>
 
-    
-	<!--[if lt IE 9]>
-		<script src="~/assets/crossbrowserjs/html5shiv.js"></script>
-		<script src="~/assets/crossbrowserjs/respond.min.js"></script>
-	<![endif]-->
+
+    <!--[if lt IE 9]>
+        <script src="~/assets/crossbrowserjs/html5shiv.js"></script>
+        <script src="~/assets/crossbrowserjs/respond.min.js"></script>
+    <![endif]-->
 
     <script type="text/javascript">
     function getAPIUrl() {
         return "@ConfigurationManager.AppSettings["blsp.BackendAPI.Root.Url"]";
     }
     </script>
-    
+
 </head>
 
 <body ng-controller="appController" ng-class="{'pace-top': setting.layout.paceTop, 'boxed-layout': setting.layout.pageBoxedLayout, 'bg-white': setting.layout.pageBgWhite }">
@@ -47,7 +48,7 @@
     @RenderBody()
 
 	<!-- begin #page-loader -->
-	<div id="page-loader" ng-controller="pageLoaderController" class="fade in"><span class="spinner"></span></div>
+	@*<div id="page-loader" ng-controller="pageLoaderController" class="fade in"><span class="spinner"></span></div>*@
 	<!-- end #page-loader -->
 
 	<!-- begin #page-container -->

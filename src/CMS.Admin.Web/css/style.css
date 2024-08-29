@@ -20,6 +20,8 @@
     box-sizing: content-box;
 }
 
+.DTFC_LeftBodyWrapper {
+background:white}
 
 
 
@@ -1214,4 +1216,10 @@ table.dataTable thead td {
 }
 .layout-editor .sector-heading-news .col-md-4 > .block .nota {
     height: 248px;
+}
+
+.tablaromaneospan {
+    font-size: 12px;
+    font-weight: bold;
+    color: #0472ee;
 }

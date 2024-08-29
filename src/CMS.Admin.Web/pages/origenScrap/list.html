@@ -26,7 +26,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="origen in Origenes | orderBy:sortUser:sortReverse">
-                                <td class="capitalize"><a href="/#/blsp/origenScrap/crud/{{origen.IDOrigen}}" class="title"><strong>{{origen.Descripcion}}</strong></a></td>
+                                <td class="capitalize"><a href="/#/blsp/origenScrap/crud/{{origen.IDOrigen}}" class="title"><strong>{{origen.Descripcion | capitalize}}</strong></a></td>
                                 <td>{{origen.IDOrigen}}</td>
                             </tr>
                         </tbody>

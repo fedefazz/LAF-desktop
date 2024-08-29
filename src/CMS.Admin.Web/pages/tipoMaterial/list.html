@@ -26,7 +26,7 @@
                         </thead>
                         <tbody>
                             <tr ng-repeat="material in Materials | orderBy:sortUser:sortReverse | filter:searchMaterial">
-                                <td class="capitalize"><a href="/#/blsp/tipoMaterial/crud/{{material.IDTipoMat}}" class="title"><strong>{{material.Descripcion}}</strong></a></td>
+                                <td class="capitalize"><a href="/#/blsp/tipoMaterial/crud/{{material.IDTipoMat}}" class="title"><strong>{{material.Descripcion | capitalize}}</strong></a></td>
                                 <td>{{material.IDTipoMat}}</td>
                             </tr>
                         </tbody>

@@ -1,0 +1,93 @@
+﻿<div ng-app="app" ng-controller="etiquetasCRUDController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li><a ui-sref="blsp.etiquetas.list">Etiquetas</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}}<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="editAuthorForm.$valid && processForm()" class="form-horizontal" role="form" name="editAuthorForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Información de la Etiqueta</h4>
+                        </div>
+                        <md-content layout-padding>
+                         
+                    
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>ID Etiqueta</label>
+                                    <input type="text" ng-model="etiquetaData.id_etiqueta" name="ID Etiqueta" required />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Nombre</label>
+                                    <input type="text" ng-model="etiquetaData.nombre" name="Nombre" required />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                            </div>
+
+                            <div layout-gt-xs="row">
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Descripcion</label>
+                                    <textarea  ng-model="etiquetaData.descripcion" name="Descripcion" required cols="40" rows="5"></textarea>
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</md-content>
+                    </div>
+
+                  
+                </div>
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Acciones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary" type="submit">{{SubmitButton}}</button>
+                            <button class="btn btn-block btn-danger" type="button" ng-click="deleteEtiqueta($event, etiquetaData.id);" ng-show="etiquetaData.id">Borrar Etiqueta</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.etiquetas.list">Volver</a>
+                        </div>
+                    </div>
+
+               
+                </div>
+            </form>
+        </div>   
+    </div>
+</div>

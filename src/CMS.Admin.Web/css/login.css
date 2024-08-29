@@ -136,7 +136,7 @@ input:-webkit-autofill {
     color: #a8acb1;
     font-size: 12px;
     font-weight: 400;
-    letter-spacing: 1px;
+    letter-spacing: 0px;
     font-weight: bold;
     text-transform: uppercase;
 }
@@ -1061,8 +1061,8 @@ md-input-container.md-icon-right md-icon {
     border-color: #363843;
 }
 md-switch {
-    margin: 1em 3em 1em 10px;
-    padding: 0 15px;
+    margin: 0;
+    padding:0;
 }
 md-switch .md-label {
     border-color: transparent;

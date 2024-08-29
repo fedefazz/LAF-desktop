@@ -7,6 +7,7 @@ angular
 
     .controller('headerController', function ($scope, APIService, $window, $rootScope) {
         $rootScope.ProfileImagePath = "/images/placeholders/user.png";
+        
 
         //Get Current User
         var servCall = APIService.getProfileInfo();
@@ -17,15 +18,45 @@ angular
             var servCallUser = APIService.getUserById($scope._currentUser.Id);
             servCallUser.then(function (e) {
                 $scope.currentUser = e.data;
-                console.log("USER");
+                
 
-                console.log($scope.currentUser);
-           
+                $scope.hasRole = function (role) {
+                    var usersroles = []
+                    if (!$scope.currentUser.Role) {
+                        return false;
+                    }
 
+
+                    angular.forEach($scope.currentUser.Role, function (element) {
+
+                        usersroles.push(element.Name);
+
+                        
+
+
+                    });
+
+                    var datos = {
+                        usersroles: usersroles,
+                        currentUser: $scope.currentUser
+                    };
+                    // Convertir el objeto a una cadena JSON
+                    var datosString = JSON.stringify(datos);
+                    // Guardar en localStorage
+                    $window.localStorage.setItem('datosUsuario', datosString);
+
+                    // assuming the user data model looks something like this:
+                    // { roles: ["admin", "editor"] }
+                    var a =  usersroles.indexOf(role) > -1;
+                    //a = true;
+                    return a;
+
+
+                }
+
+                
 
             if ($scope.currentUser.ProfileImagePath) {
-                console.log("IMAGEN");
-                console.log($scope.currentUser.ProfileImagePath);
                 $rootScope.ProfileImagePath = $rootScope.mediaurl + $scope.currentUser.ProfileImagePath;
             } else {
                 $rootScope.ProfileImagePath = "/images/placeholders/user.png";
@@ -44,6 +75,9 @@ angular
             $scope.errorMessage = "Oops, something went wrong.";
         })
 
+
+        
+
     })
 
     .controller('ProfileEditController', function ($scope, APIService, $route, Upload, $timeout, $rootScope) {
@@ -59,7 +93,7 @@ angular
                 secondCall.then(function (u) {
 
                     $scope.profileData = u.data;
-
+                    
                     if ($scope.profileData.ProfileImagePath) {
                         $rootScope.ProfileImagePath = $scope.ImageProfilePath + $scope.profileData.ProfileImagePath;
                     } else {
@@ -70,7 +104,9 @@ angular
                 $scope.errorMessage = "Oops, something went wrong.";
             })
         }
+        
 
+        
         //Profile update
 
 
@@ -84,7 +120,6 @@ angular
             $scope.errorMessage = null;
 
 
-            console.log($scope.profileData);
 
             var id = $scope.profileData.Id;
             var data = $.param($scope.profileData)
@@ -95,7 +130,6 @@ angular
 
                 //$route.reload();
             }, function (error) {
-                console.log(error);
 
                 var errorMsg = "";
                 angular.forEach(error.data.ModelState, function (element) {

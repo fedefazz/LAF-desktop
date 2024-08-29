@@ -35,7 +35,7 @@
                                 <md-input-container class="md-block flex-50" flex-gt-xs>
                                     <label>Area</label>
                                     <md-select ng-init="maquinaData.PSSAreas.Descripcion" ng-model="maquinaData.PSSAreas" name="Areas" multiple="false" required>
-                                        <md-option ng-value="area" ng-repeat="area in areas track by area.IDArea" ng-selected="area.Descripcion == maquinaData.PSSAreas.Descripcion" >{{ area.Descripcion }}</md-option>
+                                        <md-option ng-value="area" ng-repeat="area in areas track by area.IDArea" ng-selected="area.Descripcion == maquinaData.PSSAreas.Descripcion" >{{ area.Descripcion | capitalize }}</md-option>
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
@@ -47,10 +47,35 @@
                              </div>
                             <div layout-gt-xs="row">
 
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Recurso</label>
+                                    <input type="text" ng-model="maquinaData.Recurso" name="Recurso" required />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+
+
+                            </div>
+
+
+                            <div layout-gt-xs="row">
+
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
                                     <label>JobTrack</label>
-                                    <md-select ng-model="maquinaData.PSSJobTrack" name="JobTrack" multiple="true" required ng-model-options="{trackBy: '$value.IDJobTrack' }">
-                                        <md-option ng-value="jobtrack" ng-repeat="jobtrack in jobtrack track by jobtrack.IDJobTrack">{{ jobtrack.Descripcion }}</md-option>
+                                    <md-select ng-model="maquinaData.PSSJobTrack" name="JobTrack" multiple="true" required md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" ng-model-options="{trackBy: '$value.IDJobTrack' }">
+                                        
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar JobTrack.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        
+                                        <md-option ng-value="jobtrack" ng-repeat="jobtrack in jobtrack | orderBy:'Descripcion' | filter:searchTerm track by jobtrack.IDJobTrack">{{ jobtrack.Descripcion | capitalize }}</md-option>
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
@@ -62,12 +87,26 @@
 
                             </div>
                             <div layout-gt-xs="row">
+
+
 
 
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
                                     <label>Origenes de Scrap</label>
-                                    <md-select ng-model="maquinaData.PSSOrigenesScrap" name="Origenes" multiple="true" required ng-model-options="{trackBy: '$value.IDOrigen' }">
-                                        <md-option ng-value="origen" ng-repeat="origen in origenes track by origen.IDOrigen">{{ origen.Descripcion }}</md-option>
+
+
+                                    <md-select ng-model="maquinaData.PSSOrigenesScrap" name="Origenes" multiple="true" required md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" ng-model-options="{trackBy: '$value.IDOrigen' }">
+
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Origen de Scrap.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-option ng-value="origen" ng-repeat="origen in origenes | orderBy:'Descripcion' | filter:searchTerm track by origen.IDOrigen">{{ origen.Descripcion | capitalize }}</md-option>
+
+
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
@@ -83,38 +122,77 @@
 
                             <div layout-gt-xs="row">
 
+
+                               
 
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
                                     <label>Tipos Materiales</label>
-                                    <md-select ng-model="maquinaData.PSSTiposMaterial" name="TiposMaterial" multiple="true" required ng-model-options="{trackBy: '$value.IDTipoMat' }">
-                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos track by tipo.IDTipoMat">{{ tipo.Descripcion }}</md-option>
+                                    <md-select ng-model="maquinaData.PSSTiposMaterial" name="TiposMaterial" multiple="true" required md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" ng-model-options="{trackBy: '$value.IDTipoMat' }">
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Tipos de materiales.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+
+                                        <md-option ng-value="tipo" ng-repeat="tipo in tipos | orderBy:'Descripcion' | filter:searchTerm track by tipo.IDTipoMat">{{ tipo.Descripcion | capitalize }}</md-option>
+
+
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
 
+
+
                             </div>
                             <div layout-gt-xs="row">
+
 
 
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
                                     <label>Actividad</label>
-                                    <md-select ng-model="maquinaData.PSSActividades" name="Actividad" multiple="true" required ng-model-options="{trackBy: '$value.IdActividad' }">
-                                        <md-option ng-value="actividad" ng-repeat="actividad in actividades track by actividad.IdActividad">{{ actividad.Descripcion }}</md-option>
+                                    <md-select ng-model="maquinaData.PSSActividades" name="Actividad" multiple="true" md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" required ng-model-options="{trackBy: '$value.IdActividad' }">
+
+
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Actividad.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+
+                                        <md-option ng-value="actividad" ng-repeat="actividad in actividades | orderBy:'Descripcion' | filter:searchTerm track by actividad.IdActividad">{{ actividad.Descripcion | capitalize }}</md-option>
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
+
+
+
+
                             </div>
                             <div layout-gt-xs="row">
 
 
+
+
                                 <md-input-container class="cont-maquinas md-block col-lg-6 col-md-12 col-sm-12 col-xs-12" flex-gt-xs>
                                     <label>Operadores de esta Maquina</label>
-                                    <md-select ng-model="maquinaData.PSSOperadores" name="Operadores" multiple="true" ng-model-options="{trackBy: '$value.IdOperador' }">
-                                        <md-option ng-value="operador" ng-repeat="operador in operadores track by operador.IdOperador">{{ operador.Nombre }}, {{ operador.Apellido }}</md-option>
+                                    <md-select ng-model="maquinaData.PSSOperadores" name="Operadores" multiple="true" md-on-close="clearSearchTerm()"
+                                               data-md-container-class="selectdemoSelectHeader" required ng-model-options="{trackBy: '$value.IdOperador' }">
+
+                                        <md-select-header class="demo-select-header">
+                                            <input ng-model="searchTerm"
+                                                   type="search"
+                                                   placeholder="Buscar Operador.."
+                                                   class="demo-header-searchbox md-text">
+                                        </md-select-header>
+                                        <md-option ng-value="operador" ng-repeat="operador in operadores | orderBy:'Apellido' | filter:searchTerm track by operador.IdOperador">{{ operador.Apellido | capitalize }} {{ operador.Nombre | capitalize }}</md-option>
                                     </md-select>
                                     <div ng-messages="newUserForm.Roles.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>

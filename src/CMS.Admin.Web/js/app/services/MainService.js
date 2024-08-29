@@ -19,14 +19,108 @@ angular
         }
 
 
-        this.GetScrap = function () {
-            return $http.get($rootScope.webapiurl + "api/PSSScraps")
+        this.GetScrap = function (fechaDesde,fechaHasta) {
+            return $http.get($rootScope.webapiurl + "api/PSSScraps?dateDesde=" + fechaDesde + "&dateHasta=" + fechaHasta)
+        }
+
+       
+
+        this.GetPSSScrapServerSide = function () {
+            return $http.get($rootScope.webapiurl + "api/GetPSSScrapServerSide")
         }
 
 
         this.GetAreas = function () {
             return $http.get($rootScope.webapiurl + "api/PSSAreas")
         }
+
+        this.GetEtiquetas = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSEtiquetas")
+        }
+
+
+        this.GetTotalPlanta = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetTotalPlanta")
+        }
+
+        this.GetTotalPlantaCerradas = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetTotalPlantaCerradas")
+        }
+
+        this.GetImpresionDetalle = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetImpresionDetalle")
+        }
+
+        this.GetLaminacionDetalle = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetLaminacionDetalle")
+        }
+
+        this.GetIndicadoresTotalesOp = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetIndicadoresTotalesOp")
+        }
+
+        this.GetIndicadoresTotalScrap = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetIndicadoresTotalScrap")
+        }
+
+        this.GetTotalLaminacion = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetTotalLaminacion")
+        }
+
+        this.GetTotalArea = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetTotalArea")
+        }
+
+        this.GetTotalAreaImpresion = function () {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetTotalImpresion")
+        }
+
+        this.GetTotalAreas = function (area) {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetTotalAreas?area=" + area)
+        }
+
+        this.GetReporte1 = function (op) {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetReportePorOpCerrada?op=" + op)
+        }
+
+
+        this.GetReporte1_1 = function (op) {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetReportePorOpCerradaTotal?op=" + op)
+        }
+
+
+
+        this.GetReporte2 = function (dateDesde, dateHasta, tipo) {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetReportePorFecha?dateDesde=" + dateDesde + "&dateHasta=" + dateHasta + "&tipo=" + tipo)
+        }
+
+        this.scrapExcel = function (dateDesde, dateHasta) {
+            return $http.get($rootScope.webapiurl + "api/PSSScraps/scrapExcel?dateDesde=" + dateDesde + "&dateHasta=" + dateHasta)
+        }
+
+        this.getProductoParaExcel = function (dateDesde, dateHasta, estado) {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getProductoParaExcel?dateDesde=" + dateDesde + "&dateHasta=" + dateHasta + "&estado=" + estado )
+        }
+
+        this.getDataForDashboard = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getDataForDashboard")
+        }
+
+        this.getDataForDashboard2 = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getDataForDashboard2")
+        }
+
+        
+
+        this.GetProductos = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getProductos")
+        }
+
+        this.GetReporteRomaneo = function (pNroOf, pCodProducto, dateDesde, dateHasta, pTurno, pTipoRomaneo) {
+            return $http.get($rootScope.webapiurl + "api/Dashboard/GetReporteRomaneo?pNroOf=" + pNroOf + "&pCodProducto=" + pCodProducto + "&dateDesde=" + dateDesde + "&dateHasta=" + dateHasta + "&pTurno=" + pTurno + "&pTipoRomaneo=" + pTipoRomaneo)
+        }
+
+
 
         this.GetMaquinas = function () {
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas")
@@ -56,6 +150,10 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas?id=" + id + "&no-pace")
         }
 
+        this.GetEtiquetaById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSEtiquetas?id=" + id + "&no-pace")
+        }
+
         this.GetMaquinaByOperador = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas/GetPSSMaquinasPorOperador?id=" + id + "&no-pace")
         }
@@ -64,6 +162,22 @@ angular
         this.GetActividadById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSActividades?id=" + id + "&no-pace")
         }
+
+
+        this.GetScrapById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSScraps?id=" + id + "&no-pace")
+        }
+
+
+        this.GetProductoPorCodigo = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getProductoPorCodigo?Cod_Producto=" + id)
+        }
+
+
+        this.GetProductoById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getProducto?Cod_Producto=" + id)
+        }
+        
 
         this.GetOperadorById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSOperadores?id=" + id + "&no-pace")
@@ -182,7 +296,6 @@ angular
         
 
         this.getAuthorById = function (id) {
-            console.log('get author');
             return $http.get($rootScope.webapiurl + "api/Author?id=" + id + '&includeMedia=true')
         }
         
@@ -247,6 +360,10 @@ angular
             return $http.put($rootScope.webapiurl + "api/PSSMaquinas?id=" + id, data)
         }
 
+        this.updateEtiqueta = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSEtiquetas?id=" + id, data)
+        }
+
         this.updateOperador = function (id, data) {
             return $http.put($rootScope.webapiurl + "api/PSSOperadores?id=" + id, data)
         }
@@ -261,6 +378,16 @@ angular
 
         this.updateOrigen = function (id, data) {
             return $http.put($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id, data)
+        }
+
+        this.updateProducto = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSProductos?id=" + id, data)
+        }
+
+        
+
+        this.updateScrap = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/PSSScraps?id=" + id, data)
         }
 
 
@@ -286,7 +413,7 @@ angular
 
 
         this.enableUsers = function (data) {
-            return $http.put($rootScope.webapiurl + "api/User/Enable", data)
+            return $http.put($rootScope.webapiurl + "api/Users/Enable?id=" + id, data)
         }
         this.disableUsers = function (data) {
             return $http.put($rootScope.webapiurl + "/api/User/Disable", data)
@@ -341,6 +468,10 @@ angular
 
         this.createMaquina = function (data) {
             return $http.post($rootScope.webapiurl + "api/PSSMaquinas", data)
+        }
+
+        this.createEtiqueta = function (data) {
+            return $http.post($rootScope.webapiurl + "api/PSSEtiquetas", data)
         }
 
         this.createOperador = function (data) {
@@ -438,6 +569,17 @@ angular
 
             }
 
+            this.deleteEtiqueta = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSEtiquetas?id=" + id)
+
+            }
+
+            this.DeleteMultiple = function (data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSScraps/DeleteMultiple?id=" + data)
+
+            }
+
+
             this.deleteMaterial = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSTiposMaterials?id=" + id)
 
@@ -452,11 +594,21 @@ angular
             this.deleteMaquina = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSMaquinas?id=" + id, data)
 
-            }
+        }
+
+        this.deleteRomaneo = function (id, data) {
+            return $http.delete($rootScope.webapiurl + "api/Dashboard/deleteRomaneo?id=" + id, data)
+
+        }
 
 
             this.deleteOrigen = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSOrigenesScraps?id=" + id)
+
+            }
+
+            this.deleteScrap = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/PSSScraps?id=" + id)
 
             }
 
@@ -576,7 +728,7 @@ angular
         }
     })
 
-    .service("AlertService", function ($localStorage) {
+    .service("AlertService", function ($localStorage, $timeout) {
 
         this.SetAlert = function (message, type) {
             var messageObj = {
@@ -584,8 +736,11 @@ angular
                 message: message
             };
             $localStorage.alertMessage = messageObj;
-            return true;
-        }
+        };
+
+        this.clearAlert = function () {
+            delete $localStorage.alertMessage;
+        };
 
         this.ShowAlert = function ($scope) {
             if ($localStorage.alertMessage) {
@@ -595,9 +750,19 @@ angular
                 } else {
                     $scope.errorMessage = messageObj.message;
                 }
-                $localStorage.alertMessage = null;
+
+                // Limpiar la alerta después de 3 segundos (3000 milisegundos)
+                $timeout(function () {
+                    this.clearAlert();
+                }.bind(this), 3000);
+
+                return true;
+            } else {
+                return false;
             }
-            return true;
-        }
-    })
+        };
+
+
+    });
+
 
