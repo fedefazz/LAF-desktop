@@ -703,6 +703,7 @@ angular
 
         $scope.isFinDisabledFlexo = function () {
             return !$scope.isFormCompleteFlexo() || $scope.isDateInvalidFlexo();
+
         };
 
 
