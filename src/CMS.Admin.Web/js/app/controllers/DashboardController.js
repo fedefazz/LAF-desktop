@@ -252,6 +252,7 @@ angular
         var CallTotalLaminacionDetalle = APIService.GetLaminacionDetalle();
         CallTotalLaminacionDetalle.then(function (u) {
             $scope.GetLaminacionDetalle = u.data;
+            console.log('scope.GetLaminacionDetalle', $scope.GetLaminacionDetalle);
             console.log('GetLaminacionDetalle', $scope.GetLaminacionDetalle);
 
 
@@ -281,15 +282,15 @@ angular
 
             Morris.Line({
                 element: 'visitors-line-chart2',
-                data: $scope.GetImpresionDetalle,
+                data: $scope.GetLaminacionDetalle,
                 xkey: 'DTPRODUCAO',
-                ykeys: ['FISCHER', 'HELIOSTAR', 'ROTOMEC', 'ALLSTEIN'],
+                ykeys: ['LAMINADORA_2', 'LAMINADORA_4', 'LAMINADORA_3', 'LAMINADORA_5'],
                 xLabelFormat: function (x) {
                     x = month[x.getMonth()];
                     return x.toString();
                 },
                 xLabels: "month",
-                labels: ['Fischer', 'Heliostar', 'Rotomec', 'Allstein'],
+                labels: ['LAMINADORA 2', 'LAMINADORA 4', 'LAMINADORA 3', 'LAMINADORA 5'],
                 lineColors: [red, orange, blueLight, greenLight],
                 pointFillColors: [red, orange, blueLight, greenLight],
                 lineWidth: '2px',

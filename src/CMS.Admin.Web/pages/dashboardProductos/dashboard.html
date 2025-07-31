@@ -1,6 +1,6 @@
 ﻿<div ng-app="app" ng-controller="ProductoDashboardController">
 
-    <div class="container-fluid">
+    <div class="container-fluid dashboard-productos">
         <div class="row">
             <div class="col-sm-12 col-md-12">
                 <ol class="breadcrumb pull-right">
@@ -10,7 +10,7 @@
                 <h1 class="page-header">KPI Productos<small></small></h1>
             </div>
 
-            <div class="col-sm-12 col-md-12">
+            <div class="col-sm-12 col-md-12 gaficos-solos">
                 <div class="widget-chart bg-black">
                     <div class="widget-chart-content">
                         <h4 class="chart-title">
@@ -21,7 +21,7 @@
                     </div>
 
                     <div class="widget-chart-sidebar bg-black-darker">
-                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses:</span> {{totals.totalQTY}} 
+                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses:</span> {{totals.totalQTY}}
 
                         <ul class="chart-legend">
                             <span style="color:rgb(114, 253, 22);">Cantidad total por Producto</span>
@@ -37,7 +37,7 @@
             </div>
 
 
-            <div class="col-sm-12 col-md-12">
+            <div class="col-sm-12 col-md-12 gaficos-solos">
                 <div class="widget-chart bg-black">
                     <div class="widget-chart-content">
                         <h4 class="chart-title">
@@ -48,7 +48,7 @@
                     </div>
 
                     <div class="widget-chart-sidebar bg-black-darker">
-                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses:</span> {{totalsflexo.totalQTY}} 
+                        <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses:</span> {{totalsflexo.totalQTY}}
 
                         <ul class="chart-legend">
                             <span style="color:rgb(114, 253, 22);">Cantidad total por Producto</span>
@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <div class="col-sm-12 col-md-12">
+            <div class="col-sm-12 col-md-12 gaficos-solos">
                 <div class="widget-chart bg-black">
                     <div class="widget-chart-content">
                         <h4 class="chart-title">
@@ -88,8 +88,460 @@
             </div>
 
 
+            <!--<div class="col-sm-12 col-md-12">
+        <div class="widget-chart bg-black">
+            <div class="widget-chart-content">
+                <h4 class="chart-title">
+                    CSP_GPPRODUCTOS_KPI_PREPRENSA_DIAS_ENVIOET
+                    <small>Incidencias de los ultimos 12 meses</small>
+                </h4>
+                <div id="visitors-line-chart5" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+            </div>
 
+            <div class="widget-chart-sidebar bg-black-darker">
+                <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses: {{totalsgeneralprensadias2.totalQTY}} </span>
+
+                <ul class="chart-legend">
+                    <span style="color:rgb(114, 253, 22);">Cantidad total por Impresora</span>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> FLEXO - últimos 12 meses: {{totalsgeneralprensadias2.totalQTY}} </li>
+
+                </ul>
+            </div>
 
         </div>
-    </div>
+    </div>-->
+            <!--<div class="col-sm-12 col-md-12">
+        <div class="widget-chart bg-black">
+            <div class="widget-chart-content">
+                <h4 class="chart-title">
+                    [CSP_GPPRODUCTOS_KPI_PREPRENSA_LIBGRABADOVSRECEPCIONHERRAMENTAL_X_TIPOIMPRESORA]
+                    <small>Incidencias de los ultimos 12 meses</small>
+                </h4>
+                <div id="visitors-line-chart6" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+            </div>
+
+            <div class="widget-chart-sidebar bg-black-darker">
+                <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.totalQTY}} </span>
+
+                <ul class="chart-legend">
+                    <span style="color:rgb(114, 253, 22);">Cantidad total por Proveedor</span>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> SIN ASIGNAR - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.QTY_LiberadoGrabadoVsRecepcionHerramental_SinAsignar}} </li>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> FLEXO - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.QTY_LiberadoGrabadoVsRecepcionHerramental_Flexo}} </li>
+
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> HUECO - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.QTY_LiberadoGrabadoVsRecepcionHerramental_Hueco}} </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+    </div>-->
+            <!--<div class="col-sm-12 col-md-12">
+        <div class="widget-chart bg-black">
+            <div class="widget-chart-content">
+                <h4 class="chart-title">
+                    [CSP_GPPRODUCTOS_KPI_PREPRENSA_LIBGRABADOVSRECEPCIONHERRAMENTAL_X_TIPOIMPRESORA]
+                    <small>Incidencias de los ultimos 12 meses</small>
+                </h4>
+                <div id="visitors-line-chart7" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+            </div>
+
+            <div class="widget-chart-sidebar bg-black-darker">
+                <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses: {{totalsKpiPrePrensaDLibgrabadoProveedor2.totalQTY}} </span>
+
+                <ul class="chart-legend">
+                    <span style="color:rgb(114, 253, 22);">Cantidad total por Impresora</span>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> SIN ASIGNAR - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_SinAsignar}} </li>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> BOSISIO - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Bosisio}} </li>
+
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> LYNCH - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Lynch}} </li>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#3273B1 !important"></i> LONGO - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Longo}} </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+    </div>-->
+
+
+
+            <!--<div class="col-sm-12 col-md-12">
+        <div class="widget-chart bg-black">
+            <div class="widget-chart-content">
+                <h4 class="chart-title">
+                    [CSP_GPPRODUCTOS_KPI_PREPRENSA_LIBGRABADOVSRECEPCIONHERRAMENTAL_X_TIPOIMPRESORA]
+                    <small>Incidencias de los ultimos 12 meses</small>
+                </h4>
+                <div id="visitors-line-chart9" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+            </div>
+
+            <div class="widget-chart-sidebar bg-black-darker">
+                <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses: {{totalsgeneralprensadiasimpresora2.totalQTY}} </span>
+
+                <ul class="chart-legend">
+                    <span style="color:rgb(114, 253, 22);">Cantidad total por Impresora</span>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> Sin Asignar - últimos 12 meses: {{totalsgeneralprensadiasimpresora2.QTY_SinAsignar}} </li>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> Flexo - últimos 12 meses: {{totalsgeneralprensadiasimpresora2.QTY_Flexo}} </li>
+
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> Hueco - últimos 12 meses: {{totalsgeneralprensadiasimpresora2.QTY_Hueco}} </li>
+
+
+                </ul>
+            </div>
+
+        </div>
+    </div>-->
+            <!--<div class="col-sm-12 col-md-12">
+        <div class="widget-chart bg-black">
+            <div class="widget-chart-content">
+                <h4 class="chart-title">
+                    [CSP_GPPRODUCTOS_KPI_PREPRENSA_LIBGRABADOVSRECEPCIONHERRAMENTAL_X_TIPOIMPRESORA]
+                    <small>Incidencias de los ultimos 12 meses</small>
+                </h4>
+                <div id="visitors-line-chart10" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+            </div>
+
+            <div class="widget-chart-sidebar bg-black-darker">
+                <span style="color:rgb(114, 253, 22);">Total de productos últimos 12 meses: {{totalsgeneralprensadiasproveedor2.totalQTY}} </span>
+
+                <ul class="chart-legend">
+                    <span style="color:rgb(114, 253, 22);">Cantidad total por Impresora</span>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> Sin Asignar - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_SinAsignar}} </li>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> Bosisio - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_Bosisio}} </li>
+
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> Lynch - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_Lynch}} </li>
+                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#3273B1 !important"></i> Longo - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_Longo}} </li>
+
+
+
+                </ul>
+            </div>
+
+        </div>
+    </div>-->
+
+
+        <div class="col-sm-12 col-md-12">
+            <h3>Pre Prensa</h3>
+            <div class="tabs">
+                <ul class="nav nav-tabs">
+                    <li ng-class="{active: activeTab === 'grafico1'}">
+                        <a href="" ng-click="setActiveTab('grafico1')">Qty Proveedor</a>
+                    </li>
+                    <li ng-class="{active: activeTab === 'grafico2'}">
+                        <a href="" ng-click="setActiveTab('grafico2')">Qty Tipo Impresora</a>
+                    </li>
+                    <li ng-class="{active: activeTab === 'grafico3'}">
+                        <a href="" ng-click="setActiveTab('grafico3')">Qty Recepcion por Prov.</a>
+                    </li>
+                    <li ng-class="{active: activeTab === 'grafico4'}">
+                        <a href="" ng-click="setActiveTab('grafico4')">Qty Recepcion por tipo imp.</a>
+                    </li>
+                    <li ng-class="{active: activeTab === 'grafico5'}">
+                        <a href="" ng-click="setActiveTab('grafico5')">Qty Dias Espec. Tec</a>
+                    </li>
+                    <li ng-class="{active: activeTab === 'grafico6'}">
+                        <a href="" ng-click="setActiveTab('grafico6')">Qty x Reponsable</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="widget-chart bg-black" ng-show="activeTab === 'grafico1'">
+                <div class="">
+                    <div class="widget-chart bg-black">
+                        <div class="widget-chart-content">
+                            <div class="head-container">
+                                <h4 class="chart-title">
+                                    Cantidad de trabajos por proveedor
+                                    <small>Incidencias de los ultimos 12 meses</small>
+                                </h4>
+                                <select ng-model="selectValue1" ng-change="updateChart1(selectValue1)" class="form-control mb-2">
+                                    <option selected value="Todas">Todos</option>
+                                    <option ng-repeat="columna in selectValues1" value="{{columna}}">{{columna}}</option>
+                                </select>
+
+
+                            </div>
+
+                            <div id="visitors-line-chart10" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                        </div>
+
+                        <div class="widget-chart-sidebar bg-black-darker">
+
+
+
+
+                            <span style="color:rgb(114, 253, 22);">Total de los últimos 12 meses: {{totalsgeneralprensadiasproveedor2.totalQTY}} </span>
+
+
+
+
+
+                            <ul class="chart-legend">
+                                <span style="color:rgb(114, 253, 22);">
+                                    Cantidad de trabajos por proveedor
+                                </span>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> Sin Asignar - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_SinAsignar}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> Bosisio - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_Bosisio}} </li>
+
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> Lynch - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_Lynch}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#3273B1 !important"></i> Longo - últimos 12 meses: {{totalsgeneralprensadiasproveedor2.QTY_Longo}} </li>
+
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-chart bg-black" ng-show="activeTab === 'grafico2'">
+                <div class="col-sm-12 col-md-12">
+                    <div class="widget-chart bg-black">
+                        <div class="widget-chart-content">
+                            <div class="head-container">
+                                <h4 class="chart-title">
+                                    Cantidad de trabajos por Impresora.
+                                    <small>Incidencias de los ultimos 12 meses</small>
+                                </h4>
+                                <select ng-model="selectValue2" ng-change="updateChart2(selectValue2)" class="form-control mb-2">
+                                    <option selected value="Todas">Todas</option>
+                                    <option ng-repeat="columna in selectValues2" value="{{columna}}">{{columna}}</option>
+                                </select>
+
+
+                            </div>
+
+                            <div id="visitors-line-chart9" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                        </div>
+
+                        <div class="widget-chart-sidebar bg-black-darker">
+                            <span style="color:rgb(114, 253, 22);">Total de los últimos 12 meses: {{totalsgeneralprensadiasimpresora2.totalQTY}} </span>
+
+                            <ul class="chart-legend">
+                                <span style="color:rgb(114, 253, 22);">Cantidad de trabajos por tipo de Impresora.</span>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> Sin Asignar - últimos 12 meses: {{totalsgeneralprensadiasimpresora2.QTY_SinAsignar}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> Flexo - últimos 12 meses: {{totalsgeneralprensadiasimpresora2.QTY_Flexo}} </li>
+
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> Hueco - últimos 12 meses: {{totalsgeneralprensadiasimpresora2.QTY_Hueco}} </li>
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="widget-chart bg-black" ng-show="activeTab === 'grafico3'">
+
+                <div class="col-sm-12 col-md-12">
+                    <div class="widget-chart bg-black">
+                        <div class="widget-chart-content">
+
+                            <div class="head-container">
+                                <h4 class="chart-title">
+                                    Cantidad Recepcion por Proveedor.
+                                    <small>Incidencias de los ultimos 12 meses</small>
+                                </h4>
+                                <select ng-model="selectValue3" ng-change="updateChart3(selectValue3)" class="form-control mb-2">
+                                    <option selected value="Todas">Todas</option>
+                                    <option ng-repeat="columna in selectValues3" value="{{columna}}">{{columna}}</option>
+                                </select>
+
+
+                            </div>
+
+
+                            <div id="visitors-line-chart7" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                        </div>
+
+                        <div class="widget-chart-sidebar bg-black-darker">
+
+                            <span style="color:rgb(114, 253, 22);">Total de los últimos 12 meses: {{totalsKpiPrePrensaDLibgrabadoProveedor2.totalQTY}} </span>
+
+                            <ul class="chart-legend">
+                                <span style="color:rgb(114, 253, 22);">Cantidad Recepcion por Proveedor.</span>
+                                <li class="li-separator">BOSISIO</li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> FLEXO : {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Flexo}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #df6c79 !important"></i> HUECO : {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Hueco}} </li>
+                                <li class="li-separator">LYNCH</li>
+
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #3539a4 !important"></i>  FLEXO : {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Lynch_Flexo}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #1c9ce9 !important"></i>  HUECO : {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Lynch_Hueco}} </li>
+                                <li class="li-separator">LONGO</li>
+
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #8de65d !important"></i>  FLEXO : {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Longo_Flexo}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #52913f !important"></i>  HUECO : {{totalsKpiPrePrensaDLibgrabadoProveedor2.QTY_LiberadoGrabadoVsRecepcionHerramental_Longo_Hueco}} </li>
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-chart bg-black" ng-show="activeTab === 'grafico4'">
+                <div class="col-sm-12 col-md-12">
+                    <div class="widget-chart bg-black">
+                        <div class="widget-chart-content">
+
+                            <div class="head-container">
+                                <h4 class="chart-title">
+                                    Cantidad Recepcion por tipo de impresora
+                                    <small>Incidencias de los ultimos 12 meses</small>
+                                </h4>
+                                <select ng-model="selectValue4" ng-change="updateChart4(selectValue4)" class="form-control mb-2">
+                                    <option selected value="Todas">Todas</option>
+                                    <option ng-repeat="columna in selectValues4" value="{{columna}}">{{columna}}</option>
+                                </select>
+
+
+                            </div>
+
+                            <div id="visitors-line-chart6" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                        </div>
+
+                        <div class="widget-chart-sidebar bg-black-darker">
+                            <span style="color:rgb(114, 253, 22);">Total de los últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.totalQTY}} </span>
+
+                            <ul class="chart-legend">
+                                <span style="color:rgb(114, 253, 22);">Cantidad Recepcion por tipo de impresora</span>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> SIN ASIGNAR - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.QTY_LiberadoGrabadoVsRecepcionHerramental_SinAsignar}} </li>
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> FLEXO - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.QTY_LiberadoGrabadoVsRecepcionHerramental_Flexo}} </li>
+
+                                <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> HUECO - últimos 12 meses: {{totalsKpiPrePrensaDLibgrabado2.QTY_LiberadoGrabadoVsRecepcionHerramental_Hueco}} </li>
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="widget-chart bg-black" ng-show="activeTab === 'grafico5'">
+                <div class="col-sm-12 col-md-12">
+                    <div class="widget-chart bg-black">
+                        <div class="widget-chart-content">
+                            <h4 class="chart-title">
+                                Cantidad de días hasta que se envía la espec. técnica
+                                <small>Incidencias de los ultimos 12 meses</small>
+                            </h4>
+                            <div id="visitors-line-chart5" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                        </div>
+
+                        <div class="widget-chart-sidebar bg-black-darker">
+                            <span style="color:rgb(114, 253, 22);">Cantidad de días hasta que se envía la espec. técnica: {{totalsgeneralprensadias2.totalQTY}} </span>
+
+                            <!--<ul class="chart-legend">
+                        <span style="color:rgb(114, 253, 22);">Cantidad total por Impresora</span>
+                        <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> Cantidad de días hasta que se envía la espec. técnica - últimos 12 meses: {{totalsgeneralprensadias2.totalQTY}} </li>
+
+                    </ul>-->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="widget-chart bg-black" ng-show="activeTab === 'grafico6'">
+                <div class="col-sm-12 col-md-12">
+                    <div class="widget-chart bg-black">
+                        <div class="widget-chart-content">
+
+
+                            <div class="head-container">
+                                <h4 class="chart-title">
+                                    Cantidad por Responsable
+                                    <small>Incidencias de los ultimos 12 meses</small>
+                                </h4>
+                                <select ng-model="selectValue5" ng-change="updateChart5(selectValue5)" class="form-control mb-2">
+                                    <option selected value="Todas">Todas</option>
+                                    <option ng-repeat="columna in selectValues5" value="{{columna.value}}">{{columna.key}}</option>
+                                </select>
+
+
+                            </div>
+
+                            <div id="visitors-line-chart11" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                        </div>
+
+                        <div class="widget-chart-sidebar bg-black-darker">
+                            <span style="color:rgb(114, 253, 22);">Cantidad por Responsable: {{totalsgeneralprensaresponsable2.totalQTY}} </span>
+
+                            <ul class="chart-legend">
+                        <span style="color:rgb(114, 253, 22);">Cantidad total por Responsable</span>
+                        <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> RICARDO BOSISIO: {{totalsgeneralprensaresponsable2.QTY_10}} </li>
+                        <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #ffcc00 !important"></i> AGUSTIN DE JONGE: {{totalsgeneralprensaresponsable2.QTY_17}} </li>
+                        <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color: #00ACAC !important "></i> ARIEL PROZAPAS: {{totalsgeneralprensaresponsable2.QTY_18}} </li>
+
+                    </ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+            <!----INGENIERIA----->
+
+            <div class="col-sm-12 col-md-12">
+                <h3>Ingenieria</h3>
+                <div class="tabs">
+                    <ul class="nav nav-tabs">
+                        <li ng-class="{active: activeTab2 === 'grafico1'}">
+                            <a href="" ng-click="setActiveTab('grafico1')">Qty Ingenieria</a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="widget-chart bg-black" ng-show="activeTab2 === 'grafico1'">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="widget-chart bg-black">
+                            <div class="widget-chart-content">
+                                <h4 class="chart-title">
+                                    Reporte General
+                                    <small>Incidencias de los ultimos 12 meses</small>
+                                </h4>
+                                <div id="visitors-line-chart8" class="morris-inverse" style="height: 280px;margin-right: 0px"></div>
+                            </div>
+
+                            <div class="widget-chart-sidebar bg-black-darker">
+                                <span style="color:rgb(114, 253, 22);">Total de los últimos 12 meses: {{totalsKpiIngenieriaGeneral2.totalQTY}} </span>
+
+                                <ul class="chart-legend">
+                                    <span style="color:rgb(114, 253, 22);">Detalles</span>
+                                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:red !important"></i> Documento VS Pedido: {{totalsKpiIngenieriaGeneral2.QTY_DocumentoVSPedido}} </li>
+                                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#ffcc00 !important"></i> Fecha Confeccion VS Liberacion Tec: {{totalsKpiIngenieriaGeneral2.QTY_FechaConfeccionVSLiberacionTec}} </li>
+
+                                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#00ACAC !important"></i> Liberacion Tec Vs Documento: {{totalsKpiIngenieriaGeneral2.QTY_LiberacionTecVsDocumento}} </li>
+                                    <li style="margin-top: 4px;"><i class="fa fa-circle-o fa-fw text-success m-r-5" style="color:#3273B1 !important"></i> Liberacion Final Vs Liberacion Tec: {{totalsKpiIngenieriaGeneral2.QTY_LiberacionFinalVsLiberacionTec}} </li>
+
+
+                                </ul>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+               
+
+
+
+
+
+
+
+            </div>
+
+
+            </div>
+        </div>
 </div>

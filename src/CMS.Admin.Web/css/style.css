@@ -27,6 +27,7 @@ background:white}
 
 
 
+
 /* Media Items */
 
 .media-list {
@@ -1222,4 +1223,12 @@ table.dataTable thead td {
     font-size: 12px;
     font-weight: bold;
     color: #0472ee;
+}
+.mb-2 {
+    margin-bottom: 2em;
+}
+
+
+.head-container{
+    display:flex
 }

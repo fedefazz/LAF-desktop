@@ -78,6 +78,7 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
 
 
 
+
     /* Users */
         .state('blsp.users', {
             url: '/users',
@@ -163,7 +164,44 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                     }
                 })
 
-      
+
+
+        /* Operadores */
+        .state('blsp.valoresPorPeriodoMensual', {
+            url: '/valoresPorPeriodoMensual',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.valoresPorPeriodoMensual.list', {
+            url: '/list',
+            data: { pageTitle: 'Valores por periodo Mensual' },
+            templateUrl: 'pages/valoresPorPeriodoMensual/list.html'
+        })
+        .state('blsp.valoresPorPeriodoMensual.crud', {
+            url: '/crud/:id',
+            data: { pageTitle: 'Valores por periodo Mensual CRUD' },
+            templateUrl: 'pages/valoresPorPeriodoMensual/crud.html',
+            params: {
+                id: { squash: true, value: null }
+            }
+        })
+
+
+
+        /* Operadores */
+        .state('blsp.motivosscrap', {
+            url: '/motivosscrap',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.motivosscrap.list', {
+            url: '/list',
+            data: { pageTitle: 'motivosscrap' },
+            templateUrl: 'pages/motivosscrap/list.html'
+        })
+
+
+    
 
          /* Tipo Material */
             .state('blsp.tipoMaterial', {
@@ -184,6 +222,32 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
                         id: { squash: true, value: null }
                     }
                 })
+
+
+
+        /* Operadores */
+        .state('blsp.trabajocilindros', {
+            url: '/trabajocilindros',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.trabajocilindros.list', {
+            url: '/list',
+            data: { pageTitle: 'trabajocilindros' },
+            templateUrl: 'pages/trabajocilindros/list.html'
+        })
+        .state('blsp.trabajocilindros.crud', {
+            url: '/crud/:id',
+            data: { pageTitle: 'trabajocilindros CRUD' },
+            templateUrl: 'pages/trabajocilindros/crud.html',
+            params: {
+                id: { squash: true, value: null }
+            }
+        })
+
+
+
+
 
         /* Productos */
         .state('blsp.productos', {
@@ -220,6 +284,29 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
             data: { pageTitle: 'Dashboard Productos' },
             templateUrl: 'pages/dashboardProductos/dashboard.html'
         })
+
+
+
+        //MOTIVOS
+        .state('blsp.motivos', {
+            url: '/motivos',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.motivos.list', {
+            url: '/list',
+            data: { pageTitle: 'Motivos' },
+            templateUrl: 'pages/motivos/list.html'
+        })
+        .state('blsp.motivos.crud', {
+            url: '/crud/:id',
+            data: { pageTitle: 'Motivos' },
+            templateUrl: 'pages/motivos/crud.html',
+            params: {
+                id: { squash: true, value: null }
+            }
+        })
+
     
 
           /* Origen de Scrap */

@@ -62,7 +62,7 @@ input:-webkit-autofill {
 }
 
 #content .container-fluid {
-    max-width: 1280px;
+    /*max-width: 1280px;*/
 }
 
 .navbar-header {

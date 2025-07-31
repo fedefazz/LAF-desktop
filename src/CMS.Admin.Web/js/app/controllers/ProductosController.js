@@ -4,6 +4,18 @@ angular
     .module('app.controllers')
     .controller('productosController', function ($scope, $filter, APIService, DTOptionsBuilder, $timeout) {
         // Inicialización de variables
+
+        // Obtener la fecha actual
+        var today = new Date();
+
+        // Formatear la fecha en yyyy-mm
+        var day = String(today.getDate()).padStart(2, '0');
+        var month = String(today.getMonth() + 1).padStart(2, '0'); // Enero es 0!
+        var year = today.getFullYear();
+        $scope.dateHastainp2 = today;
+
+        $scope.date1900 = new Date('01/01/1900');
+
         $scope.isDivVisible = false; // Inicialmente oculto
 
         $scope.toggleDiv = function () {
@@ -14,7 +26,7 @@ angular
 
         $scope.selectedColumn = ''; // Columna seleccionada para filtrar
         $scope.filterValue = ''; // Valor para filtrar
-        $scope.filters = [{ selectedColumn: '', filterValue: '', dateComparison: 'equals' }]; // Inicializa con un filtro vacío
+        $scope.filters = [{ selectedColumn: '', filterValue: $scope.date1900, dateComparison: 'equals' }]; // Inicializa con un filtro vacío
 
         $scope.filterOptions = {
             PRODUCTO: [
@@ -53,6 +65,7 @@ angular
                 'CerradoIng'
             ],
             PREPRENSA: [
+                'NoUsaPrePrensa',
                 'TipoImpresora',
                 'Impresora',
                 'Proveedor',
@@ -69,7 +82,7 @@ angular
                 'FechaAprobacionCromalin',
                 'FechaPDFArmado',
                 'FechaLiberadoAGrabado',
-                'CerradoPrePrensa'
+                'CerradoPrePrensa',
             ],
             HERRAMENTAL: [
                 'TipoCilindros',
@@ -107,9 +120,10 @@ angular
         $scope.Tipo_AdmValues = [];
 
         $scope.filteredProductos = [];
-        $scope.sortColumn = 'Cod_Producto';
+        $scope.sortColumn = '';
         $scope.reverseSort = false;
         $scope.dateComparison = 'equals'; // Comparación para fechas
+        $scope.dataLoaded = false; // Bandera para indicar si los datos están cargados
 
         // Obtener productos desde la API
         GetProductos();
@@ -117,6 +131,9 @@ angular
         function GetProductos() {
             APIService.GetProductos().then(function (response) {
                 $scope.productos = response.data;
+                $scope.productos = response.data.filter(function (producto) {
+                    return producto.Estado !== "Migrado";
+                });
                 console.log('$scope.productos', $scope.productos);
                 $scope.codProductoValues = [...new Set($scope.productos.map(p => p.Cod_Producto))]; // Obtener valores únicos para Cod_Producto
                 $scope.ResponsableComercialValues = [...new Set($scope.productos.map(p => p.ResponsableComercial))]; // Obtener valores únicos para ResponsableComercial
@@ -137,9 +154,16 @@ angular
                 $scope.PerfilImpresionValues = [...new Set($scope.productos.map(p => p.PerfilImpresion))];
                 $scope.TipoCilindrosValues = [...new Set($scope.productos.map(p => p.TipoCilindros))];
                 $scope.CodigosCilindrosValues = [...new Set($scope.productos.map(p => p.CodigosCilindros))];
+                $scope.dataLoaded = true; // Indicar que los datos están cargados
+                // Usar $timeout para asegurarse de que Angular haya procesado los cambios antes de inicializar la tabla
+                $timeout(function () {
+                    $scope.applyFilters();
+                    if ($scope.dtInstance && $scope.dtInstance.reloadData) {
+                        $scope.dtInstance.reloadData();
+                    }
+                }, 30);
 
-
-                $scope.applyFilters(); // Aplicar filtros después de obtener los datos
+                //$scope.applyFilters(); // Aplicar filtros después de obtener los datos
             }, function (error) {
                 $scope.errorMessage = "Oops, algo salió mal.";
             });
@@ -155,13 +179,13 @@ angular
 
         // Función para aplicar los filtros
         $scope.applyFilters = _.debounce(function () {
-
             $timeout(function () {
                 let productosFiltrados = $scope.productos;
 
                 $scope.filters.forEach(filter => {
                     if (filter.selectedColumn && filter.filterValue) {
                         productosFiltrados = productosFiltrados.filter(producto => {
+
                             let fieldValue = producto[filter.selectedColumn];
                             let filtroValor = filter.filterValue;
                             let dateComparison = filter.dateComparison;
@@ -226,7 +250,7 @@ angular
                                 return fieldValue && fieldValue.toString().toLowerCase().includes(filtroValor.toString().toLowerCase());
                             }
 
-                            if (filter.selectedColumn === 'CerradoIng' || filter.selectedColumn === 'CerradoPrePrensa' || filter.selectedColumn === 'ArteModificado' || filter.selectedColumn === 'RushOrder') {
+                            if (filter.selectedColumn === 'CerradoIng' || filter.selectedColumn === 'CerradoPrePrensa' || filter.selectedColumn === 'ArteModificado' || filter.selectedColumn === 'RushOrder' || filter.selectedColumn === 'NoUsaPrePrensa') {
                                 return fieldValue.toString().toLowerCase().trim() === filtroValor.toString().toLowerCase().trim();
                             }
 
@@ -249,6 +273,11 @@ angular
         // Eliminar un filtro
         $scope.removeFilter = function (index) {
             $scope.filters.splice(index, 1);
+            if ($scope.filters === 0){
+                GetProductos();
+                return;
+
+            }
             $scope.applyFilters(); // Reaplicar filtros después de eliminar
         };
 
@@ -282,6 +311,11 @@ angular
 
                 servCallType.then(function (u) {
                     $scope.dataForExcel = u.data;
+                    console.log('$scope.dataForExcel', $scope.dataForExcel);
+
+                    $scope.dataForExcel = $scope.dataForExcel.filter(function (producto) {
+                        return producto.Estado !== "Migrado";
+                    });
                     $scope.exportData();
                     $scope.butonVisible = false;
 
@@ -310,105 +344,427 @@ angular
 
         }
 
-        {
-   
-  
-  
-}
 
-        var mystyle = {
-            headers: true,
-            columns: [
-                { columnid: 'Cod_Producto', title: 'Cod_Producto' },
-                { columnid: 'Descripcion', title: 'Descripcion' },
-                { columnid: 'Unid_Medida', title: 'Unid_Medida' },
-                { columnid: 'Fecha_Creacion', title: 'Fecha_Creacion' },
-                { columnid: 'Tipo_Adm', title: 'Tipo_Adm' },
-                { columnid: 'Reemplazo_Prod', title: 'Reemplazo_Prod' },
-                { columnid: 'Cilindros', title: 'Cilindros' },
-                { columnid: 'Referencia_Item', title: 'Referencia_Item' },
-                { columnid: 'Liberacion', title: 'Liberacion' },
-                { columnid: 'Fecha_Liberacion', title: 'Fecha_Liberacion' },
-                { columnid: 'Nro_Pedido_Original', title: 'Nro_Pedido_Original' },
-                { columnid: 'Fecha_Pedido_Original', title: 'Fecha_Pedido_Original' },
-                { columnid: 'CodCliente', title: 'CodCliente' },
-                { columnid: 'Nombre_Cliente', title: 'Nombre_Cliente' },
-                { columnid: 'OC_Cliente', title: 'OC_Cliente' },
-                { columnid: 'Cod_Producto_Cliente', title: 'Cod_Producto_Cliente' },
-                { columnid: 'Fecha_Deseada_Cliente', title: 'Fecha_Deseada_Cliente' },
-                { columnid: 'ResponsableComercial', title: 'ResponsableComercial' },
-                { columnid: 'ResponsableCustomer', title: 'ResponsableCustomer' },
-                { columnid: 'Categoria', title: 'Categoria' },
-                { columnid: 'ResponsableConfeccionIng', title: 'ResponsableConfeccionIng' },
-                { columnid: 'FechaConfeccionIng', title: 'FechaConfeccionIng' },
-                { columnid: 'IdentificadorCierreIng', title: 'IdentificadorCierreIng' },
-                { columnid: 'HabilitaCierreLet', title: 'HabilitaCierreLet' },
-                { columnid: 'ResponsableLiberacionLet', title: 'ResponsableLiberacionLet' },
-                { columnid: 'FechaLiberacionLet', title: 'FechaLiberacionLet' },
-                { columnid: 'ResponsableLiberacionFinalIng', title: 'ResponsableLiberacionFinalIng' },
-                { columnid: 'FechaLiberacionFinalIng', title: 'FechaLiberacionFinalIng' },
-                { columnid: 'ObservacionesIng', title: 'ObservacionesIng' },
-                { columnid: 'CerradoIng', title: 'CerradoIng' },
-                { columnid: 'RushOrder', title: 'RushOrder' },
-                { columnid: 'ReChequeoProducto', title: 'ReChequeoProducto' },
-                { columnid: 'TipoImpresora', title: 'TipoImpresora' },
-                { columnid: 'Impresora', title: 'Impresora' },
-                { columnid: 'Proveedor', title: 'Proveedor' },
-                { columnid: 'ResponsablePrePrensa', title: 'ResponsablePrePrensa' },
-                { columnid: 'EstadoPrePrensa', title: 'EstadoPrePrensa' },
-                { columnid: 'ObservacionesPrePrensa', title: 'ObservacionesPrePrensa' },
-                { columnid: 'FechaRecepcionArte', title: 'FechaRecepcionArte' },
-                { columnid: 'FechaEnvioArte_ET', title: 'FechaEnvioArte_ET' },
-                { columnid: 'FechaPDFModulo', title: 'FechaPDFModulo' },
-                { columnid: 'FechaAprobacionPDFCliente', title: 'FechaAprobacionPDFCliente' },
-                { columnid: 'FechaEnvioCromalin', title: 'FechaEnvioCromalin' },
-                { columnid: 'FechaAprobacionCromalin', title: 'FechaAprobacionCromalin' },
-                { columnid: 'FechaPDFArmado', title: 'FechaPDFArmado' },
-                { columnid: 'FechaLiberadoAGrabado', title: 'FechaLiberadoAGrabado' },
-                { columnid: 'FechaSacaPrueba', title: 'FechaSacaPrueba' },
-                { columnid: 'FechaAprobacionSacaPrueba', title: 'FechaAprobacionSacaPrueba' },
-                { columnid: 'PerfilImpresion', title: 'PerfilImpresion' },
-                { columnid: 'Colores', title: 'Colores' },
-                { columnid: 'ComentariosColores', title: 'ComentariosColores' },
-                { columnid: 'CerradoPrePrensa', title: 'CerradoPrePrensa' },
-                { columnid: 'FechaDocumento', title: 'FechaDocumento' },
-                { columnid: 'Estado', title: 'Estado' },
-                { columnid: 'FechaStandBy', title: 'FechaStandBy' },
-                { columnid: 'ObsProducto', title: 'ObsProducto' },
-                { columnid: 'FechaFinStandBy', title: 'FechaFinStandBy' },
-                { columnid: 'LastRefreshDate', title: 'LastRefreshDate' },
-                { columnid: 'ObsPerfiles', title: 'ObsPerfiles' },
-                { columnid: 'ArteModificado', title: 'ArteModificado' },
-                { columnid: 'FechaArteOriginal', title: 'FechaArteOriginal' },
-                { columnid: 'OT', title: 'OT' },
-                { columnid: 'TipoCilindros', title: 'TipoCilindros' },
-                { columnid: 'FechaEntregaNuevosCilindros', title: 'FechaEntregaNuevosCilindros' },
-                { columnid: 'CodigosCilindros', title: 'CodigosCilindros' },
-                { columnid: 'FechaRecepcionCodigosCilindros', title: 'FechaRecepcionCodigosCilindros' },
-                { columnid: 'FechaPreparacionCilindros', title: 'FechaPreparacionCilindros' },
-                { columnid: 'FechaLiberacionMontaje', title: 'FechaLiberacionMontaje' },
-                { columnid: 'FechaRetiroCilindro', title: 'FechaRetiroCilindro' },
-                { columnid: 'FechaPromesaProveedorGrabado', title: 'FechaPromesaProveedorGrabado' },
-                { columnid: 'FechaRecepcionHerramental', title: 'FechaRecepcionHerramental' },
-                { columnid: 'ObsHerramental', title: 'ObsHerramental' },
+        $scope.exportExcel2 = function () {
 
-            ],
+            $scope.butonVisible = true;
+            $scope.successMessage2 = "Preparando Archivo...";
+
+          
+
+                    var servCallType = APIService.getProductoParaExcel2();
+
+                servCallType.then(function (u) {
+                    $scope.dataForExcel2 = u.data;
+                    console.log('$scope.dataForExcel2', $scope.dataForExcel2);
+                    $scope.exportData2();
+                    $scope.butonVisible = false;
+
+                    $scope.successMessage2 = "Archivo Descargado con Exito";
+                    $scope.errorMessage2 = "";
+
+                    $timeout(function () {
+                        $scope.successMessage2 = null;
+                    }, 3000);
+
+                }, function (error) {
+                    $scope.butonVisible = false;
+
+                    $scope.errorMessage2 = "Oops, something went wrong.";
+                });
+                $scope.mensaje = "";
+           
+
+
+
+        }
+
+        $scope.exportData2 = function () {
+            var date = new Date();
+            $scope.CurrentDateTime = $filter('date')(new Date().getTime(), 'MM-dd-yyyy_HH-mm-ss');
+
+            //alasql('SELECT * INTO XLSX("Productos_' + $scope.CurrentDateTime + '.xlsx",?) FROM ?', [mystyle, $scope.dataForExcel]);
+
+            // Llamar a applyStylesToExcel para aplicar estilos
+            $timeout(function () {
+                $scope.exportDataWithExceljs2();
+            }, 1000); // Delay to ensure the file is fully created before applying styles
         };
+
+       
+
 
         $scope.exportData = function () {
             var date = new Date();
-            $scope.CurrentDateTime = $filter('date')(new Date().getTime(), 'MM/dd/yyyy HH:mm:ss');
-            alasql('SELECT Cod_Producto, Descripcion, Unid_Medida, Fecha_Creacion, Tipo_Adm, Reemplazo_Prod, Cilindros, Referencia_Item, Liberacion, Fecha_Liberacion, ' +
-                'Nro_Pedido_Original, Fecha_Pedido_Original, CodCliente, Nombre_Cliente, OC_Cliente, Cod_Producto_Cliente, Fecha_Deseada_Cliente, ResponsableComercial, ' +
-                'ResponsableCustomer, Categoria, ResponsableConfeccionIng, FechaConfeccionIng, IdentificadorCierreIng, HabilitaCierreLet, ResponsableLiberacionLet, ' +
-                'FechaLiberacionLet, ResponsableLiberacionFinalIng, FechaLiberacionFinalIng, ObservacionesIng, CerradoIng, RushOrder, ReChequeoProducto, TipoImpresora, ' +
-                'Impresora, Proveedor, ResponsablePrePrensa, EstadoPrePrensa, ObservacionesPrePrensa, FechaRecepcionArte, FechaEnvioArte_ET, FechaPDFModulo, ' +
-                'FechaAprobacionPDFCliente, FechaEnvioCromalin, FechaAprobacionCromalin, FechaPDFArmado, FechaLiberadoAGrabado, FechaSacaPrueba, FechaAprobacionSacaPrueba, ' +
-                'PerfilImpresion, Colores, ComentariosColores, CerradoPrePrensa, FechaDocumento, Estado, FechaStandBy, ObsProducto, FechaFinStandBy, LastRefreshDate, ' +
-                'ObsPerfiles, ArteModificado, FechaArteOriginal, OT, TipoCilindros, FechaEntregaNuevosCilindros, CodigosCilindros, FechaRecepcionCodigosCilindros, ' +
-                'FechaPreparacionCilindros, FechaLiberacionMontaje, FechaRetiroCilindro, FechaPromesaProveedorGrabado, FechaRecepcionHerramental, ObsHerramental ' +
-                'INTO XLSX("Productos' + $scope.CurrentDateTime + '.xlsx",?) FROM ?', [mystyle, $scope.dataForExcel]);
+            $scope.CurrentDateTime = $filter('date')(new Date().getTime(), 'MM-dd-yyyy_HH-mm-ss');
+
+            //alasql('SELECT * INTO XLSX("Productos_' + $scope.CurrentDateTime + '.xlsx",?) FROM ?', [mystyle, $scope.dataForExcel]);
+
+            // Llamar a applyStylesToExcel para aplicar estilos
+            $timeout(function () {
+                $scope.exportDataWithExceljs();
+            }, 1000); // Delay to ensure the file is fully created before applying styles
         };
+
+
+
+        $scope.exportDataWithExceljs = function () {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Sheet1');
+
+
+          
+
+            // Definir columnas
+            worksheet.columns = [
+                { header: 'Cod_Producto', key: 'Cod_Producto', width: 15 },
+                { header: 'Descripcion', key: 'Descripcion', width: 30 },
+                { header: 'Estado', key: 'Estado', width: 15 },
+                { header: 'FechaStandBy', key: 'FechaStandBy', width: 20 },
+                { header: 'FechaFinStandBy', key: 'FechaFinStandBy', width: 20 },
+                { header: 'LastRefreshDate', key: 'LastRefreshDate', width: 30 },
+                { header: 'ObsProducto', key: 'ObsProducto', width: 30 },
+                { header: 'Nombre_Cliente', key: 'Nombre_Cliente', width: 30 },
+
+
+                { header: 'Unid_Medida', key: 'Unid_Medida', width: 15 },
+                { header: 'CodCliente', key: 'CodCliente', width: 15 },
+                { header: 'Fecha_Creacion', key: 'Fecha_Creacion', width: 20 },
+                { header: 'Nro_Pedido_Original', key: 'Nro_Pedido_Original', width: 20 },
+                { header: 'Fecha_Deseada_Cliente', key: 'Fecha_Deseada_Cliente', width: 20 },
+                { header: 'Tipo_Adm', key: 'Tipo_Adm', width: 15 },
+                { header: 'RushOrder', key: 'RushOrder', width: 10 },
+                { header: 'ResponsableComercial', key: 'ResponsableComercial', width: 25 },
+                { header: 'ResponsableCustomer', key: 'ResponsableCustomer', width: 25 },
+                { header: 'Cilindros', key: 'Cilindros', width: 15 },
+                { header: 'OC_Cliente', key: 'OC_Cliente', width: 20 },
+                { header: 'Cod_Producto_Cliente', key: 'Cod_Producto_Cliente', width: 20 },
+                { header: 'Fecha_Pedido_Original', key: 'Fecha_Pedido_Original', width: 20 },
+                { header: 'Reemplazo_Prod', key: 'Reemplazo_Prod', width: 15 },
+                { header: 'Referencia_Item', key: 'Referencia_Item', width: 20 },
+                { header: 'ReChequeoProducto', key: 'ReChequeoProducto', width: 20 },
+
+                { header: 'FechaDocumento', key: 'FechaDocumento', width: 20 },
+                { header: 'Liberacion', key: 'Liberacion', width: 20 },
+                { header: 'Fecha_Liberacion', key: 'Fecha_Liberacion', width: 20 },
+                { header: 'Categoria', key: 'Categoria', width: 20 },
+                { header: 'ResponsableConfeccionIng', key: 'ResponsableConfeccionIng', width: 25 },
+                { header: 'FechaConfeccionIng', key: 'FechaConfeccionIng', width: 20 },
+                { header: 'ResponsableLiberacionLet', key: 'ResponsableLiberacionLet', width: 25 },
+                { header: 'FechaLiberacionLet', key: 'FechaLiberacionLet', width: 20 },
+                { header: 'ResponsableLiberacionFinalIng', key: 'ResponsableLiberacionFinalIng', width: 25 },
+                { header: 'FechaLiberacionFinalIng', key: 'FechaLiberacionFinalIng', width: 20 },
+                { header: 'CerradoIng', key: 'CerradoIng', width: 10 },
+                { header: 'HabilitaCierreLet', key: 'HabilitaCierreLet', width: 20 },
+                { header: 'ObservacionesIng', key: 'ObservacionesIng', width: 30 },
+
+              
+                
+                { header: 'NoUsaPrePrensa', key: 'NoUsaPrePrensa', width: 10 },
+                { header: 'TipoImpresora', key: 'TipoImpresora', width: 20 },
+                { header: 'Impresora', key: 'Impresora', width: 10 },
+                { header: 'Proveedor', key: 'Proveedor', width: 20 },
+                { header: 'ResponsablePrePrensa', key: 'ResponsablePrePrensa', width: 25 },
+                { header: 'TipoMaterial', key: 'TipoMaterial', width: 20 },
+                { header: 'PerfilImpresion', key: 'PerfilImpresion', width: 20 },
+                { header: 'EstadoPrePrensa', key: 'EstadoPrePrensa', width: 20 },
+                { header: 'Colores', key: 'Colores', width: 20 },
+                { header: 'ArteModificado', key: 'ArteModificado', width: 10 },
+                { header: 'FechaArteOriginal', key: 'FechaArteOriginal', width: 20 },
+                { header: 'AcuerdoDirectoProveedor', key: 'AcuerdoDirectoProveedor', width: 20 },
+                { header: 'OC_PROVEEDOR', key: 'OC_PROVEEDOR', width: 20 },
+                { header: 'FechaRecepcionArte', key: 'FechaRecepcionArte', width: 20 },
+                { header: 'FechaEnvioArte_ET', key: 'FechaEnvioArte_ET', width: 20 },
+                { header: 'FechaPDFModulo', key: 'FechaPDFModulo', width: 20 },
+                { header: 'FechaAprobacionPDFCliente', key: 'FechaAprobacionPDFCliente', width: 20 },
+                { header: 'FechaEnvioCromalin', key: 'FechaEnvioCromalin', width: 20 },
+                { header: 'FechaAprobacionCromalin', key: 'FechaAprobacionCromalin', width: 20 },
+                { header: 'FechaPDFArmado', key: 'FechaPDFArmado', width: 20 },
+                { header: 'FechaLiberadoAGrabado', key: 'FechaLiberadoAGrabado', width: 20 },
+                { header: 'ObsPerfiles', key: 'ObsPerfiles', width: 30 },
+                { header: 'ComentariosColores', key: 'ComentariosColores', width: 30 },
+                { header: 'ObservacionesPrePrensa', key: 'ObservacionesPrePrensa', width: 30 },
+                { header: 'CerradoPrePrensa', key: 'CerradoPrePrensa', width: 10 },
+                { header: 'CantCodigosCilindros', key: 'CantCodigosCilindros', width: 10 },
+
+                
+
+
+                { header: 'OT', key: 'OT', width: 20 },
+                { header: 'TipoCilindros', key: 'TipoCilindros', width: 20 },
+                { header: 'FechaEntregaNuevosCilindros', key: 'FechaEntregaNuevosCilindros', width: 20 },
+                { header: 'CodigosCilindros', key: 'CodigosCilindros', width: 20 },
+                { header: 'FechaRecepcionCodigosCilindros', key: 'FechaRecepcionCodigosCilindros', width: 20 },
+                { header: 'FechaPreparacionCilindros', key: 'FechaPreparacionCilindros', width: 20 },
+                { header: 'FechaLiberacionMontaje', key: 'FechaLiberacionMontaje', width: 20 },
+                { header: 'FechaRetiroCilindro', key: 'FechaRetiroCilindro', width: 20 },
+                { header: 'FechaPromesaProveedorGrabado', key: 'FechaPromesaProveedorGrabado', width: 20 },
+                { header: 'FechaSacaPrueba', key: 'FechaSacaPrueba', width: 20 },
+                { header: 'FechaAprobacionSacaPrueba', key: 'FechaAprobacionSacaPrueba', width: 20 },
+                { header: 'FechaRecepcionHerramental', key: 'FechaRecepcionHerramental', width: 20 },
+                { header: 'ObsHerramental', key: 'ObsHerramental', width: 30 },
+                { header: 'Dif_FechaCreacion_FechaPedido', key: 'Dif_FechaCreacion_FechaPedido', width: 15 },
+                { header: 'Dif_FechaPedido_FechaDocumento', key: 'Dif_FechaPedido_FechaDocumento', width: 15 },
+                { header: 'Dif_FechaDocumento_FechaLiberacion', key: 'Dif_FechaDocumento_FechaLiberacion', width: 15 },
+                { header: 'Dif_FechaLiberacion_FechaConfeccion', key: 'Dif_FechaLiberacion_FechaConfeccion', width: 15 },
+                { header: 'Dif_FechaLiberacion_FechaLibFinal', key: 'Dif_FechaLiberacion_FechaLibFinal', width: 15 },
+                { header: 'Dif_FechaDocArte_FechaEnvioET', key: 'Dif_FechaDocArte_FechaEnvioET', width: 15 },
+                { header: 'Dif_FechaPDF_FechaRespCliente', key: 'Dif_FechaPDF_FechaRespCliente', width: 15 },
+                { header: 'Dif_FechaEnvCroma_FechaAprobCroma', key: 'Dif_FechaEnvCroma_FechaAprobCroma', width: 15 },
+                { header: 'Dif_FechaAprobCroma_FechaPDFArmado', key: 'Dif_FechaAprobCroma_FechaPDFArmado', width: 15 },
+                { header: 'Dif_FechaPDFArmado_FechaLibGrabado', key: 'Dif_FechaPDFArmado_FechaLibGrabado', width: 15 },
+                { header: 'Dif_FechaLibGrabado_FechaHerramental', key: 'Dif_FechaLibGrabado_FechaHerramental', width: 15 },
+                { header: 'Dif_FechaSacaPrueba_FechaAprobSacaPrueba', key: 'Dif_FechaSacaPrueba_FechaAprobSacaPrueba', width: 15 },
+                { header: 'Dif_FechaPrepCil_FechaLibMonaje', key: 'Dif_FechaPrepCil_FechaLibMonaje', width: 15 },
+                { header: 'Dif_FechaLibMontaje_FechaRetiro', key: 'Dif_FechaLibMontaje_FechaRetiro', width: 15 },
+                { header: 'Dif_FechaPromesaProv_FechaRecepHerra', key: 'Dif_FechaPromesaProv_FechaRecepHerra', width: 15 },
+                { header: 'Dif_FechaPedido_FechaRecepHerra', key: 'Dif_FechaPedido_FechaRecepHerra', width: 15 },
+                { header: 'Dif_FechaArte_FechaRecepHerra', key: 'Dif_FechaArte_FechaRecepHerra', width: 15 },
+                { header: 'Dif_Nivel_Servicio', key: 'Dif_Nivel_Servicio', width: 15 },
+
+                { header: 'Dif_LiberadoAGrabado_FechaArte', key: 'Dif_LiberadoAGrabado_FechaArte', width: 15 },
+                { header: 'Dif_RecepcionHerramental_LiberadoAGrabado', key: 'Dif_RecepcionHerramental_LiberadoAGrabado', width: 15 },
+                { header: 'Dif_LiberacionLet_FechaPedido', key: 'Dif_LiberacionLet_FechaPedido', width: 15 },
+            ];
+
+            // Agregar datos y formatear fechas
+            $scope.dataForExcel.forEach(row => {
+                let formattedRow = {};
+                Object.keys(row).forEach(key => {
+                    if ((key.toLowerCase().includes("fecha") || key.toLowerCase().includes("date")) && !key.includes("Dif_") && row[key]) {
+
+                        // Formatear fecha si es una cadena con formato ISO
+                        let date = new Date(row[key]);
+                        if (!isNaN(date.getTime())) {
+                            formattedRow[key] = date;
+                        } else {
+                            formattedRow[key] = row[key];
+                        }
+                    } else {
+                        formattedRow[key] = row[key];
+                    }
+                });
+                worksheet.addRow(formattedRow);
+            });
+
+            function formatDate(date) {
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth() + 1)).slice(-2);
+                let year = date.getFullYear();
+                var datetest = moment(date).format('DD/MM/YYYY');
+                console.log('datetest', datetest);
+                return datetest;
+            }
+
+
+            // Establecer el formato para las columnas de fechas
+            //const fechaColumns = [
+            //    'FechaStandBy', 'FechaFinStandBy', 'LastRefreshDate', 'Fecha_Creacion', // Agrega aquí los nombres de las columnas que contienen fechas
+            //    'Fecha_Deseada_Cliente', 'FechaDocumento', 'Fecha_Liberacion', // Continúa según sea necesario
+            //];
+
+            //fechaColumns.forEach(col => {
+            //    const columnIndex = worksheet.getColumn(col).number; // Obtén el índice de la columna
+            //    console.log('fechaColumns', columnIndex);
+            //    worksheet.getColumn(columnIndex).numFmt = 'dd/mm/yyyy'; // Ajusta el formato según lo que necesites
+            //});
+
+
+            worksheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            
+
+            for (let col = 1; col <= 7; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCCCC' } };
+                    }
+                });
+            }
+
+            for (let col = 8; col <= 24; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCCFF' } };
+                    }
+                });
+            }
+
+            for (let col = 25; col <= 37; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFCC' } };
+                    }
+                });
+            }
+
+            for (let col = 38; col <= 63; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCFFCC' } };
+                    }
+                });
+            }
+
+            for (let col = 64; col <= 76; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D2B48C' } };
+                    }
+                });
+            }
+
+            for (let col = 77; col <= 97; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CFCFCF' } };
+                    }
+                });
+            }
+
+
+            workbook.xlsx.writeBuffer().then(data => {
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                saveAs(blob, "Productos_" + $scope.CurrentDateTime + ".xlsx");
+            });
+        };
+
+
+        $scope.exportDataWithExceljs2 = function () {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Sheet1');
+
+
+
+
+            // Definir columnas
+            worksheet.columns = [
+                { header: 'FECHA PEDIDO', key: 'Fecha_Pedido', width: 15 },
+                { header: 'CODIGO ARTICULO', key: 'Cod_Producto', width: 30 },
+                { header: 'PRODUCTO ENTREGADO?', key: 'Producto_Entregado', width: 15 },
+                { header: 'PEDIDO PENDIENTE?', key: 'Pedido_Pendiente', width: 20 },
+                { header: 'Apariciones', key: 'Apariciones', width: 20 },
+                { header: 'CLIENTE', key: 'Cliente', width: 30 },
+                { header: 'PRODUCTO', key: 'Descripcion', width: 30 },
+                { header: 'N° Pedido', key: 'Pedido', width: 30 },
+                { header: 'Impresión FLEXO  / HUECO', key: 'TipoImpresora', width: 15 },
+                { header: 'Cant Almas', key: 'Cant_Almas', width: 15 },
+                { header: 'Cant Colores', key: 'Cant_Colores', width: 15 },
+                { header: 'Cant Colores Facturados', key: 'Cant_Colores_Facturados', width: 15 },
+                { header: 'Valor UNITARIO Grabado Cilindro', key: 'Valor_Unit_Grabado_Cilindro', width: 20 },
+                { header: 'Valor UNITARIO Fotopolimero/Color', key: 'Valor_Unit_Fotopolimero_Color', width: 20 },
+                { header: 'SE FACTURA', key: 'Se_Factura', width: 20 },
+                { header: 'OC NRO', key: 'OC_NRO', width: 15 },
+                { header: 'Observaciones', key: 'Observaciones', width: 10 },
+                { header: 'N° Factura (Completa Marisa)', key: 'Nro_Factura', width: 25 },
+                { header: 'COMENTARIOS', key: 'Comentarios', width: 25 },
+                
+            ];
+
+            // Agregar datos y formatear fechas
+            $scope.dataForExcel2.forEach(row => {
+                let formattedRow = {};
+                Object.keys(row).forEach(key => {
+                    console.log('key', key);
+                    if ((key.toLowerCase().includes("fecha") || key.toLowerCase().includes("date")) && !key.includes("Dif_") && row[key]) {
+                        console.log('key entro', row[key]);
+
+                        // Formatear fecha si es una cadena con formato ISO
+                        let date = new Date(row[key]);
+                        if (!isNaN(date.getTime())) {
+                            formattedRow[key] = date;
+                        } else {
+                            formattedRow[key] = row[key];
+                        }
+                    } else {
+                        formattedRow[key] = row[key];
+                    }
+                });
+                worksheet.addRow(formattedRow);
+            });
+
+            function formatDate(date) {
+                let day = ('0' + date.getDate()).slice(-2);
+                let month = ('0' + (date.getMonth() + 1)).slice(-2);
+                let year = date.getFullYear();
+                var datetest = moment(date).format('DD/MM/YYYY');
+                console.log('datetest', datetest);
+                return datetest;
+            }
+
+
+            // Establecer el formato para las columnas de fechas
+            //const fechaColumns = [
+            //    'FechaStandBy', 'FechaFinStandBy', 'LastRefreshDate', 'Fecha_Creacion', // Agrega aquí los nombres de las columnas que contienen fechas
+            //    'Fecha_Deseada_Cliente', 'FechaDocumento', 'Fecha_Liberacion', // Continúa según sea necesario
+            //];
+
+            //fechaColumns.forEach(col => {
+            //    const columnIndex = worksheet.getColumn(col).number; // Obtén el índice de la columna
+            //    console.log('fechaColumns', columnIndex);
+            //    worksheet.getColumn(columnIndex).numFmt = 'dd/mm/yyyy'; // Ajusta el formato según lo que necesites
+            //});
+
+
+            worksheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+                cell.font = { bold: true, colors: 'FFFFFF' };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '3366FF' } };
+            });
+
+
+
+            for (let col = 1; col <= 8; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '92D050' } };
+                    }
+                });
+            }
+
+            for (let col = 9; col <= 12; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+                    }
+                });
+            }
+
+            for (let col = 13; col <= 15; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC000' } };
+                    }
+                });
+            }
+
+            for (let col = 16; col <= 17; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF' } };
+                    }
+                });
+            }
+
+            for (let col = 18; col <= 19; col++) {
+                worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+                    if (rowNumber !== 1) { // Saltar el encabezado
+                        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'A5A5A5' } };
+                    }
+                });
+            }
+
+
+
+            workbook.xlsx.writeBuffer().then(data => {
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                saveAs(blob, "Productos_Grabados" + $scope.CurrentDateTime + ".xlsx");
+            });
+        };
+
+
 
 
     }
@@ -474,6 +830,7 @@ angular
                 $scope.isProductoPanelOpen = false;
                 $scope.isPrensaPanelOpen = false;
                 $scope.isHerramentalPanelOpen = false;
+                $scope.isTrabajoCilindrosPanelOpen = false;
 
 
 
@@ -483,12 +840,42 @@ angular
             $scope.isProductoPanelOpen = false;
             $scope.isPrensaPanelOpen = false;
             $scope.isHerramentalPanelOpen = false;
+            $scope.isTrabajoCilindrosPanelOpen = false;
 
         }
 
 
         var id = $stateParams.id;
         $scope.fechaAuxiliarParaMostrar = {};
+
+
+
+        GetTrabajoCilindros();
+
+        //TRAE TODOS LOS MATERIALES
+        function GetTrabajoCilindros() {
+            var servCallType = APIService.GetTrabajoCilindros();
+            servCallType.then(function (u) {
+                console.log(u);
+                $scope.trabajosCilindros = u.data.filter(function (trabajo) {
+                    return trabajo.Estado === 3 && trabajo.Cod_Producto === id;
+                });
+            }, function (error) {
+                $scope.errorMessage = "Oops, something went wrong.";
+            });
+        };
+
+
+
+        $scope.dtInstance = {};
+
+        $scope.dtOptions = DTOptionsBuilder
+            .newOptions()
+            .withLanguageSource('/js/angular-datatables-spanish.json')
+            .withOption('paging', true)
+            .withPaginationType('full_numbers')
+            .withDisplayLength(20)
+            .withOption('order', [1, 'asc']);
 
 
 
@@ -508,6 +895,10 @@ angular
 
         $scope.toggleHerramentalPanel = function () {
             $scope.isHerramentalPanelOpen = !$scope.isHerramentalPanelOpen;
+        };
+
+        $scope.toggleTrabajoCilindrosPanel = function () {
+            $scope.isTrabajoCilindrosPanelOpen = !$scope.isTrabajoCilindrosPanelOpen;
         };
 
         if (id) {
@@ -534,7 +925,40 @@ angular
                 $scope.responsableCustomerNombreApellido = responsableCustomerEncontrado.GPResponsables.Nombre + ' ' + responsableCustomerEncontrado.GPResponsables.Apellido;
                 $scope.responsableComercialNombreApellido = responsableComercialEncontrado.GPResponsables.Nombre + ' ' + responsableComercialEncontrado.GPResponsables.Apellido;
 
+                $scope.impresoraRangos = {
+                    '3': 8,
+                    '43': 11,
+                    '1': 12,
+                    '2': 9
+                };
+                // Inicializar el valor de la impresora seleccionada
+                $scope.selectedImpresora = null;
 
+                // Función para obtener el rango de valores basado en la impresora seleccionada
+                $scope.getValueOptions = function () {
+                    console.log('$scope.$watch 3', $scope.productoData.Impresora);
+
+                    if ($scope.productoData.Impresora) {
+                        let maxValue = $scope.impresoraRangos[$scope.productoData.Impresora];
+                        return Array.from({ length: maxValue }, (_, i) => i + 1);
+                    }
+                    return [];
+                };
+
+                // Actualiza las opciones de valores cuando se selecciona una impresora
+                $scope.updateValueOptions = function () {
+                    console.log('$scope.$watch 2');
+
+                    $scope.valueOptions = $scope.getValueOptions();
+                };
+
+                // Observar cambios en la impresora seleccionada
+                $scope.$watch('productoData.Impresora', function (newValue) {
+                    console.log('$scope.$watch', newValue);
+                    if (newValue) {
+                        $scope.updateValueOptions();
+                    }
+                });
                 
                 if ($scope.productoData.Fecha_Creacion) {
                     $scope.fechaAuxiliarParaMostrar.Fecha_Creacion = new Date($scope.productoData.Fecha_Creacion);
@@ -787,21 +1211,21 @@ angular
 
             $scope.validarFechasFinal = function () {
                 var validas = [];
-                if ($scope.fechaAuxiliarParaMostrar.Fecha_Liberacion < $scope.fechaAuxiliarParaMostrar.FechaDocumento && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.Fecha_Liberacion)) {
-                    // La fecha de confección es menor que la fecha de documento
-                    validas.push(false);
-                    // Establece el campo como inválido manualmente
-                    $scope.editAuthorForm.Fecha_Liberacion.$setValidity('customValidacion', false);
-                    // Marca el campo como tocado para mostrar mensajes de error si es necesario
-                    $scope.editAuthorForm.Fecha_Liberacion.$setTouched();
-                    // Opcionalmente, enfoca el campo
-                    document.getElementById('Fecha_Liberacion').focus();
-                } else {
-                    // La validación pasó, establece el campo como válido
-                    $scope.editAuthorForm.Fecha_Liberacion.$setValidity('customValidacion', true);
-                    validas.push(true);
+                //if ($scope.validarFecha($scope.fechaAuxiliarParaMostrar.Fecha_Liberacion)) {
+                //    // La fecha de confección es menor que la fecha de documento
+                //    validas.push(false);
+                //    // Establece el campo como inválido manualmente
+                //    $scope.editAuthorForm.Fecha_Liberacion.$setValidity('customValidacion', false);
+                //    // Marca el campo como tocado para mostrar mensajes de error si es necesario
+                //    $scope.editAuthorForm.Fecha_Liberacion.$setTouched();
+                //    // Opcionalmente, enfoca el campo
+                //    document.getElementById('Fecha_Liberacion').focus();
+                //} else {
+                //    // La validación pasó, establece el campo como válido
+                //    $scope.editAuthorForm.Fecha_Liberacion.$setValidity('customValidacion', true);
+                //    validas.push(true);
 
-                }
+                //}
 
 
                 if ($scope.fechaAuxiliarParaMostrar.FechaConfeccionIng < $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaConfeccionIng)) {
@@ -821,7 +1245,7 @@ angular
                 }
 
 
-                if (($scope.fechaAuxiliarParaMostrar.FechaLiberacionLet < $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion || $scope.fechaAuxiliarParaMostrar.FechaLiberacionLet < $scope.fechaAuxiliarParaMostrar.FechaConfeccionIng || $scope.fechaAuxiliarParaMostrar.FechaLiberacionLet < $scope.fechaAuxiliarParaMostrar.FechaDocumento) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionLet) && $scope.productoData?.HabilitaCierreLet) {
+                if ((($scope.fechaAuxiliarParaMostrar.FechaLiberacionLet < $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion || $scope.fechaAuxiliarParaMostrar.FechaLiberacionLet < $scope.fechaAuxiliarParaMostrar.FechaConfeccionIng) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionLet)) && $scope.productoData?.HabilitaCierreLet) {
                     // La fecha de confección es menor que la fecha de documento
                     validas.push(false);
                     // Establece el campo como inválido manualmente
@@ -838,7 +1262,7 @@ angular
                 }
 
 
-                if (($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion || $scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.FechaConfeccionIng || $scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.FechaDocumento) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng) && ($scope.productoData?.HabilitaCierreLet && $scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.FechaLiberacionLet)) {
+                if ((($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion || $scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.FechaConfeccionIng) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng) && ($scope.productoData?.HabilitaCierreLet && $scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng < $scope.fechaAuxiliarParaMostrar.FechaLiberacionLet))) {
                     // La fecha de confección es menor que la fecha de documento
                     validas.push(false);
                     // Establece el campo como inválido manualmente
@@ -1053,37 +1477,37 @@ angular
                 }
 
 
-                if (($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado || $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPreparacionCilindros || $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaLiberacionMontaje || $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaRetiroCilindro) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba)) {
-                    // La fecha de confección es menor que la fecha de documento
-                    validas.push(false);
-                    // Establece el campo como inválido manualmente
-                    $scope.editAuthorForm.FechaSacaPrueba.$setValidity('customValidacion', false);
-                    // Marca el campo como tocado para mostrar mensajes de error si es necesario
-                    $scope.editAuthorForm.FechaSacaPrueba.$setTouched();
-                    // Opcionalmente, enfoca el campo
-                    document.getElementById('FechaSacaPrueba').focus();
-                } else {
-                    // La validación pasó, establece el campo como válido
-                    $scope.editAuthorForm.FechaSacaPrueba.$setValidity('customValidacion', true);
-                    validas.push(true);
+                //if (($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado || $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPreparacionCilindros || $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaLiberacionMontaje || $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaRetiroCilindro) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba)) {
+                //    // La fecha de confección es menor que la fecha de documento
+                //    validas.push(false);
+                //    // Establece el campo como inválido manualmente
+                //    $scope.editAuthorForm.FechaSacaPrueba.$setValidity('customValidacion', false);
+                //    // Marca el campo como tocado para mostrar mensajes de error si es necesario
+                //    $scope.editAuthorForm.FechaSacaPrueba.$setTouched();
+                //    // Opcionalmente, enfoca el campo
+                //    document.getElementById('FechaSacaPrueba').focus();
+                //} else {
+                //    // La validación pasó, establece el campo como válido
+                //    $scope.editAuthorForm.FechaSacaPrueba.$setValidity('customValidacion', true);
+                //    validas.push(true);
 
-                }
+                //}
 
-                if (($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPreparacionCilindros || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaLiberacionMontaje || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaRetiroCilindro) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba)) {
-                    // La fecha de confección es menor que la fecha de documento
-                    validas.push(false);
-                    // Establece el campo como inválido manualmente
-                    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setValidity('customValidacion', false);
-                    // Marca el campo como tocado para mostrar mensajes de error si es necesario
-                    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setTouched();
-                    // Opcionalmente, enfoca el campo
-                    document.getElementById('FechaAprobacionSacaPrueba').focus();
-                } else {
-                    // La validación pasó, establece el campo como válido
-                    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setValidity('customValidacion', true);
-                    validas.push(true);
+                //if (($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaPreparacionCilindros || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaLiberacionMontaje || $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaRetiroCilindro) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba)) {
+                //    // La fecha de confección es menor que la fecha de documento
+                //    validas.push(false);
+                //    // Establece el campo como inválido manualmente
+                //    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setValidity('customValidacion', false);
+                //    // Marca el campo como tocado para mostrar mensajes de error si es necesario
+                //    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setTouched();
+                //    // Opcionalmente, enfoca el campo
+                //    document.getElementById('FechaAprobacionSacaPrueba').focus();
+                //} else {
+                //    // La validación pasó, establece el campo como válido
+                //    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setValidity('customValidacion', true);
+                //    validas.push(true);
 
-                }
+                //}
 
 
                 if (($scope.fechaAuxiliarParaMostrar.FechaLiberadoAGrabado < $scope.fechaAuxiliarParaMostrar.FechaLiberacionMontaje) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberadoAGrabado)) {
@@ -1149,9 +1573,23 @@ angular
 
                 }
 
+                if ($scope.productoData.EstadoParaMostrar.IDEstadoProducto === 3 && !$scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng)) {
+
+                    console.log('CERRADO no pasa')
+                    $scope.editAuthorForm.FechaLiberacionFinalIng.$setValidity('customValidacion2', false);
+                    $scope.editAuthorForm.FechaLiberacionFinalIng.$setTouched();
+
+                    validas.push(false);
+
+
+
+                }
+
                 return validas;
 
             }
+
+            
 
 
 
@@ -1176,8 +1614,13 @@ angular
         $scope.actualizarEstadoCerrado = function () {
             // Verificar la lógica para activar el toggle basado en la fecha
             // Por ejemplo, si la fecha es válida y no es nula
-            if ($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng) {
+            console.log('$scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng', $scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng);
+            console.log('$scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIn)', $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng));
+
+            if ($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaLiberacionFinalIng)) {
                 $scope.productoData.CerradoIng = true; // Activar el toggle
+                $scope.editAuthorForm.FechaLiberacionFinalIng.$setValidity('customValidacion2', true);
+                $scope.editAuthorForm.FechaLiberacionFinalIng.$setTouched();
             } else {
                 $scope.productoData.CerradoIng = false; // Desactivar el toggle
             }
@@ -1185,13 +1628,13 @@ angular
 
         $scope.actualizarFechas = function () {
             // Validación FechaConfeccionIng vs FechaDocumento
-            if (($scope.fechaAuxiliarParaMostrar.Fecha_Liberacion < $scope.fechaAuxiliarParaMostrar.FechaDocumento) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.Fecha_Liberacion)) {
-                $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion = $scope.fechaAuxiliarParaMostrar.FechaDocumento;
-            }
-            else {
-                $scope.editAuthorForm.Fecha_Liberacion.$setValidity('customValidacion', true);
+            //if ($scope.validarFecha($scope.fechaAuxiliarParaMostrar.Fecha_Liberacion)) {
+            //    $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion = $scope.fechaAuxiliarParaMostrar.FechaDocumento;
+            //}
+            //else {
+            //    $scope.editAuthorForm.Fecha_Liberacion.$setValidity('customValidacion', true);
 
-            }
+            //}
 
 
             if (($scope.fechaAuxiliarParaMostrar.FechaConfeccionIng < $scope.fechaAuxiliarParaMostrar.Fecha_Liberacion) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaConfeccionIng)) {
@@ -1233,7 +1676,7 @@ angular
             }
         }
 
-        $scope.$watchGroup(['fechaAuxiliarParaMostrar.FechaDocumento', 'fechaAuxiliarParaMostrar.Fecha_Liberacion', 'fechaAuxiliarParaMostrar.FechaConfeccionIng', 'fechaAuxiliarParaMostrar.FechaLiberacionLet', 'fechaAuxiliarParaMostrar.FechaLiberacionFinalIng'], function (newValues, oldValues) {
+        $scope.$watchGroup(['fechaAuxiliarParaMostrar.Fecha_Liberacion', 'fechaAuxiliarParaMostrar.FechaConfeccionIng', 'fechaAuxiliarParaMostrar.FechaLiberacionLet', 'fechaAuxiliarParaMostrar.FechaLiberacionFinalIng'], function (newValues, oldValues) {
             // Ejecutar la validación cada vez que una de las fechas cambie
             $scope.actualizarFechas();
         });
@@ -1259,6 +1702,18 @@ angular
             $scope.productoData.EstadoParaMostrar = $scope.productoData.estados[2];
             
         };
+
+        $scope.AcuerdoDirectoProveedorChange = function () {
+            console.log('AcuerdoDirectoProveedorChange');
+            if ($scope.productoData.AcuerdoDirectoProveedor === true) {
+                console.log('AcuerdoDirectoProveedorChange', true);
+
+                $scope.productoData.OC_Proveedor = '';
+            }
+
+        };
+
+        
 
 
 
@@ -1421,11 +1876,19 @@ angular
         $scope.validarFecha = function (fechaString) {
             // Crea una fecha de comparación en formato específico
             var fechaComparacion = new Date("Tue Jan 01 1900");
-          
+            console.log('fechaString', fechaString);
+
 
             // Obtén la fecha como un objeto Date
             var fecha = new Date(fechaString);
+
+            console.log('fecha', fecha);
+
             // Compara las fechas
+            console.log('comparacion', fecha.getTime() !== fechaComparacion.getTime());
+            console.log('fecha 1', fecha.getTime());
+            console.log('fecha 2', fechaComparacion.getTime());
+
             return fecha.getTime() !== fechaComparacion.getTime();
         };
 
@@ -1446,8 +1909,6 @@ angular
             'fechaAuxiliarParaMostrar.FechaLiberacionMontaje',
             'fechaAuxiliarParaMostrar.FechaRetiroCilindro',
             'fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado',
-            'fechaAuxiliarParaMostrar.FechaSacaPrueba',
-            'fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba',
             'fechaAuxiliarParaMostrar.FechaRecepcionHerramental'
             
             
@@ -1498,20 +1959,20 @@ angular
 
             }
 
-            if (($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaLiberadoAGrabado) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba)) {
-                $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba = $scope.fechaAuxiliarParaMostrar.FechaLiberadoAGrabado;
-            } else {
-                $scope.editAuthorForm.FechaSacaPrueba.$setValidity('customValidacion', true);
+            //if (($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaLiberadoAGrabado) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaSacaPrueba)) {
+            //    $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba = $scope.fechaAuxiliarParaMostrar.FechaLiberadoAGrabado;
+            //} else {
+            //    $scope.editAuthorForm.FechaSacaPrueba.$setValidity('customValidacion', true);
 
-            }
+            //}
 
 
-            if (($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba)) {
-                $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba = $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba;
-            } else {
-                $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setValidity('customValidacion', true);
+            //if (($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba < $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba) && $scope.validarFecha($scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba)) {
+            //    $scope.fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba = $scope.fechaAuxiliarParaMostrar.FechaSacaPrueba;
+            //} else {
+            //    $scope.editAuthorForm.FechaAprobacionSacaPrueba.$setValidity('customValidacion', true);
 
-            }
+            //}
 
 
             if ($scope.productoData?.TipoImpresora == 3) {
@@ -1542,7 +2003,62 @@ angular
     })
 
 
- .controller('ProductoDashboardController', function ($scope, APIService, $localStorage, $window, $filter) {
+    .controller('ProductoDashboardController', function ($scope, APIService, $localStorage, $window, $filter) {
+
+
+        $scope.activeTab = 'grafico1'; // Tab activo por defecto
+        $scope.activeTab2 = 'grafico1'; // Tab activo por defecto
+
+        //$scope.setActiveTab = function (tab) {
+        //    $scope.activeTab = tab;
+        //};
+
+        $scope.setActiveTab = function (tab) {
+            $scope.activeTab = tab;
+            setTimeout(() => {
+                $scope.redibujarGrafico(tab);
+            }, 100); // Retraso de 100 ms para asegurarte de que el DOM se haya actualizado
+        };
+
+        $scope.redibujarGrafico = function (tab) {
+            if (tab === 'grafico1') {
+                $scope.selectValue1 = 'Todas'
+                $('#visitors-line-chart10').empty();
+                getDataForDashboardProductosKpiPrePrensaProveedorFunction()
+              
+               
+            } else if (tab === 'grafico2') {
+                console.log('grafico 2');
+                $scope.selectValue2 = 'Todas'
+                $('#visitors-line-chart9').empty();
+                getDataForDashboardProductosKpiPrePrensaImpresoraFunction()
+               
+            } else if (tab === 'grafico3') {
+                $scope.selectValue3 = 'Todas'
+                $('#visitors-line-chart7').empty();
+                getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedorFunction()
+                
+
+            }
+            else if (tab === 'grafico4') {
+                $scope.selectValue4 = 'Todas';
+                $('#visitors-line-chart6').empty();
+                getDataForDashboardProductosKpiPrePrensaDLibgrabadoFunction();
+
+            }
+            else if (tab === 'grafico5') {
+                getDataForDashboardProductosKpiPrePrensaDiasFunction();
+            }
+
+            else if (tab === 'grafico6') {
+                getDataForDashboardProductosKpiPrePrensaResponsableFunction();
+            }
+
+
+
+
+            
+        };
 
 
      var dataForDashboard = APIService.getDataForDashboard();
@@ -1640,14 +2156,15 @@ angular
              data: $scope.dataForDashboard1,
              xLabels: "month",
              xkey: 'PERIODO',
+             xLabelAngle: 45,
 
-             ykeys: ['SLA_SCP', 'SLA_SND', 'SLA_SNP', 'SLA_SNPS'],
+             ykeys: ['SLA_SCP', 'SLA_SNP', 'SLA_SND', 'SLA_SNPS'],
              xLabelFormat: function (x) {
                  x = month[x.getMonth()];
 
                  return x.toString();
              },
-             labels: ['SLA SCP', 'SLA SND', 'SLA SNP', 'SLA SNPS'],
+             labels: ['SLA SCP', 'SLA SNP', 'SLA SND','SLA SNPS'],
              lineColors: [red, orange, blueLight, greenLight],
              pointFillColors: [red, orange, blueLight, greenLight],
              lineWidth: '2px',
@@ -1690,7 +2207,9 @@ angular
                      var worst = data['WORST_' + ykey.split('_')[1]];
                      var best = data['BEST_' + ykey.split('_')[1]];
                      var qty = data['QTY_' + ykey.split('_')[1]];
+                     var sla = data['SLA_' + ykey.split('_')[1]];
 
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "SLA: " + sla + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Quantity: " + qty + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Worst: " + worst + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Best: " + best + "</div>";
@@ -1707,7 +2226,10 @@ angular
          // Filtrar los elementos donde TipoImpresora es igual a 2
          $scope.dataForDashboard2 = $scope.dataForDashboard.filter(function (item) {
              return item.TipoImpresora === 'Flexo';
+             
          });
+
+         console.log('dataForDashboard2', $scope.dataForDashboard2);
 
          // Función para convertir el período a un objeto Date
          function parseDate(period) {
@@ -1792,14 +2314,15 @@ angular
              data: $scope.dataForDashboard2,
              xLabels: "month",
              xkey: 'PERIODO',
+             xLabelAngle: 45,
 
-             ykeys: ['SLA_SCP', 'SLA_SND', 'SLA_SNP', 'SLA_SNPS'],
+             ykeys: ['SLA_SCP', 'SLA_SNP', 'SLA_SND', 'SLA_SNPS'],
              xLabelFormat: function (x) {
                  x = month[x.getMonth()];
 
                  return x.toString();
              },
-             labels: ['SLA SCP', 'SLA SND', 'SLA SNP', 'SLA SNPS'],
+             labels: ['SLA_SCP', 'SLA_SNP', 'SLA_SND', 'SLA_SNPS'],
              lineColors: [red, orange, blueLight, greenLight],
              pointFillColors: [red, orange, blueLight, greenLight],
              lineWidth: '2px',
@@ -1839,7 +2362,9 @@ angular
                      var worst = data['WORST_' + ykey.split('_')[1]];
                      var best = data['BEST_' + ykey.split('_')[1]];
                      var qty = data['QTY_' + ykey.split('_')[1]];
+                     var sla = data['SLA_' + ykey.split('_')[1]];
 
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "SLA: " + sla + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Quantity: " + qty + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Worst: " + worst + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Best: " + best + "</div>";
@@ -1881,7 +2406,7 @@ angular
          const totalsgeneral = {
              QTY_FLEXO: 0,
              QTY_HUECO: 0,
-            
+
              totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
 
 
@@ -1935,6 +2460,7 @@ angular
              data: $scope.dataForDashboardtotal,
              xLabels: "month",
              xkey: 'PERIODO',
+             xLabelAngle: 45,
 
              ykeys: ['SLA_FLEXO', 'SLA_HUECO'],
              xLabelFormat: function (x) {
@@ -1985,7 +2511,9 @@ angular
                      var worst = data['WORST_' + ykey.split('_')[1]];
                      var best = data['BEST_' + ykey.split('_')[1]];
                      var qty = data['QTY_' + ykey.split('_')[1]];
+                     var sla = data['SLA_' + ykey.split('_')[1]];
 
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "SLA: " + sla + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Quantity: " + qty + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Worst: " + worst + "</div>";
                      tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Best: " + best + "</div>";
@@ -1996,5 +2524,1325 @@ angular
          });
 
      });
+
+
+
+     //-------------------------------------------
+     // getDataForDashboardProductosKpiPrePrensaDias
+     //-------------------------------------------
+
+     getDataForDashboardProductosKpiPrePrensaDiasFunction();
+     function getDataForDashboardProductosKpiPrePrensaDiasFunction(period) {
+     var getDataForDashboardProductosKpiPrePrensaDias = APIService.getDataForDashboardProductosKpiPrePrensaDias();
+     getDataForDashboardProductosKpiPrePrensaDias.then(function (u) {
+         $scope.getDataForDashboardProductosKpiPrePrensaDias = u.data;
+
+         console.log('getDataForDashboardProductosKpiPrePrensaDias', $scope.getDataForDashboardProductosKpiPrePrensaDias);
+
+         // Función para convertir el período a un objeto Date
+         function parseDate(period) {
+             var yearMonth = period?.split('-');
+             console.log('yearMonth b', yearMonth);
+             var year = parseInt(yearMonth[0], 10);
+             var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+             return new Date(year, month);
+         }
+
+         // Ordenar los datos por período
+         $scope.getDataForDashboardProductosKpiPrePrensaDias.sort(function (a, b) {
+             console.log('getDataForDashboardProductosKpiPrePrensaDias a', a.Periodo);
+             console.log('getDataForDashboardProductosKpiPrePrensaDias b', b.Periodo);
+
+             return parseDate(a?.Periodo) - parseDate(b?.Periodo);
+         });
+
+
+         // Inicializar objeto de totales
+         const totalsKpiPrePrensaDias = {
+             QTY_DIAS_EnvioArteET: 0,
+             totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+         };
+
+         $scope.getDataForDashboardProductosKpiPrePrensaDias.forEach(entry => {
+             console.log('entry', entry);
+             for (let key in totalsKpiPrePrensaDias) {
+                 if (entry.hasOwnProperty(key)) {
+                     totalsKpiPrePrensaDias[key] += entry[key];
+
+                     // Sumar las cantidades específicas
+                     if (key.startsWith('QTY_')) {
+                         totalsKpiPrePrensaDias.totalQTY += entry[key];
+                     }
+                 }
+             }
+         });
+
+         $scope.totalsgeneralprensadias2 = totalsKpiPrePrensaDias;
+         console.log('$scope.totalsgeneralprensadias', $scope.totalsgeneralprensadias2);
+
+
+         /* Line Chart
+         ------------------------- */
+         var red = 'red';
+         var orange = '#ffcc00';
+         var greenLight = '#00ACAC';
+         var blue = '#3273B1';
+         var blueLight = '#348FE2';
+         var blackTransparent = 'rgba(0,0,0,0.6)';
+         var whiteTransparent = 'rgba(255,255,255,0.4)';
+         var month = [];
+         month[0] = "Enero";
+         month[1] = "Febrero";
+         month[2] = "Marzo";
+         month[3] = "Abril";
+         month[4] = "Mayo";
+         month[5] = "Junio";
+         month[6] = "Julio";
+         month[7] = "Agosto";
+         month[8] = "Septiembre";
+         month[9] = "Octubre";
+         month[10] = "Noviembre";
+         month[11] = "Diciembre";
+
+         Morris.Line({
+             element: 'visitors-line-chart5',
+             data: $scope.getDataForDashboardProductosKpiPrePrensaDias,
+             xLabels: "month",
+             xkey: 'Periodo',
+             xLabelAngle: 45,
+
+             ykeys: ['QTY_DIAS_EnvioArteET'],
+             xLabelFormat: function (x) {
+                 x = month[x.getMonth()];
+
+                 return x.toString();
+             },
+             labels: ['QTY_DIAS_EnvioArteET'],
+             lineColors: [red],
+             pointFillColors: [red],
+             lineWidth: '2px',
+             pointStrokeColors: [red],
+             resize: true,
+             gridTextFamily: 'Open Sans',
+             gridTextColor: whiteTransparent,
+             gridTextWeight: 'normal',
+             gridTextSize: '11px',
+             gridLineColor: 'rgba(0,0,0,0.5)',
+             hideHover: 'auto'
+
+         });
+
+     });
+     }
+
+
+     //-------------------------------------------
+     // getDataForDashboardProductosKpiPrePrensaDLibgrabado
+     //-------------------------------------------
+
+        getDataForDashboardProductosKpiPrePrensaDLibgrabadoFunction();
+
+        $scope.selectValues4 = ['Sin Asignar', 'Flexo', 'Hueco'];
+        $scope.selectValue4 = 'Todas'; // Asegúrate de que coincida exactamente
+        var selectedYkeys4 = ['AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_SinAsignar', 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Flexo', 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Hueco'];
+
+
+
+        $scope.updateChart4 = function (value) {
+            console.log('value', value);
+            var ykeysToDisplay4 = [];
+            if (value === "Todas") {
+                ykeysToDisplay4 = selectedYkeys4;
+            } else {
+                ykeysToDisplay4 = [`AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_${value.replace(/\s+/g, '')}`];
+            }
+
+            $('#visitors-line-chart6').empty();
+            getDataForDashboardProductosKpiPrePrensaDLibgrabadoFunction(ykeysToDisplay4);
+
+        };
+
+        function getDataForDashboardProductosKpiPrePrensaDLibgrabadoFunction(ykeysToDisplay4) {
+
+            console.log('ykeys inside', ykeysToDisplay4);
+            if (!ykeysToDisplay4) {
+
+                ykeysToDisplay4 = ['AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_SinAsignar', 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Flexo', 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Hueco'];;
+
+
+
+            }
+
+         var getDataForDashboardProductosKpiPrePrensaDLibgrabado = APIService.getDataForDashboardProductosKpiPrePrensaDLibgrabado();
+         getDataForDashboardProductosKpiPrePrensaDLibgrabado.then(function (u) {
+         $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabado = u.data;
+
+         console.log('getDataForDashboardProductosKpiPrePrensaDLibgrabado', $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabado);
+
+         // Función para convertir el período a un objeto Date
+         function parseDate(period) {
+             var yearMonth = period?.split('-');
+             console.log('yearMonth b', yearMonth);
+             var year = parseInt(yearMonth[0], 10);
+             var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+             return new Date(year, month);
+         }
+
+         // Ordenar los datos por período
+         $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabado.sort(function (a, b) {
+             console.log('getDataForDashboardProductosKpiPrePrensaDLibgrabado a', a.PERIODO);
+             console.log('getDataForDashboardProductosKpiPrePrensaDLibgrabado b', b.PERIODO);
+
+             return parseDate(a?.PERIODO) - parseDate(b?.PERIODO);
+         });
+
+
+         // Inicializar objeto de totales
+         const totalsKpiPrePrensaDLibgrabado = {
+             QTY_LiberadoGrabadoVsRecepcionHerramental_SinAsignar: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Flexo: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Hueco: 0,
+
+
+             totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+         };
+
+         $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabado.forEach(entry => {
+             console.log('entry', entry);
+             for (let key in totalsKpiPrePrensaDLibgrabado) {
+                 if (entry.hasOwnProperty(key)) {
+                     totalsKpiPrePrensaDLibgrabado[key] += entry[key];
+
+                     // Sumar las cantidades específicas
+                     if (key.startsWith('QTY_')) {
+                         totalsKpiPrePrensaDLibgrabado.totalQTY += entry[key];
+                     }
+                 }
+             }
+         });
+
+         $scope.totalsKpiPrePrensaDLibgrabado2 = totalsKpiPrePrensaDLibgrabado;
+         console.log('$scope.totalsKpiPrePrensaDLibgrabado', $scope.totalsKpiPrePrensaDLibgrabado2);
+
+
+         /* Line Chart
+         ------------------------- */
+         var red = 'red';
+         var orange = '#ffcc00';
+         var greenLight = '#00ACAC';
+         var blue = '#3273B1';
+         var blueLight = '#348FE2';
+         var blackTransparent = 'rgba(0,0,0,0.6)';
+         var whiteTransparent = 'rgba(255,255,255,0.4)';
+             var month = [];
+             var colors4 = [red, orange, greenLight];
+
+             if (ykeysToDisplay4[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_SinAsignar' && ykeysToDisplay4.length === 1) {
+
+                 colors4 = [red]
+
+             }
+
+             if (ykeysToDisplay4[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Flexo') {
+                 colors4 = [orange]
+             }
+
+             if (ykeysToDisplay4[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Hueco') {
+                 colors4 = [greenLight]
+
+             }
+
+           
+
+         month[0] = "Enero";
+         month[1] = "Febrero";
+         month[2] = "Marzo";
+         month[3] = "Abril";
+         month[4] = "Mayo";
+         month[5] = "Junio";
+         month[6] = "Julio";
+         month[7] = "Agosto";
+         month[8] = "Septiembre";
+         month[9] = "Octubre";
+         month[10] = "Noviembre";
+         month[11] = "Diciembre";
+
+         Morris.Line({
+             element: 'visitors-line-chart6',
+             data: $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabado,
+             xLabels: "month",
+             xkey: 'PERIODO',
+             xLabelAngle: 45,
+
+             ykeys: ykeysToDisplay4,
+             xLabelFormat: function (x) {
+                 x = month[x.getMonth()];
+
+                 return x.toString();
+             },
+             labels: ykeysToDisplay4.map(key => key.split('_')[3]),
+             lineColors: colors4,
+             pointFillColors: colors4,
+             lineWidth: '2px',
+             pointStrokeColors: colors4,
+             resize: true,
+             gridTextFamily: 'Open Sans',
+             gridTextColor: whiteTransparent,
+             gridTextWeight: 'normal',
+             gridTextSize: '11px',
+             gridLineColor: 'rgba(0,0,0,0.5)',
+             hideHover: 'auto',
+             hoverCallback: function (index, options, content, row) {
+                 console.log('hoverCallback options', options);
+
+                 // Obtener los datos del punto
+                 var data = options.data[index];
+                 var period = data.PERIODO; // El período en formato YYYY-MM
+
+                 // Extraer año y mes del período
+                 var yearMonth = period.split('-');
+                 var year = yearMonth[0];
+                 var monthIndex = parseInt(yearMonth[1], 10) - 1; // El mes está en el rango 1-12, pero los índices de los arrays son 0-11
+
+                 // Verificar que el índice esté dentro del rango
+                 if (monthIndex < 0 || monthIndex > 11) {
+                     monthIndex = 0; // Default a Enero si hay un índice fuera del rango
+                 }
+
+                 // Obtener el nombre del mes
+                 var monthName = month[monthIndex];
+
+                 // Construir el contenido del tooltip
+                 var tooltipContent = "<div class='morris-hover-row-label'>" + monthName + " " + year + "</div>";
+
+                 // Iterar sobre cada línea para mostrar la información de cada punto
+                 options.ykeys.forEach(function (ykey, i) {
+                     // Mostrar solo la información para el punto de datos actual
+
+                     console.log('console   1', data);
+                     console.log('console   2', ykey.split('_')[1]);
+
+                     var label = options.labels[i];
+                     var avg = data['AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3]];
+                     var max = data['MAX_DAYS_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3]];
+                     var min = data['MIN_DAYS_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3]];
+                     var qty = data['QTY_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3]];
+
+
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Avg: " + avg + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Max: " + max + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Min: " + min + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Qty: " + qty + "</div>";
+
+                 });
+
+                 return tooltipContent;
+             }
+
+         });
+
+     });
+     }
+
+
+
+     //-------------------------------------------
+     // getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor
+     //-------------------------------------------
+
+        getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedorFunction();
+
+
+        $scope.selectValues3 = ['Bosisio', 'Lynch',  'Longo'];
+        $scope.selectValue3 = 'Todas'; // Asegúrate de que coincida exactamente
+        var selectedYkeys3 = ['AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Flexo',
+            'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Hueco',
+            'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Lynch_Flexo',
+            'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Lynch_Hueco',
+            'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Longo_Flexo',
+            'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Longo_Hueco'];
+
+
+
+        $scope.updateChart3 = function (value) {
+            console.log('value', value);
+            var ykeysToDisplay3 = [];
+            if (value === "Todas") {
+                ykeysToDisplay3 = selectedYkeys3;
+            } else {
+                ykeysToDisplay3 = [`AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_${value.replace(/\s+/g, '')}_Flexo`,
+                                   `AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_${value.replace(/\s+/g, '')}_Hueco`];
+            }
+
+            $('#visitors-line-chart7').empty();
+            getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedorFunction(ykeysToDisplay3);
+
+        };
+
+
+
+        function getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedorFunction(ykeysToDisplay3) {
+
+            console.log('ykeys inside', ykeysToDisplay3);
+            if (!ykeysToDisplay3) {
+
+                ykeysToDisplay3 = ['AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Flexo',
+                    'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Hueco',
+                    'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Lynch_Flexo',
+                    'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Lynch_Hueco',
+                    'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Longo_Flexo',
+                    'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Longo_Hueco'];
+
+
+
+            }
+
+     var getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor = APIService.getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor();
+     getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor.then(function (u) {
+         $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor = u.data;
+
+
+         // Función para convertir el período a un objeto Date
+         function parseDate(period) {
+             var yearMonth = period?.split('-');
+             console.log('yearMonth b', yearMonth);
+             var year = parseInt(yearMonth[0], 10);
+             var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+             return new Date(year, month);
+         }
+
+         // Ordenar los datos por período
+         $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor.sort(function (a, b) {
+
+             return parseDate(a?.PERIODO) - parseDate(b?.PERIODO);
+         });
+
+
+         // Inicializar objeto de totales
+         const totalsKpiPrePrensaDLibgrabadoProveedor = {
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Flexo: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Hueco: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Lynch_Flexo: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Lynch_Hueco: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Longo_Flexo: 0,
+             QTY_LiberadoGrabadoVsRecepcionHerramental_Longo_Hueco: 0,
+
+
+             totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+         };
+
+         $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor.forEach(entry => {
+             for (let key in totalsKpiPrePrensaDLibgrabadoProveedor) {
+                 console.log('key', key);
+                 if (entry.hasOwnProperty(key)) {
+                     totalsKpiPrePrensaDLibgrabadoProveedor[key] += entry[key];
+
+                     // Sumar las cantidades específicas
+                     if (key.startsWith('QTY_')) {
+                         totalsKpiPrePrensaDLibgrabadoProveedor.totalQTY += entry[key];
+                     }
+                 }
+             }
+         });
+
+         $scope.totalsKpiPrePrensaDLibgrabadoProveedor2 = totalsKpiPrePrensaDLibgrabadoProveedor;
+
+
+
+         /* Line Chart
+         ------------------------- */
+         var red = 'red';
+         var orange = '#df6c79';
+         var greenLight = '#52913f';
+         var blue = '#3539a4';
+         var blueLight = '#1c9ce9';
+         var green = '#8de65d';
+         var blackTransparent = 'rgba(0,0,0,0.6)';
+         var whiteTransparent = 'rgba(255,255,255,0.4)';
+         var month = [];
+         var colors3 = [red, orange, blue, blueLight, green, greenLight];
+
+        
+
+         if ((ykeysToDisplay3[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Flexo' || ykeysToDisplay3[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Bosisio_Hueco') && ykeysToDisplay3.length === 2) {
+             console.log('Bosisio', ykeysToDisplay3[0]);
+
+             colors3 = [red, orange];
+         }
+
+       
+
+         if (ykeysToDisplay3[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Lynch_Flexo' || ykeysToDisplay3[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Lynch_Hueco') {
+             console.log('Lynch', ykeysToDisplay3[0]);
+
+             colors3 = [blue, blueLight]
+
+         }
+
+
+         if (ykeysToDisplay3[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Longo_Flexo' || ykeysToDisplay3[0] === 'AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_Longo_Hueco') {
+             console.log('Longo', ykeysToDisplay3[0]);
+
+             colors3 = [green, greenLight]
+
+         }
+
+        
+
+
+
+
+         month[0] = "Enero";
+         month[1] = "Febrero";
+         month[2] = "Marzo";
+         month[3] = "Abril";
+         month[4] = "Mayo";
+         month[5] = "Junio";
+         month[6] = "Julio";
+         month[7] = "Agosto";
+         month[8] = "Septiembre";
+         month[9] = "Octubre";
+         month[10] = "Noviembre";
+         month[11] = "Diciembre";
+
+         Morris.Line({
+             element: 'visitors-line-chart7',
+             data: $scope.getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor,
+             xLabels: "month",
+             xkey: 'PERIODO',
+             xLabelAngle: 45,
+
+             ykeys: ykeysToDisplay3,
+             xLabelFormat: function (x) {
+                 x = month[x.getMonth()];
+
+                 return x.toString();
+             },
+             labels: ykeysToDisplay3.map(key => key.split('_')[3]),
+             lineColors: colors3,
+
+             pointFillColors: colors3,
+             lineWidth: '2px',
+             pointStrokeColors: colors3,
+             resize: true,
+             gridTextFamily: 'Open Sans',
+             gridTextColor: whiteTransparent,
+             gridTextWeight: 'normal',
+             gridTextSize: '11px',
+             gridLineColor: 'rgba(0,0,0,0.5)',
+             hideHover: 'auto',
+             hoverCallback: function (index, options, content, row) {
+
+                 // Obtener los datos del punto
+                 var data = options.data[index];
+                 var period = data.PERIODO; // El período en formato YYYY-MM
+
+                 // Extraer año y mes del período
+                 var yearMonth = period.split('-');
+                 var year = yearMonth[0];
+                 var monthIndex = parseInt(yearMonth[1], 10) - 1; // El mes está en el rango 1-12, pero los índices de los arrays son 0-11
+
+                 // Verificar que el índice esté dentro del rango
+                 if (monthIndex < 0 || monthIndex > 11) {
+                     monthIndex = 0; // Default a Enero si hay un índice fuera del rango
+                 }
+
+                 // Obtener el nombre del mes
+                 var monthName = month[monthIndex];
+
+                 // Construir el contenido del tooltip
+                 var tooltipContent = "<div class='morris-hover-row-label'>" + monthName + " " + year + "</div>";
+
+                 // Iterar sobre cada línea para mostrar la información de cada punto
+                 options.ykeys.forEach(function (ykey, i) {
+                     // Mostrar solo la información para el punto de datos actual
+                     console.log('ykey',ykey);
+
+                     var label = options.labels[i];
+                     var avg = data['AVG_DAYS_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3] + '_'+ ykey.split('_')[4]];
+                     var max = data['MAX_DAYS_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3] + '_' + ykey.split('_')[4]];
+                     var min = data['MIN_DAYS_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3] + '_' + ykey.split('_')[4]];
+                     var qty = data['QTY_LiberadoGrabadoVsRecepcionHerramental_' + ykey.split('_')[3] + '_' + ykey.split('_')[4]];
+
+
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Avg: " + avg + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Max: " + max + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Min: " + min + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Qty: " + qty + "</div>";
+
+                 });
+
+                 return tooltipContent;
+             }
+
+         });
+
+     });
+
+     }
+
+     //-------------------------------------------
+     // getDataForDashboardProductosKpiIngenieriaGeneral
+     //-------------------------------------------
+
+     getDataForDashboardProductosKpiIngenieriaGeneralFunction();
+     function getDataForDashboardProductosKpiIngenieriaGeneralFunction() {
+     var getDataForDashboardProductosKpiIngenieriaGeneral = APIService.getDataForDashboardProductosKpiIngenieriaGeneral();
+     getDataForDashboardProductosKpiIngenieriaGeneral.then(function (u) {
+         $scope.getDataForDashboardProductosKpiIngenieriaGeneral = u.data;
+
+         console.log('getDataForDashboardProductosKpiIngenieriaGeneral', $scope.getDataForDashboardProductosKpiIngenieriaGeneral);
+
+         // Función para convertir el período a un objeto Date
+         function parseDate(period) {
+             var yearMonth = period?.split('-');
+             console.log('yearMonth b', yearMonth);
+             var year = parseInt(yearMonth[0], 10);
+             var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+             return new Date(year, month);
+         }
+
+         // Ordenar los datos por período
+         $scope.getDataForDashboardProductosKpiIngenieriaGeneral.sort(function (a, b) {
+             console.log('getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor a', a.PERIODO);
+             console.log('getDataForDashboardProductosKpiPrePrensaDLibgrabadoProveedor b', b.PERIODO);
+
+             return parseDate(a?.PERIODO) - parseDate(b?.PERIODO);
+         });
+
+
+         // Inicializar objeto de totales
+         const totalsKpiIngenieriaGeneral = {
+             QTY_DocumentoVSPedido: 0,
+             QTY_FechaConfeccionVSLiberacionTec: 0,
+             QTY_LiberacionTecVsDocumento: 0,
+             QTY_LiberacionFinalVsLiberacionTec: 0,
+
+
+             totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+         };
+
+         $scope.getDataForDashboardProductosKpiIngenieriaGeneral.forEach(entry => {
+             console.log('entry', entry);
+             for (let key in totalsKpiIngenieriaGeneral) {
+                 if (entry.hasOwnProperty(key)) {
+                     totalsKpiIngenieriaGeneral[key] += entry[key];
+
+                     // Sumar las cantidades específicas
+                     if (key.startsWith('QTY_')) {
+                         totalsKpiIngenieriaGeneral.totalQTY += entry[key];
+                     }
+                 }
+             }
+         });
+
+         $scope.totalsKpiIngenieriaGeneral2 = totalsKpiIngenieriaGeneral;
+         console.log('$scope.totalsKpiIngenieriaGeneral2', $scope.totalsKpiIngenieriaGeneral2);
+
+
+         /* Line Chart
+         ------------------------- */
+         var red = 'red';
+         var orange = '#ffcc00';
+         var greenLight = '#00ACAC';
+         var blue = '#3273B1';
+         var blueLight = '#348FE2';
+         var blackTransparent = 'rgba(0,0,0,0.6)';
+         var whiteTransparent = 'rgba(255,255,255,0.4)';
+         var month = [];
+         month[0] = "Enero";
+         month[1] = "Febrero";
+         month[2] = "Marzo";
+         month[3] = "Abril";
+         month[4] = "Mayo";
+         month[5] = "Junio";
+         month[6] = "Julio";
+         month[7] = "Agosto";
+         month[8] = "Septiembre";
+         month[9] = "Octubre";
+         month[10] = "Noviembre";
+         month[11] = "Diciembre";
+
+         Morris.Line({
+             element: 'visitors-line-chart8',
+             data: $scope.getDataForDashboardProductosKpiIngenieriaGeneral,
+             xLabels: "month",
+             xkey: 'PERIODO',
+             xLabelAngle: 45,
+
+             ykeys: ['AVG_DAYS_DocumentoVSPedido', 'AVG_DAYS_FechaConfeccionVSLiberacionTec', 'AVG_DAYS_LiberacionTecVsDocumento', 'AVG_DAYS_LiberacionFinalVsLiberacionTec'],
+             xLabelFormat: function (x) {
+                 x = month[x.getMonth()];
+
+                 return x.toString();
+             },
+             labels: ['AVG_DAYS_DocumentoVSPedido', 'AVG_DAYS_FechaConfeccionVSLiberacionTec', 'AVG_DAYS_LiberacionTecVsDocumento', 'AVG_DAYS_LiberacionFinalVsLiberacionTec'],
+             lineColors: [red, orange, greenLight, blue],
+             pointFillColors: [red, orange, greenLight, blue],
+             lineWidth: '2px',
+             pointStrokeColors: [red, orange, greenLight, blue],
+             resize: true,
+             gridTextFamily: 'Open Sans',
+             gridTextColor: whiteTransparent,
+             gridTextWeight: 'normal',
+             gridTextSize: '11px',
+             gridLineColor: 'rgba(0,0,0,0.5)',
+             hideHover: 'auto',
+             hoverCallback: function (index, options, content, row) {
+                 console.log('hoverCallback options', options);
+
+                 // Obtener los datos del punto
+                 var data = options.data[index];
+                 var period = data.PERIODO; // El período en formato YYYY-MM
+
+                 // Extraer año y mes del período
+                 var yearMonth = period.split('-');
+                 var year = yearMonth[0];
+                 var monthIndex = parseInt(yearMonth[1], 10) - 1; // El mes está en el rango 1-12, pero los índices de los arrays son 0-11
+
+                 // Verificar que el índice esté dentro del rango
+                 if (monthIndex < 0 || monthIndex > 11) {
+                     monthIndex = 0; // Default a Enero si hay un índice fuera del rango
+                 }
+
+                 // Obtener el nombre del mes
+                 var monthName = month[monthIndex];
+
+                 // Construir el contenido del tooltip
+                 var tooltipContent = "<div class='morris-hover-row-label'>" + monthName + " " + year + "</div>";
+
+                 // Iterar sobre cada línea para mostrar la información de cada punto
+                 options.ykeys.forEach(function (ykey, i) {
+                     // Mostrar solo la información para el punto de datos actual
+
+                     console.log('console   1', data);
+                     console.log('console  1', ykey);
+
+                     console.log('console   2', ykey.split('_')[2]);
+                     console.log('console   2', ykey.split('_')[1]);
+
+                     var label = options.labels[i];
+                     var avg = data['AVG_DAYS_' + ykey.split('_')[2]];
+                     var max = data['MAX_DAYS_' + ykey.split('_')[2]];
+                     var min = data['MIN_DAYS_' + ykey.split('_')[2]];
+                     var qty = data['QTY_' + ykey.split('_')[2]];
+
+
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Avg: " + avg + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Max: " + max + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Min: " + min + "</div>";
+                     tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Qty: " + qty + "</div>";
+
+                 });
+
+                 return tooltipContent;
+             }
+
+         });
+
+     });
+     }
+
+
+     //-------------------------------------------
+     // getDataForDashboardProductosKpiPrePrensaImpresora
+     //-------------------------------------------
+
+        getDataForDashboardProductosKpiPrePrensaImpresoraFunction();
+
+        $scope.selectValues2 = ['Sin Asignar', 'Flexo', 'Hueco'];
+        $scope.selectValue2 = 'Todas'; // Asegúrate de que coincida exactamente
+        var selectedYkeys2 = ['QTY_SinAsignar',
+            'QTY_Flexo',
+            'QTY_Hueco'];
+
+
+
+        $scope.updateChart2 = function (value) {
+            console.log('value', value);
+            var ykeysToDisplay2 = [];
+            if (value === "Todas") {
+                ykeysToDisplay2 = selectedYkeys2;
+            } else {
+                ykeysToDisplay2 = [`QTY_${value.replace(/\s+/g, '')}`];
+            }
+
+            $('#visitors-line-chart9').empty();
+            getDataForDashboardProductosKpiPrePrensaImpresoraFunction(ykeysToDisplay2);
+
+        };
+
+
+
+        function getDataForDashboardProductosKpiPrePrensaImpresoraFunction(ykeysToDisplay2) {
+            console.log('ykeys inside', ykeysToDisplay2);
+            if (!ykeysToDisplay2) {
+
+                ykeysToDisplay2 = ['QTY_SinAsignar',
+                    'QTY_Flexo',
+                    'QTY_Hueco'];
+
+
+
+            }
+     var getDataForDashboardProductosKpiPrePrensaImpresora = APIService.getDataForDashboardProductosKpiPrePrensaImpresora();
+     getDataForDashboardProductosKpiPrePrensaImpresora.then(function (u) {
+         $scope.getDataForDashboardProductosKpiPrePrensaImpresora = u.data;
+
+         console.log('getDataForDashboardProductosKpiPrePrensaImpresora', $scope.getDataForDashboardProductosKpiPrePrensaImpresora);
+
+         // Función para convertir el período a un objeto Date
+         function parseDate(period) {
+             var yearMonth = period?.split('-');
+             console.log('yearMonth b', yearMonth);
+             var year = parseInt(yearMonth[0], 10);
+             var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+             return new Date(year, month);
+         }
+
+         // Ordenar los datos por período
+         $scope.getDataForDashboardProductosKpiPrePrensaImpresora.sort(function (a, b) {
+             console.log('getDataForDashboardProductosKpiPrePrensaImpresora a', a.PERIODO);
+             console.log('getDataForDashboardProductosKpiPrePrensaImpresora b', b.PERIODO);
+
+             return parseDate(a?.PERIODO) - parseDate(b?.PERIODO);
+         });
+
+
+         // Inicializar objeto de totales
+         const totalsgeneralprensadiasimpresora = {
+             QTY_SinAsignar: 0,
+             QTY_Flexo: 0,
+             QTY_Hueco: 0,
+
+             totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+         };
+
+         $scope.getDataForDashboardProductosKpiPrePrensaImpresora.forEach(entry => {
+             console.log('entry', entry);
+             for (let key in totalsgeneralprensadiasimpresora) {
+                 if (entry.hasOwnProperty(key)) {
+                     totalsgeneralprensadiasimpresora[key] += entry[key];
+
+                     // Sumar las cantidades específicas
+                     if (key.startsWith('QTY_')) {
+                         totalsgeneralprensadiasimpresora.totalQTY += entry[key];
+                     }
+                 }
+             }
+         });
+
+         $scope.totalsgeneralprensadiasimpresora2 = totalsgeneralprensadiasimpresora;
+         console.log('$scope.totalsgeneralprensadiasimpresora2', $scope.totalsgeneralprensadiasimpresora2);
+
+
+         /* Line Chart
+         ------------------------- */
+         var red = 'red';
+         var orange = '#ffcc00';
+         var greenLight = '#00ACAC';
+         var blue = '#3273B1';
+         var blueLight = '#348FE2';
+         var blackTransparent = 'rgba(0,0,0,0.6)';
+         var whiteTransparent = 'rgba(255,255,255,0.4)';
+         var month = [];
+         var colors2 = [red, orange, greenLight];
+
+         if (ykeysToDisplay2[0] === 'QTY_SinAsignar' && ykeysToDisplay2.length === 1) {
+
+             colors2 = [red]
+
+         }
+
+         if (ykeysToDisplay2[0] === 'QTY_Flexo') {
+             colors2 = [orange]
+         }
+
+         if (ykeysToDisplay2[0] === 'QTY_Hueco') {
+             colors2 = [greenLight]
+
+         }
+
+        
+         month[0] = "Enero";
+         month[1] = "Febrero";
+         month[2] = "Marzo";
+         month[3] = "Abril";
+         month[4] = "Mayo";
+         month[5] = "Junio";
+         month[6] = "Julio";
+         month[7] = "Agosto";
+         month[8] = "Septiembre";
+         month[9] = "Octubre";
+         month[10] = "Noviembre";
+         month[11] = "Diciembre";
+
+         console.log('PARA EL GRAFICO IMPRESORA', $scope.getDataForDashboardProductosKpiPrePrensaImpresora);
+
+         Morris.Line({
+             element: 'visitors-line-chart9',
+             data: $scope.getDataForDashboardProductosKpiPrePrensaImpresora,
+             xLabels: "month",
+             xkey: 'PERIODO',
+             xLabelAngle: 45,
+             ykeys: ykeysToDisplay2,
+             xLabelFormat: function (x) {
+                 x = month[x.getMonth()];
+
+                 console.log('X',x);
+
+                 return x.toString();
+             },
+             labels: ykeysToDisplay2.map(key => key.split('_')[1]),
+             lineColors: colors2,
+             pointFillColors: colors2,
+             lineWidth: '2px',
+             pointStrokeColors: colors2,
+             resize: true,
+             gridTextFamily: 'Open Sans',
+             gridTextColor: whiteTransparent,
+             gridTextWeight: 'normal',
+             gridTextSize: '11px',
+             gridLineColor: 'rgba(0,0,0,0.5)',
+             hideHover: 'auto'
+
+         });
+
+     });
+     }
+
+
+     //-------------------------------------------
+     // getDataForDashboardProductosKpiPrePrensaProveedor
+     //-------------------------------------------
+
+        getDataForDashboardProductosKpiPrePrensaProveedorFunction();
+
+       
+        $scope.selectValues1 = ['Sin Asignar', 'Bosisio', 'Lynch', 'Longo'];
+        $scope.selectValue1 = 'Todas'; // Asegúrate de que coincida exactamente
+        var selectedYkeys1 = ['QTY_SinAsignar',
+            'QTY_Bosisio',
+            'QTY_Lynch',
+            'QTY_Longo'];
+
+        
+
+        $scope.updateChart1 = function (value) {
+            console.log('value', value);
+            var ykeysToDisplay1 = [];
+            if (value === "Todas") {
+                ykeysToDisplay1 = selectedYkeys1;
+            } else {
+                ykeysToDisplay1 = [`QTY_${value.replace(/\s+/g, '')}`];
+            }
+
+            $('#visitors-line-chart10').empty();
+            getDataForDashboardProductosKpiPrePrensaProveedorFunction(ykeysToDisplay1);
+
+        };
+
+
+        function getDataForDashboardProductosKpiPrePrensaProveedorFunction(ykeysToDisplay1) {
+
+
+        console.log('ykeys inside', ykeysToDisplay1);
+            if (!ykeysToDisplay1) {
+                console.log('vacio inside', ykeysToDisplay1);
+
+                ykeysToDisplay1 = ['QTY_SinAsignar',
+                    'QTY_Bosisio',
+                    'QTY_Lynch',
+                    'QTY_Longo'];
+
+                console.log('vacio inside 2', ykeysToDisplay1);
+
+
+            }
+        
+        var getDataForDashboardProductosKpiPrePrensaProveedor = APIService.getDataForDashboardProductosKpiPrePrensaProveedor();
+        getDataForDashboardProductosKpiPrePrensaProveedor.then(function (u) {
+         $scope.getDataForDashboardProductosKpiPrePrensaProveedor = u.data;
+
+         console.log('getDataForDashboardProductosKpiPrePrensaProveedor', $scope.getDataForDashboardProductosKpiPrePrensaProveedor);
+
+         // Función para convertir el período a un objeto Date
+         function parseDate(period) {
+             var yearMonth = period?.split('-');
+             console.log('yearMonth b', yearMonth);
+             var year = parseInt(yearMonth[0], 10);
+             var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+             return new Date(year, month);
+         }
+
+         // Ordenar los datos por período
+         $scope.getDataForDashboardProductosKpiPrePrensaProveedor.sort(function (a, b) {
+             console.log('getDataForDashboardProductosKpiPrePrensaProveedor a', a.PERIODO);
+             console.log('getDataForDashboardProductosKpiPrePrensaProveedor b', b.PERIODO);
+
+             return parseDate(a?.PERIODO) - parseDate(b?.PERIODO);
+         });
+
+
+         // Inicializar objeto de totales
+         const totalsgeneralprensadiasproveedor = {
+             QTY_SinAsignar: 0,
+             QTY_Bosisio: 0,
+             QTY_Lynch: 0,
+             QTY_Longo: 0,
+
+             totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+         };
+
+         $scope.getDataForDashboardProductosKpiPrePrensaProveedor.forEach(entry => {
+             console.log('entry', entry);
+             for (let key in totalsgeneralprensadiasproveedor) {
+                 if (entry.hasOwnProperty(key)) {
+                     totalsgeneralprensadiasproveedor[key] += entry[key];
+
+                     // Sumar las cantidades específicas
+                     if (key.startsWith('QTY_')) {
+                         totalsgeneralprensadiasproveedor.totalQTY += entry[key];
+                     }
+                 }
+             }
+         });
+
+         $scope.totalsgeneralprensadiasproveedor2 = totalsgeneralprensadiasproveedor;
+         console.log('$scope.totalsgeneralprensadiasproveedor2', $scope.totalsgeneralprensadiasproveedor2);
+
+
+         /* Line Chart
+         ------------------------- */
+         var red = 'red';
+         var orange = '#ffcc00';
+         var greenLight = '#00ACAC';
+         var blue = '#3273B1';
+         var blueLight = '#348FE2';
+         var blackTransparent = 'rgba(0,0,0,0.6)';
+         var whiteTransparent = 'rgba(255,255,255,0.4)';
+         var month = [];
+            var colors1 = [red, orange, greenLight, blue];
+           
+            if (ykeysToDisplay1[0] === 'QTY_SinAsignar' && ykeysToDisplay1.length === 1) {
+
+                colors1 = [red]
+
+            }
+
+            if (ykeysToDisplay1[0] === 'QTY_Bosisio') {
+                colors1 = [orange]
+            }
+
+            if (ykeysToDisplay1[0] === 'QTY_Lynch') {
+                colors1 = [greenLight]
+
+            }
+
+            if (ykeysToDisplay1[0] === 'QTY_Longo') {
+                colors1 = [blue]
+
+            }
+
+         month[0] = "Enero";
+         month[1] = "Febrero";
+         month[2] = "Marzo";
+         month[3] = "Abril";
+         month[4] = "Mayo";
+         month[5] = "Junio";
+         month[6] = "Julio";
+         month[7] = "Agosto";
+         month[8] = "Septiembre";
+         month[9] = "Octubre";
+         month[10] = "Noviembre";
+            month[11] = "Diciembre";
+
+            console.log('PARA EL GRAFICO', $scope.getDataForDashboardProductosKpiPrePrensaProveedor);
+
+         Morris.Line({
+             element: 'visitors-line-chart10',
+             data: $scope.getDataForDashboardProductosKpiPrePrensaProveedor,
+             xLabels: "month",
+             xkey: 'PERIODO',
+             xLabelAngle: 45,
+
+             ykeys: ykeysToDisplay1,
+             xLabelFormat: function (x) {
+                 x = month[x.getMonth()];
+
+                 return x.toString();
+             },
+             labels: ykeysToDisplay1.map(key => key.split('_')[1]),
+             lineColors: colors1,
+             pointFillColors: colors1,
+             lineWidth: '2px',
+             pointStrokeColors: colors1,
+             resize: true,
+             gridTextFamily: 'Open Sans',
+             gridTextColor: whiteTransparent,
+             gridTextWeight: 'normal',
+             gridTextSize: '11px',
+             gridLineColor: 'rgba(0,0,0,0.5)',
+             hideHover: 'auto',
+             
+
+         });
+
+     });
+        }
+
+
+
+        //-------------------------------------------
+        // getDataForDashboardProductosKpiPrePrensaResponsable
+        //-------------------------------------------
+
+       getDataForDashboardProductosKpiPrePrensaResponsableFunction();
+
+
+        $scope.selectValues5 = [
+            { key: 'RICARDO BOSISIO', value: '10' },
+            { key: 'AGUSTIN DE JONGE', value: '17' },
+            { key: 'ARIEL PROZAPAS', value: '18' }
+        ];
+        $scope.selectValue5 = 'Todas'; // Usar solo el valor
+        var selectedYkeys5 = [
+            'SLA_DAYS_10',
+            'SLA_DAYS_17',
+            'SLA_DAYS_18'
+        ];
+
+
+        $scope.updateChart5 = function (value) {
+            console.log('value', value);
+            var ykeysToDisplay5 = [];
+            if (value === "Todas") {
+                ykeysToDisplay5 = selectedYkeys5;
+            } else {
+                ykeysToDisplay5 = [`SLA_DAYS_${value.replace(/\s+/g, '')}`];
+            }
+
+            $('#visitors-line-chart11').empty();
+            getDataForDashboardProductosKpiPrePrensaResponsableFunction(ykeysToDisplay5);
+
+        };
+
+
+        function getDataForDashboardProductosKpiPrePrensaResponsableFunction(ykeysToDisplay5) {
+
+
+            console.log('ykeys inside', ykeysToDisplay5);
+            if (!ykeysToDisplay5) {
+                console.log('vacio inside', ykeysToDisplay5);
+
+                ykeysToDisplay5 = [
+                    'SLA_DAYS_10',
+                    'SLA_DAYS_17',
+                    'SLA_DAYS_18'];
+
+                console.log('vacio inside 5', ykeysToDisplay5);
+
+
+            }
+
+            var getDataForDashboardProductosKpiPrePrensaResponsable = APIService.getDataForDashboardProductosKpiPrePrensaResponsable();
+            getDataForDashboardProductosKpiPrePrensaResponsable.then(function (u) {
+                $scope.getDataForDashboardProductosKpiPrePrensaResponsable = u.data;
+
+                console.log('getDataForDashboardProductosKpiPrePrensaResponsable', $scope.getDataForDashboardProductosKpiPrePrensaResponsable);
+
+                // Función para convertir el período a un objeto Date
+                function parseDate(period) {
+                    var yearMonth = period?.split('-');
+                    console.log('yearMonth b', yearMonth);
+                    var year = parseInt(yearMonth[0], 10);
+                    var month = parseInt(yearMonth[1], 10) - 1; // El mes en Date es 0 basado
+                    return new Date(year, month);
+                }
+
+                // Ordenar los datos por período
+                $scope.getDataForDashboardProductosKpiPrePrensaResponsable.sort(function (a, b) {
+                    console.log('getDataForDashboardProductosKpiPrePrensaResponsable a', a.PERIODO);
+                    console.log('getDataForDashboardProductosKpiPrePrensaResponsable b', b.PERIODO);
+
+                    return parseDate(a?.PERIODO) - parseDate(b?.PERIODO);
+                });
+
+
+                // Inicializar objeto de totales
+                const totalsgeneralprensaresponsable = {
+                    QTY_10: 0,
+                    QTY_17: 0,
+                    QTY_18: 0,
+
+                    totalQTY: 0 // Nueva propiedad para la suma combinada de todas las cantidades
+
+
+
+                };
+
+                $scope.getDataForDashboardProductosKpiPrePrensaResponsable.forEach(entry => {
+                    console.log('entry', entry);
+                    for (let key in totalsgeneralprensaresponsable) {
+                        if (entry.hasOwnProperty(key)) {
+                            totalsgeneralprensaresponsable[key] += entry[key];
+
+                            // Sumar las cantidades específicas
+                            if (key.startsWith('QTY_')) {
+                                totalsgeneralprensaresponsable.totalQTY += entry[key];
+                            }
+                        }
+                    }
+                });
+
+                $scope.totalsgeneralprensaresponsable2 = totalsgeneralprensaresponsable;
+                console.log('$scope.totalsgeneralprensaresponsable2', $scope.totalsgeneralprensaresponsable2);
+
+
+                /* Line Chart
+                ------------------------- */
+                var red = 'red';
+                var orange = '#ffcc00';
+                var greenLight = '#00ACAC';
+                var blue = '#3273B1';
+                var blueLight = '#348FE2';
+                var blackTransparent = 'rgba(0,0,0,0.6)';
+                var whiteTransparent = 'rgba(255,255,255,0.4)';
+                var month = [];
+                var colors5 = [red, orange, greenLight];
+
+                if (ykeysToDisplay5[0] === 'SLA_DAYS_10' && ykeysToDisplay5.length === 1) {
+
+                    colors5 = [red]
+
+                }
+
+
+                if (ykeysToDisplay5[0] === 'SLA_DAYS_17') {
+                    colors5 = [orange]
+
+                }
+
+                if (ykeysToDisplay5[0] === 'SLA_DAYS_18') {
+                    colors5 = [greenLight]
+
+                }
+
+                month[0] = "Enero";
+                month[1] = "Febrero";
+                month[2] = "Marzo";
+                month[3] = "Abril";
+                month[4] = "Mayo";
+                month[5] = "Junio";
+                month[6] = "Julio";
+                month[7] = "Agosto";
+                month[8] = "Septiembre";
+                month[9] = "Octubre";
+                month[10] = "Noviembre";
+                month[11] = "Diciembre";
+
+                console.log('PARA EL GRAFICO', $scope.getDataForDashboardProductosKpiPrePrensaResponsable);
+
+                Morris.Line({
+                    element: 'visitors-line-chart11',
+                    data: $scope.getDataForDashboardProductosKpiPrePrensaResponsable,
+                    xLabels: "month",
+                    xkey: 'PERIODO',
+                    xLabelAngle: 45,
+
+                    ykeys: ykeysToDisplay5,
+                    xLabelFormat: function (x) {
+                        x = month[x.getMonth()];
+
+                        return x.toString();
+                    },
+                    labels: ykeysToDisplay5.map(key => key.split('_')[2]),
+                    lineColors: colors5,
+                    pointFillColors: colors5,
+                    lineWidth: '2px',
+                    pointStrokeColors: colors5,
+                    resize: true,
+                    gridTextFamily: 'Open Sans',
+                    gridTextColor: whiteTransparent,
+                    gridTextWeight: 'normal',
+                    gridTextSize: '11px',
+                    gridLineColor: 'rgba(0,0,0,0.5)',
+                    hideHover: 'auto',
+                    hoverCallback: function (index, options, content, row) {
+                        console.log('hoverCallback options', options);
+
+                        // Obtener los datos del punto
+                        var data = options.data[index];
+                        var period = data.PERIODO; // El período en formato YYYY-MM
+
+                        // Extraer año y mes del período
+                        var yearMonth = period.split('-');
+                        var year = yearMonth[0];
+                        var monthIndex = parseInt(yearMonth[1], 10) - 1; // El mes está en el rango 1-12, pero los índices de los arrays son 0-11
+
+                        // Verificar que el índice esté dentro del rango
+                        if (monthIndex < 0 || monthIndex > 11) {
+                            monthIndex = 0; // Default a Enero si hay un índice fuera del rango
+                        }
+
+                        // Obtener el nombre del mes
+                        var monthName = month[monthIndex];
+
+                        // Construir el contenido del tooltip
+                        var tooltipContent = "<div class='morris-hover-row-label'>" + monthName + " " + year + "</div>";
+
+                        // Iterar sobre cada línea para mostrar la información de cada punto
+                        options.ykeys.forEach(function (ykey, i) {
+                            // Mostrar solo la información para el punto de datos actual
+
+                            console.log('console   1', data);
+                            console.log('console  1', ykey);
+
+                            console.log('console   2', ykey.split('_')[2]);
+                            console.log('console   2', ykey.split('_')[1]);
+
+                            var label = options.labels[i];
+                            var avg = data['SLA_DAYS_' + ykey.split('_')[2]];
+                            var max = data['MAX_DAYS_' + ykey.split('_')[2]];
+                            var min = data['MIN_DAYS_' + ykey.split('_')[2]];
+                            var qty = data['QTY_' + ykey.split('_')[2]];
+
+
+                            tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Sla: " + avg + "</div>";
+                            tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Max: " + max + "</div>";
+                            tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Min: " + min + "</div>";
+                            tooltipContent += "<div class='morris-hover-point' style='color: " + options.lineColors[i] + "'>" + "Qty: " + qty + "</div>";
+
+                        });
+
+                        return tooltipContent;
+                    }
+
+                });
+
+            });
+        }
+
+
+
+        
 
  });

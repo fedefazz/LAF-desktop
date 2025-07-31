@@ -17,16 +17,36 @@
 
             <li ng-class="{active:$state.includes('blsp.scrap')}">
 
-                <a ui-sref="blsp.scrap.list" title="Scrap"><i class="fa fa-trash-o"></i><span>Listado Scrap {{esempleado}}</span></a>
+                <a ui-sref="blsp.scrap.list" title="Scrap"><i class="fa fa-trash"></i><span>Listado Scrap {{esempleado}}</span></a>
 
             </li>
 
+            <li ng-class="{active:$state.includes('blsp.motivos')}">
 
+                <a ui-sref="blsp.motivos.list" title="Motivos Scrap"><i class="fa fa-question-circle"></i><span>Motivos Scrap {{esempleado}}</span></a>
+
+            </li>
 
             <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.origenScrap')}">
 
 
-                <a ui-sref="blsp.origenScrap.list" title="Origen Scrap"><i class="fa fa-lightbulb-o"></i><span>Origen Scrap</span></a>
+                <a ui-sref="blsp.origenScrap.list" title="Origen Scrap"><i class="fa fa-lightbulb-o"></i><span>Origen Scrap {{esempleado}}</span></a>
+
+
+            </li>
+
+            <li  ng-class="{active:$state.includes('blsp.valoresPorPeriodoMensual')}">
+
+
+                <a ui-sref="blsp.valoresPorPeriodoMensual.list" title="Periodos Mensuales"><i class="fa fa-solid fa-print"></i><span>Periodos Mensuales {{esempleado}}</span></a>
+
+
+            </li>
+
+            <li  ng-class="{active:$state.includes('blsp.motivosscrap')}">
+
+
+                <a ui-sref="blsp.motivosscrap.list" title="Reporte Motivo"><i class="fa fa-inbox"></i><span>Reporte Motivo {{esempleado}}</span></a>
 
 
             </li>
@@ -134,7 +154,7 @@
 
             </li>
 
-           
+
 
 
 
@@ -144,7 +164,7 @@
         </ul>
 
 
-        <ul class="nav" ng-if="hasRole('Admin') || hasRole('Producto') || hasRole('Pre Prensa') || hasRole('Ingenieria')">
+        <ul class="nav" ng-if="hasRole('Admin') || hasRole('Producto') || hasRole('Pre Prensa') || hasRole('Ingenieria') || hasRole('Herramental')">
             <li class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
 
                 Productos
@@ -164,6 +184,17 @@
                 <a ui-sref="blsp.dashboardProductos.dashboard" title="Dahboard Productos"><i class="fa fa-cubes"></i><span>KPI productos</span></a>
 
             </li>
+
+
+            <li ng-class="{active:$state.includes('blsp.trabajocilindros.list')}">
+
+
+             <a ui-sref="blsp.trabajocilindros.list" title="Reposición Herramental"><i class="fa fa-circle-o"></i><span>Reposicion Herramental</span></a>
+
+</li>
+
+
+            
         </ul>
             <!-- end sidebar nav -->
     </div>

@@ -1,0 +1,347 @@
+﻿<div ng-app="app" ng-controller="motivosCRUDController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li><a ui-sref="blsp.motivos.list">Motivos</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}}<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="editAuthorForm.$valid && processForm()" class="form-horizontal" role="form" name="editAuthorForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+
+
+                    <div layout-gt-xs="row">
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <label>Descripcion</label>
+                            <input type="text" ng-model="motivoData.Descripcion" name="Descripcion" required />
+                            <div ng-messages="editAuthorForm.FirstName.$error">
+                                <div ng-messages-include="pages/validation/text.html"></div>
+                            </div>
+                        </md-input-container>
+
+
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <md-switch ng-model="motivoData.Habilitado" aria-label="habilitado">
+                                {{ 'Habilitado' }}
+                            </md-switch>
+                        </md-input-container>
+                    </div>
+
+                    <div layout-gt-xs="row">
+                        <md-input-container class="md-block" flex-gt-xs>
+                            <label>Descripcion</label>
+                            <input type="number" ng-model="motivoData.PorcentajeSimulacionMejora" name="PorcentajeSimulacionMejora" min="-100" max="0" />
+                        </md-input-container>
+
+                    </div>
+
+
+
+                </div>
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Acciones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary" ng-disabled="!editAuthorForm.$valid" type="submit">{{SubmitButton}}</button>
+                            <a class="btn btn-block btn-default" ui-sref="blsp.motivos.list">Volver</a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+            </form>
+
+            <div class="col-sm-12 col-md-12" ng-show="editMode">
+                <hr style="border-bottom: 1px solid #bbb;" />
+
+
+                <div class="col-sm-12 col-md-12">
+                    <!-- Barra de navegación de Tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" ng-class="{ active: selectedTab === 1 }">
+                            <a href="javascript:void(0)" ng-click="selectedTab = 1">Vinculos</a>
+                        </li>
+                        <li role="presentation" ng-class="{ active: selectedTab === 2 }">
+                            <a href="javascript:void(0)" ng-click="selectedTab = 2">Objetivos</a>
+                        </li>
+                    </ul>
+
+                    <!-- Contenido de las Tabs -->
+                    <div class="tab-content">
+                        <!-- Tab Vinculos -->
+                        <div role="tabpanel" class="tab-pane" ng-class="{ active: selectedTab === 1 }">
+                            <div class="panel panel-inverse">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Nuevo Vinculo</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <form ng-submit="vinculoForm.$valid && processVinculoForm()" class="form-horizontal" role="form" name="vinculoForm" novalidate>
+                                        <div class="col-sm-12 col-md-12">
+                                            <div layout-gt-xs="row">
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Maquina</label>
+                                                    <md-select ng-model="vinculosData.Id_MaquinaImpute" placeholder="Selecciona una impresora" required>
+                                                        <md-option ng-repeat="vinculo in maquinas" ng-value="vinculo.IDMaq">
+                                                            {{ vinculo.Descripcion }}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div layout-gt-xs="row">
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Recurso</label>
+                                                    <md-select ng-model="vinculosData.Id_Recurso" placeholder="Selecciona un Recurso" required>
+                                                        <md-option ng-repeat="vinculo in recursos" ng-value="vinculo.Id">
+                                                            {{ vinculo.Descripcion }}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div layout-gt-xs="row">
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Origen Scrap</label>
+                                                    <md-select ng-model="vinculosData.Id_Origen" placeholder="Selecciona un Origen" required>
+                                                        <md-option ng-repeat="vinculo in origenes" ng-value="vinculo.IDOrigen">
+                                                            {{ vinculo.Descripcion }}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div layout-gt-xs="row">
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Tipo de Material</label>
+                                                    <md-select ng-model="vinculosData.Id_TipoMaterial" placeholder="Selecciona un Tipo de Material" required>
+                                                        <md-option ng-repeat="vinculo in tiposMaterial" ng-value="vinculo.IDTipoMat">
+                                                            {{ vinculo.Descripcion }}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <button class="btn btn-block btn-primary" ng-disabled="!vinculoForm.$valid" ng-click="createVinculoSubmit()">Crear</button>
+                                </div>
+                            </div>
+
+                            <!-- Vinculos Existentes -->
+                            <div class="panel panel-inverse">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Vinculos Existentes</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div ng-repeat="vinculo in vinculos" ng-class="{'fadeLeft': vinculo.deleted}">
+                                        <div class="card mb-3" style="border-radius: 15px; border: 1px solid #ddd; padding: 15px;">
+                                            <div class="card-body">
+                                                <button ng-click="editVinculo(vinculo)" ng-show="!vinculo.isEditing" class="btn btn-info btn-sm" style="position: absolute; top: 10px; right: 45px;">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+
+                                                <button ng-click="deleteVinculo(vinculo)" ng-show="!vinculo.isEditing" class="btn btn-danger btn-sm" style="position: absolute; top: 10px; right: 10px;">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+
+                                                <div class="cardfede" ng-show="!vinculo.isEditing">
+                                                    <p class="cardp"><span class="cardspan1">Máquina: </span> <span class="cardspan2"> {{ getMaquina(vinculo.Id_MaquinaImpute).Descripcion }}</span></p>
+                                                    <p class="cardp"><span class="cardspan1">Recurso:  </span> <span class="cardspan"> {{ getRecurso(vinculo.Id_Recurso).Descripcion }}</span></p>
+                                                    <p class="cardp"><span class="cardspan1">Origen:  </span> <span class="cardspan"> {{ getOrigen(vinculo.Id_Origen).Descripcion }}</span></p>
+                                                    <p class="cardp"><span class="cardspan1">Tipo de Material:  </span> <span class="cardspan"> {{ getTipoMaterial(vinculo.Id_TipoMaterial).Descripcion }}</span></p>
+                                                </div>
+
+                                                <div ng-show="vinculo.isEditing">
+                                                    <p class="cardP">
+                                                        Máquina:
+                                                        <md-select ng-model="vinculo.Id_MaquinaImpute" placeholder="Selecciona una impresora" required>
+                                                            <md-option ng-repeat="maquina in maquinas" ng-value="maquina.IDMaq">
+                                                                {{ maquina.Descripcion }}
+                                                            </md-option>
+                                                        </md-select>
+                                                    </p>
+
+                                                    <p class="cardP">
+                                                        Recurso:
+                                                        <md-select ng-model="vinculo.Id_Recurso" placeholder="Selecciona un Recurso" required>
+                                                            <md-option ng-repeat="recurso in recursos" ng-value="recurso.Id">
+                                                                {{ recurso.Descripcion }}
+                                                            </md-option>
+                                                        </md-select>
+                                                    </p>
+
+                                                    <p class="cardP">
+                                                        Origen:
+                                                        <md-select ng-model="vinculo.Id_Origen" placeholder="Selecciona un Origen" required>
+                                                            <md-option ng-repeat="origen in origenes" ng-value="origen.IDOrigen">
+                                                                {{ origen.Descripcion }}
+                                                            </md-option>
+                                                        </md-select>
+                                                    </p>
+
+                                                    <p class="cardP">
+                                                        Tipo de Material:
+                                                        <md-select ng-model="vinculo.Id_TipoMaterial" placeholder="Selecciona un Tipo de Material" required>
+                                                            <md-option ng-repeat="material in tiposMaterial" ng-value="material.IDTipoMat">
+                                                                {{ material.Descripcion }}
+                                                            </md-option>
+                                                        </md-select>
+                                                    </p>
+
+                                                    <button ng-click="saveVinculo(vinculo)" class="btn btn-success btn-sm" style="position: absolute; top: 10px; right: 10px;">
+                                                        <i class="fa fa-save"></i> Guardar
+                                                    </button>
+                                                    <button ng-click="cancelVinculoEdit(vinculo)" class="btn btn-danger btn-sm" style="position: absolute; top: 10px; right: 110px;">
+                                                        <i class="fa fa-times"></i> Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Objetivos -->
+                        <div role="tabpanel" class="tab-pane" ng-class="{ active: selectedTab === 2 }">
+
+                            <div class="panel panel-inverse">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Nuevo Objetivo</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <form ng-submit="objetivoForm.$valid && processObjetivoForm()" class="form-horizontal" role="form" name="objetivoForm" novalidate>
+                                        <div class="col-sm-12 col-md-12">
+                                            <div layout-gt-xs="row">
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Indicador Inicio</label>
+                                                    <input type="text" ng-model="objetivoData.Indicador_Inicio" name="Indicador_Inicio" required />
+
+                                                </md-input-container>
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Indicador Objetivo</label>
+                                                    <input type="text" ng-model="objetivoData.Indicador_Objetivo" name="Indicador_ObjetivoSOlo" required />
+
+                                                </md-input-container>
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Vigencia Desde</label>
+                                                    <input type="date" ng-model="objetivoData.Vigencia_Desde" name="Vigencia_Desde" required />
+                                                </md-input-container>
+
+                                                <md-input-container class="md-block" flex-gt-xs>
+                                                    <label>Vigencia Hasta</label>
+                                                    <input type="date" ng-model="objetivoData.Vigencia_Hasta"
+                                                           name="Vigencia_Hasta" ng-min="objetivoData.Vigencia_Desde" required />
+                                                </md-input-container>
+                                            </div>                                                           
+                                            
+                                        </div>
+                                    </form>
+
+                                    <button class="btn btn-block btn-primary" ng-disabled="!objetivoForm.$valid" ng-click="createObjetivoSubmit()">Crear</button>
+                                </div>
+                            </div>
+
+
+                            <!-- Objetivos Existentes -->
+                            <div class="panel panel-inverse objetivos">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">Objetivos Existentes</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div ng-repeat="objetivo in objetivos" ng-class="{'fadeLeft': objetivo.deleted}">
+                                        <div class="card mb-3" style="border-radius: 15px; border: 1px solid #ddd; padding: 15px;">
+                                            <div class="card-body">
+                                                <button ng-click="editObjetivo(objetivo)" ng-show="!objetivo.isEditing" class="btn btn-info btn-sm" style="position: absolute; top: 10px; right: 45px;">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+
+                                                <button ng-click="deleteObjetivo(objetivo)" ng-show="!objetivo.isEditing" class="btn btn-danger btn-sm" style="position: absolute; top: 10px; right: 10px;">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+
+                                                <div class="cardfede2" ng-show="!objetivo.isEditing">
+                                                    <div>
+                                                        <p class="cardp"><span class="cardspan1">Indicador Inicio: </span> <span class="cardspan2"> {{ objetivo.Indicador_Inicio }}</span></p>
+                                                        <p class="cardp"><span class="cardspan1">Indicador Objetivo:  </span> <span class="cardspan"> {{ objetivo.Indicador_Objetivo }}</span></p>
+                                                        <p class="cardp"><span class="cardspan1">Vigencia Desde:  </span> <span class="cardspan"> {{ objetivo.Vigencia_Desde | date:'dd/MM/yyyy' }}</span></p>
+                                                        <p class="cardp"><span class="cardspan1">Vigencia Hasta:  </span> <span class="cardspan"> {{ objetivo.Vigencia_Hasta | date:'dd/MM/yyyy'}}</span></p>
+                                                    </div>
+                                                    
+
+
+                                                </div>
+
+                                                <div class="cardfede2" ng-show="objetivo.isEditing">
+                                                    <div>
+                                                        <p class="cardP"><span class="cardspan1">
+    Indicador Inicio:
+</span>
+    <input type="text" ng-model="objetivo.Indicador_Inicio" name="Indicador_Inicio" required />
+
+
+</p>
+
+                                                        <p class="cardP"><span class="cardspan1">
+    Indicador Objetivo:
+</span>
+    <input type="text" ng-model="objetivo.Indicador_Objetivo" name="Indicador_ObjetivoSOlo" required />
+
+</p>
+
+                                                        <p class="cardP"><span class="cardspan1">
+    Fecha Creacion:
+</span>
+    <input type="date" ng-model="objetivo.Vigencia_Desde" name="Vigencia_Desde" required />
+
+
+</p>
+
+                                                        <p class="cardP"><span class="cardspan1">
+    Vigencia Hasta:
+                                                            </span>
+    <input type="date" ng-model="objetivo.Vigencia_Hasta"
+           name="Vigencia_Hasta" ng-min="objetivo.Vigencia_Desde" required />
+
+
+</p>
+                                                    </div>
+                                                   
+
+                                                    <button ng-click="saveObjetivo(objetivo)" class="btn btn-success btn-sm" style="position: absolute; top: 10px; right: 10px;">
+                                                        <i class="fa fa-save"></i> Guardar
+                                                    </button>
+                                                    <button ng-click="cancelObjetivoEdit(objetivo)" class="btn btn-danger btn-sm" style="position: absolute; top: 10px; right: 110px;">
+                                                        <i class="fa fa-times"></i> Cancelar
+                                                    </button>
+                                                </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            </div>
+        </div>   
+    </div>
+</div>

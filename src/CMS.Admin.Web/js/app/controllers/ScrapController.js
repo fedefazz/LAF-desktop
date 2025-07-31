@@ -870,3 +870,298 @@ angular
 
     })
 
+
+    .controller('scrapReporteController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder,
+        $element, $timeout) {
+
+
+
+
+
+        // Obtener productos desde la API
+        GetReportes();
+        GetReportes2();
+
+        function GetReportes() {
+            APIService.GetMotivosScrap().then(function (response) {
+                $scope.reporte1 = response.data;
+                console.log('$scope.reporte1', $scope.reporte1);
+
+
+            }, function (error) {
+                $scope.errorMessage = "Oops, algo salió mal.";
+            });
+        }
+
+        function GetReportes2() {
+            APIService.GetMotivosScrap2().then(function (response) {
+                $scope.reporte2 = response.data;
+                console.log('$scope.reporte2', $scope.reporte2);
+
+
+            }, function (error) {
+                $scope.errorMessage = "Oops, algo salió mal.";
+            });
+        }
+        // Obtener los nombres de los meses
+        var monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        var currentMonth = new Date().getMonth();
+        $scope.months = [];
+
+        // Llenar el array de meses desde 11 meses antes hasta el mes actual
+        for (var i = 11; i >= 0; i--) {
+            var monthIndex = (currentMonth - i + 12) % 12;
+            $scope.months.push(monthNames[monthIndex]);
+        }
+        $scope.dtInstance = {};
+
+
+        $scope.dtOptions = DTOptionsBuilder
+            .newOptions()
+            .withLanguageSource('/js/angular-datatables-spanish.json')
+            .withOption('paging', false)
+            .withPaginationType('full_numbers')
+            .withOption('searching', true)
+            .withOption('scrollX', true)
+            .withDisplayLength(20)
+            .withOption('order', [0, 'asc'])
+
+
+        $scope.doSearch = function () {
+            $timeout(function () {
+                if ($scope.dtInstance && $scope.dtInstance.DataTable) {
+                    $scope.dtInstance.DataTable.search($scope.searchQuery).draw();
+                } else {
+                    console.error("El DataTable no está disponible o no está inicializado correctamente.");
+                }
+            }, 0);
+        };
+
+
+        $scope.dtInstance2 = {};
+
+
+        $scope.dtOptions2 = DTOptionsBuilder
+            .newOptions()
+            .withLanguageSource('/js/angular-datatables-spanish.json')
+            .withOption('paging', false)
+            .withPaginationType('full_numbers')
+            .withOption('searching', true)
+            .withOption('scrollX', true)
+            .withDisplayLength(20)
+
+
+
+        $scope.exportExcel = function () {
+
+            $scope.butonVisible = true;
+            $scope.successMessage2 = "Preparando Archivo...";
+            $scope.dataForExcel = $scope.reporte1;
+            console.log('$scope.dataForExcel', $scope.dataForExcel);
+            $scope.exportData();
+            $scope.butonVisible = false;
+            $scope.successMessage2 = "Archivo Descargado con Exito";
+            $scope.errorMessage2 = "";
+            $timeout(function () {
+                        $scope.successMessage2 = null;
+            }, 3000);
+
+                
+            $scope.mensaje = "";
+            
+
+
+
+        }
+
+        $scope.exportData = function () {
+            // Llamar a applyStylesToExcel para aplicar estilos
+            $scope.CurrentDateTime = new Date().getTime();
+            console.log('data1',$scope.reporte1);
+            console.log('data2', $scope.reporte2);
+
+
+            $scope.reporte1 = $scope.reporte1.sort((a, b) => a.CRITERIO > b.CRITERIO);
+            $scope.reporte2 = $scope.reporte2.sort((a, b) => a.DESC_MOTIVO_SCRAP.localeCompare(b.DESC_MOTIVO_SCRAP));
+
+
+            $timeout(function () {
+                $scope.exportDataWithExceljs();
+            }, 1000); // Delay to ensure the file is fully created before applying styles
+        };
+
+
+
+        $scope.exportDataWithExceljs = function () {
+            var workbook = new ExcelJS.Workbook();
+            var worksheet = workbook.addWorksheet('Sheet1');
+
+            // Configurar moment.js para usar español
+            moment.locale('es');
+            // Obtener los nombres de los meses desde el mes actual hacia atrás
+            var meses = [];
+            for (let i = 11; i >= 0; i--) {
+                meses.push(moment().subtract(i, 'months').format('MMMM'));
+            }
+
+            // Definir columnas
+            worksheet.columns = [
+                { header: 'DESC_MOTIVO_SCRAP', key: 'DESC_MOTIVO_SCRAP', width: 15 },
+                ...meses.map((mes, index) => ({ header: mes, key: `C${index + 1}`, width: 30 })),
+
+
+                { header: 'TOTAL_GENERAL', key: 'TOTAL_GENERAL', width: 15 },
+                { header: 'PERC_SCRAP_TOT', key: 'PERC_SCRAP_TOT', width: 20 },
+                { header: 'PERC_SCRAP_MES_ACTUAL', key: 'PERC_SCRAP_MES_ACTUAL', width: 20 },
+                { header: 'MEJORADEFINIDA', key: 'MEJORADEFINIDA', width: 30 },
+                { header: 'MES_ANO_PROX', key: 'MES_ANO_PROX', width: 30 },
+                { header: 'PERC_MEJORA', key: 'PERC_MEJORA', width: 30 },
+
+
+               
+            ];
+            // Agregar datos y formatear fechas
+            $scope.dataForExcel.forEach(row => {
+                let formattedRow = {};
+                Object.keys(row).forEach(key => {
+                    if ((key.toLowerCase().includes("fecha") || key.toLowerCase().includes("date")) && !key.includes("Dif_") && row[key]) {
+
+                        // Formatear fecha si es una cadena con formato ISO
+                        let date = new Date(row[key]);
+                        if (!isNaN(date.getTime())) {
+                            formattedRow[key] = date;
+                        } else {
+                            formattedRow[key] = row[key];
+                        }
+                    } else {
+                        formattedRow[key] = row[key];
+                    }
+                });
+                worksheet.addRow(formattedRow);
+            });
+           
+
+            worksheet.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+
+
+            //for (let col = 1; col <= 7; col++) {
+            //    worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            //        if (rowNumber !== 1) { // Saltar el encabezado
+            //            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCCCC' } };
+            //        }
+            //    });
+            //}
+
+            //for (let col = 8; col <= 24; col++) {
+            //    worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            //        if (rowNumber !== 1) { // Saltar el encabezado
+            //            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFCCFF' } };
+            //        }
+            //    });
+            //}
+
+            //for (let col = 25; col <= 37; col++) {
+            //    worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            //        if (rowNumber !== 1) { // Saltar el encabezado
+            //            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFCC' } };
+            //        }
+            //    });
+            //}
+
+            //for (let col = 38; col <= 63; col++) {
+            //    worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            //        if (rowNumber !== 1) { // Saltar el encabezado
+            //            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CCFFCC' } };
+            //        }
+            //    });
+            //}
+
+            //for (let col = 64; col <= 76; col++) {
+            //    worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            //        if (rowNumber !== 1) { // Saltar el encabezado
+            //            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D2B48C' } };
+            //        }
+            //    });
+            //}
+
+            //for (let col = 77; col <= 94; col++) {
+            //    worksheet.getColumn(col).eachCell({ includeEmpty: true }, (cell, rowNumber) => {
+            //        if (rowNumber !== 1) { // Saltar el encabezado
+            //            cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'CFCFCF' } };
+            //        }
+            //    });
+            //}
+
+
+            // Crear una segunda hoja
+            var worksheet2 = workbook.addWorksheet('Sheet2');
+
+            // Definir columnas para la segunda hoja
+            worksheet2.columns = [
+                { header: 'DESC_MOTIVO_SCRAP', key: 'DESC_MOTIVO_SCRAP', width: 30 },
+                ...meses.map((mes, index) => ({ header: mes, key: `C${index + 1}`, width: 15 })),
+                { header: 'INICIO', key: 'INICIO', width: 15 },
+                { header: 'OBJETIVO', key: 'OBJETIVO', width: 15 },
+            ];
+
+            // Agregar datos a la segunda hoja
+            $scope.reporte2.forEach(row => {
+                let formattedRow = {};
+                Object.keys(row).forEach(key => {
+                    if ((key.toLowerCase().includes("fecha") || key.toLowerCase().includes("date")) && !key.includes("Dif_") && row[key]) {
+                        let date = new Date(row[key]);
+                        if (!isNaN(date.getTime())) {
+                            formattedRow[key] = date;
+                        } else {
+                            formattedRow[key] = row[key];
+                        }
+                    } else {
+                        formattedRow[key] = row[key];
+                    }
+                });
+                let newRow = worksheet2.addRow(formattedRow);
+
+                function colorNameToHex(color) {
+                    const colors = {
+                        "red": "FF0000",
+                        "black": "000000",
+                        "yellow": "FFFF00",
+                        "green": "008000",
+                        "blue": "0000FF",
+                    };
+                    return colors[color.toLowerCase()] || color.replace('#', '');
+                }
+
+                // Aplicar colores a las celdas
+                for (let i = 1; i <= 12; i++) {
+                    let color = row[`COLOR${i}`];
+                    if (color) {
+                        let hexColor = colorNameToHex(color);
+                        newRow.getCell(`C${i}`).fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: hexColor }
+                        };
+                    }
+                }
+            });
+
+            worksheet2.getRow(1).eachCell({ includeEmpty: true }, (cell) => {
+                cell.font = { bold: true };
+                cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFF00' } };
+            });
+
+            // Guardar el archivo
+            workbook.xlsx.writeBuffer().then(function (data) {
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                saveAs(blob, 'Reporte.xlsx');
+            });
+        };
+        
+
+    })
+

@@ -1,0 +1,106 @@
+﻿<div ng-app="app" ng-controller="scrapReporteController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Motivos Scrap</li>
+                </ol>
+                <h1 class="page-header">Motivos Scrap<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <!--<div class="col-sm-12 col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <label>Buscar Scrap</label>
+                            <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>-->
+            <div class="col-sm-12 col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Motivos Scrap</h4>
+                    </div>
+                    <button style="position: absolute;top: 4px;right: 18px;" ng-click="exportExcel()" class="btn btn-primary pull-right">Descargar Excel</button>
+
+                    <table class="table table-bordered dataTable table-responsive tablareporte" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Criterio</th>
+                                <th>Descripcion</th>
+                                <th ng-repeat="month in months">{{month}}</th>
+
+                                <th>TOTAL_GENERAL</th>
+                                <th>PERC_SCRAP_TOT</th>
+                                <th>PERC_SCRAP_MES_ACTUAL</th>
+                                <th>MEJORADEFINIDA</th>
+                                <th>MES_ANO_PROX</th>
+                                <th>PERC_MEJORA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reporte in reporte1" ng-class="{'bolder': reporte.CRITERIO === 6 ||reporte.CRITERIO === 5 || reporte.CRITERIO === 2 }">
+                                <td>{{reporte.CRITERIO}}</td>
+                                <td>{{reporte.DESC_MOTIVO_SCRAP}}</td>
+                                <td>{{reporte.C1 | number:2}}</td>
+                                <td>{{reporte.C2 | number:2}}</td>
+                                <td>{{reporte.C3 | number:2}}</td>
+                                <td>{{reporte.C4 | number:2}}</td>
+                                <td>{{reporte.C5 | number:2}}</td>
+                                <td>{{reporte.C6 | number:2}}</td>
+                                <td>{{reporte.C7 | number:2}}</td>
+                                <td>{{reporte.C8 | number:2}}</td>
+                                <td>{{reporte.C9 | number:2}}</td>
+                                <td>{{reporte.C10 | number:2}}</td>
+                                <td>{{reporte.C11 | number:2}}</td>
+                                <td>{{reporte.C12 | number:2}}</td>
+                                <td>{{reporte.TOTAL_GENERAL | number:2}}</td>
+                                <td>{{reporte.PERC_SCRAP_TOT | number:2}}</td>
+                                <td>{{reporte.PERC_SCRAP_MES_ACTUAL | number:2}}</td>
+                                <td>{{reporte.MEJORADEFINIDA | number:2}}</td>
+                                <td>{{reporte.MES_ANO_PROX | number:2}}</td>
+                                <td>{{reporte.PERC_MEJORA | number:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Motivos Scrap 2</h4>
+                    </div>
+                    <table style="color: black;" class="table table-bordered dataTable table-responsive tablareporte" datatable="ng" dt-instance="dtInstance2" dt-options="dtOptions2">
+                        <thead>
+                            <tr>
+                                <th>Descripcion</th>
+                                <th ng-repeat="month in months">{{month}}</th>
+                                <th>INICIO</th>
+                                <th>OBJETIVO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="reporte in reporte2">
+                                <td>{{reporte.DESC_MOTIVO_SCRAP}}</td>
+                                <td ng-repeat="i in [1,2,3,4,5,6,7,8,9,10,11,12]" style=" font-weight: bold" ng-style="{'background-color': reporte['COLOR' + i]}">
+                                    {{reporte['C' + i] | number:2}}
+                                </td>
+                                <td>{{reporte.INICIO}}</td>
+                                <td>{{reporte.OBJETIVO}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+</div>

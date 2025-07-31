@@ -1,0 +1,430 @@
+﻿<div ng-app="app" ng-controller="TrabajoCilindroCRUDController">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li><a ui-sref="blsp.clients.list">Reposición Herramental</a></li>
+                    <li class="active">{{PageTitle}}</li>
+                </ol>
+                <h1 class="page-header">{{PageTitle}}<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <form ng-submit="editAuthorForm.$valid && processForm()" class="form-horizontal" role="form" name="editAuthorForm" novalidate>
+                <div class="col-sm-12 col-md-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Producto</h4>
+                        </div>
+                        <md-content layout-padding class="md-content-test">
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Seleccione un Producto</label>
+                                    <input ng-disabled="esEdicion" type="text"
+                                           ng-model="trabajoCilindrosData.filtro"
+                                           name="Nombre"
+                                           ng-change="buscarResultados()" />
+                                    <div ng-messages="editAuthorForm.Nombre.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <!-- Contenedor para mostrar los resultados -->
+                                <div ng-if="resultados.length > 0" class="dropdown-results">
+                                    <ul class="dropdown-list">
+                                        <li ng-repeat="cilindro in resultados" ng-click="selectCilindro(cilindro)">
+                                            {{ cilindro.Cod_Producto }} ({{ cilindro.Descripcion }})
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- Mensaje si no hay resultados -->
+                                <div class="resultempty" ng-if="resultados.length === 0 && trabajoCilindrosData.filtro.length > 0 && !flagProductoSeleccionado">
+                                    No se encontraron resultados.
+                                </div>
+
+
+
+
+
+
+
+                            </div>
+
+                        </md-content>
+
+
+
+                    </div>
+                </div>
+
+
+                <div class="col-sm-12 col-md-4">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Acciones</h4>
+                        </div>
+                        <div class="panel-body">
+                            <button class="btn btn-block btn-primary" ng-disabled="!editAuthorForm.$valid || flagProductoSeleccionado === false || formDeshabilitado" type="submit">{{SubmitButton}}</button>
+                            <a class="btn btn-block btn-default" ng-click="volverAtras()">Volver</a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="col-sm-12 col-md-12 mb-8">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">Información del Cilindro</h4>
+                        </div>
+                        <md-content layout-padding ng-if="flagProductoSeleccionado">
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Numero Version</label>
+                                    <input ng-disabled="true" type="number" ng-model="trabajoCilindroData.Nro_Version" name="Nombre" required />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Descripcion</label>
+                                    <input type="text" ng-model="productoSeleccionado.Descripcion" name="Descripcion" disabled />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+
+
+
+
+
+
+
+                            </div>
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Tipo Impresora</label>
+                                    <input disabled type="text" ng-model="productoSeleccionado.TipoImpresora" name="TipoImpresora" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Impresora</label>
+                                    <input disabled type="text" ng-model="productoSeleccionado.Impresora" name="Impresora" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Proveedor</label>
+                                    <input disabled type="text" ng-model="productoSeleccionado.Proveedor" name="Proveedor" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <label>OT Bolsapel</label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.OT_Bolsapel" name="OT_Bolsapel" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Causa</label>
+                                    <md-select required ng-disabled="formDeshabilitado" ng-model="trabajoCilindroData.Causa"
+                                               name="Causa"
+                                               placeholder="Selecciona una Causa">
+                                        <md-option ng-repeat="option in causas" ng-value="option.id">
+                                            {{ option.nombre }}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editAuthorForm.Causa.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="formDeshabilitado" ng-model="trabajoCilindroData.EnvioHabilitado" aria-label="EnvioHabilitado" ng-change="AcuerdoDirectoProveedorChange()">
+                                        {{ 'Habilitado para enviar' }}
+                                    </md-switch>
+                                </md-input-container>
+
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="formDeshabilitado || !trabajoCilindroData.EnvioHabilitado" ng-model="trabajoCilindroData.Enviado" aria-label="Enviado" ng-change="AcuerdoDirectoProveedorChange()">
+                                        {{ 'Enviado' }}
+                                    </md-switch>
+                                </md-input-container>
+                            </div>
+
+                            <div ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" layout-gt-xs="row">
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha de Preparacion</label>
+                                    <input ng-disabled="formDeshabilitado" type="date" ng-model="trabajoCilindroData.FechaPreparacion" name="FechaPreparacion" id="FechaPreparacion" />
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha de envio al proveedor</label>
+                                    <input ng-disabled="formDeshabilitado" type="date" ng-model="trabajoCilindroData.FechaEnvioAProveedor" name="FechaEnvioAProveedor" id="FechaEnvioAProveedor" />
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Remito retiro
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.RemitoRetiro" name="RemitoRetiro" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+
+                            <div layout-gt-xs="row">
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Flexo'" class="md-block" flex-gt-xs>
+                                    <label>
+                                        Cantidad de Colores
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.CantColores" name="CantColores" required ng-pattern="/^[1-9][0-9]*$/" />
+                                    <div ng-messages="editAuthorForm.CantColores.$error">
+                                        <div ng-message="required">Este campo es requerido.</div>
+                                        <div ng-message="pattern">El valor debe ser mayor que 0.</div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <label>Fecha Deseada</label>
+                                    <input ng-disabled="formDeshabilitado" type="date" ng-model="trabajoCilindroData.FechaDeseada" name="FechaDeseada" id="FechaDeseada" required ng-pattern="/^(?!1900-01-01).*$/" />
+                                    <div ng-messages="editAuthorForm.FechaDeseada.$error">
+                                        <div ng-message="required">Este campo es requerido.</div>
+                                        <div ng-message="pattern">El valor debe ser diferente a 1/1/1900.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <label>Fecha de Compromiso</label>
+                                    <input ng-disabled="formDeshabilitado" type="date" ng-model="trabajoCilindroData.FechaCompromiso" name="FechaCompromiso" id="FechaCompromiso" />
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Real Entrega</label>
+                                    <input ng-disabled="formDeshabilitado" type="date" ng-model="trabajoCilindroData.FechaRealEntrega" name="FechaRealEntrega" id="FechaRealEntrega" />
+                                </md-input-container>
+                            </div>
+
+
+
+                            <div layout-gt-xs="row">
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Reprogramacion</label>
+                                    <input ng-disabled="formDeshabilitado" type="date" ng-model="trabajoCilindroData.FechaReprogramacion" name="FechaReprogramacion" id="FechaReprogramacion" />
+                                </md-input-container>
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <label>
+                                        Ord. compra
+
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.OrdCompra" name="OrdCompra" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                            </div>
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Remito de Entrada.
+
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.RemitoEntrada" name="RemitoEntrada" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" class="md-block" flex-gt-xs>
+                                    <label>
+                                        Documentos Anexos
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.Anexos" name="Anexos" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Recibo
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.Recibo" name="Recibo" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+                            <div ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" layout-gt-xs="row">
+
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Codigo Facturacion
+
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.Cod_Facturacion" name="Cod_Facturacion" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        OT Proveedor
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.OT_Proveedor" name="OT_Proveedor" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Estado
+                                    </label>
+                                    <md-select ng-disabled="formDeshabilitado" ng-model="trabajoCilindroData.Estado"
+                                               name="Estado"
+                                               placeholder="Selecciona un Estado"
+                                               ng-required="productoSeleccionado.TipoImpresora === 'Hueco'">
+                                        <md-option ng-repeat="option in estados" ng-value="option.id" ng-disabled="option.nombre === 'Fin' && isFinDisabledHueco()">
+                                            {{ option.nombre }}
+                                        </md-option>
+                                    </md-select>
+
+
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+
+                            <div ng-if="productoSeleccionado.TipoImpresora === 'Hueco'" layout-gt-xs="row">
+
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Notas
+
+                                    </label>
+                                    <textarea ng-disabled="formDeshabilitado" ng-model="trabajoCilindroData.Notas" name="Notas" cols="40" rows="5"></textarea>
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
+                            </div>
+
+
+                            <div ng-if="productoSeleccionado.TipoImpresora === 'Flexo'" layout-gt-xs="row">
+
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Ord. compra
+
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.OrdCompra" name="OrdCompra" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Fotocromista
+                                    </label>
+                                    <input ng-disabled="formDeshabilitado" type="text" ng-model="trabajoCilindroData.Fotocromista" name="Fotocromista" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>
+                                        Estado
+                                    </label>
+                                    <md-select ng-disabled="formDeshabilitado" ng-model="trabajoCilindroData.Estado"
+                                               name="Estado"
+                                               placeholder="Selecciona un Estado">
+                                        <md-option ng-repeat="option in estados" ng-value="option.id" ng-disabled="option.nombre === 'Fin' && isFinDisabledFlexo()">
+                                            {{ option.nombre }}
+                                        </md-option>
+                                    </md-select>
+
+
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+
+
+                        </md-content>
+
+
+                    </div>
+                </div>
+            </form>
+        </div>  
+    </div>
+
+
+   
+
+
+</div>

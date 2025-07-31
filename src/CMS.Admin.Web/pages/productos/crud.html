@@ -221,12 +221,12 @@
                                 </md-input-container>
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Producto de reemplazo</label>
-                                    <input ng-disabled="true" type="text"   ng-class="{
+                                    <input ng-disabled="true" type="text" ng-class="{
                'customerRojo': (productoData.Tipo_Adm == 'SNPS' || productoData.Tipo_Adm == 'SCP') &&
                               productoData.Nro_Pedido_Original &&
                              productoData.Reemplazo_Prod ==''  &&
                               productoData.Referencia_Item =='' }"
-           ng-model="productoData.Reemplazo_Prod" name="Reemplazo_Prod" />
+                                           ng-model="productoData.Reemplazo_Prod" name="Reemplazo_Prod" />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
@@ -284,6 +284,14 @@
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
+
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolProducto == false"  aria-label="RushOrder">
+                                        {{ 'FSC' }}
+                                    </md-switch>
+                                </md-input-container>
                             </div>
 
                         </md-content>
@@ -336,7 +344,9 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Liberacion</label>
-                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.Liberacion" placeholder="Selecciona un responsable" required>
+
+                                    <md-select ng-disabled="tieneRolIngenieria == false || ((productoData.Tipo_Adm === 'SNPS' || productoData.Tipo_Adm === 'SCP') &&
+                             (productoData.Reemplazo_Prod ==='' || productoData.Referencia_Item ===''))" ng-model="productoData.Liberacion" placeholder="Selecciona un responsable" required>
                                         <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 7 }" ng-value="moduloResponsable.Id">
                                             {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
                                         </md-option>
@@ -347,7 +357,8 @@
                                 </md-input-container>
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Fecha de liberación</label>
-                                    <input ng-disabled="tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.Fecha_Liberacion" id="Fecha_Liberacion" name="Fecha_Liberacion" />
+                                    <input ng-disabled="tieneRolIngenieria == false || ((productoData.Tipo_Adm === 'SNPS' || productoData.Tipo_Adm === 'SCP') &&
+                             (productoData.Reemplazo_Prod ==='' || productoData.Referencia_Item ===''))" type="date" ng-model="fechaAuxiliarParaMostrar.Fecha_Liberacion" id="Fecha_Liberacion" name="Fecha_Liberacion" />
 
                                     <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'Fecha_Liberacion')"></md-icon>
 
@@ -358,112 +369,114 @@
                             </div>
 
 
-                                <div layout-gt-xs="row">
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Categoria</label>
-                                        <md-select ng-disabled="true" ng-model="productoData.Categoria" placeholder="Selecciona una Categoria">
-                                            <md-option ng-value="1">Sin Asignar</md-option>
-                                            <md-option ng-value="2">Desarrollo</md-option>
-                                            <md-option ng-value="3">Trabajo</md-option>
-                                        </md-select>
-                                    </md-input-container>
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Categoria</label>
+                                    <md-select ng-disabled="true" ng-model="productoData.Categoria" placeholder="Selecciona una Categoria">
+                                        <md-option ng-value="1">Sin Asignar</md-option>
+                                        <md-option ng-value="2">Desarrollo</md-option>
+                                        <md-option ng-value="3">Trabajo</md-option>
+                                    </md-select>
+                                </md-input-container>
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Responsable confección</label>
-                                        <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableConfeccionIng" placeholder="Selecciona un responsable" required>
-                                            <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 2 }" ng-value="moduloResponsable.Id">
-                                                {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
-                                            </md-option>
-                                        </md-select>
-                                        <div ng-messages="editAuthorForm.responsableIngenieria1NombreApellido.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-input-container class="md-block" flex-gt-xs ng-class="{'campo-invalido': editAuthorForm.FechaConfeccionIng.$invalid && editAuthorForm.FechaConfeccionIng.$touched}">
-                                        <label>Fecha confección</label>
-                                        <input ng-disabled="tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaConfeccionIng" id="FechaConfeccionIng" name="FechaConfeccionIng" />
-                                        <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaConfeccionIng')"></md-icon>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Responsable confección</label>
+                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableConfeccionIng" placeholder="Selecciona un responsable" required>
+                                        <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 2 }" ng-value="moduloResponsable.Id">
+                                            {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editAuthorForm.responsableIngenieria1NombreApellido.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs ng-class="{'campo-invalido': editAuthorForm.FechaConfeccionIng.$invalid && editAuthorForm.FechaConfeccionIng.$touched}">
+                                    <label>Fecha confección</label>
+                                    <input ng-disabled="tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaConfeccionIng" id="FechaConfeccionIng" name="FechaConfeccionIng" />
+                                    <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaConfeccionIng')"></md-icon>
 
-                                        <div ng-messages="editAuthorForm.FechaConfeccionIng.$error" ng-show="editAuthorForm.FechaConfeccionIng.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual a la fecha de documento.</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
+                                    <div ng-messages="editAuthorForm.FechaConfeccionIng.$error" ng-show="editAuthorForm.FechaConfeccionIng.$touched">
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual a la fecha de documento.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
 
-                                <div layout-gt-xs="row">
+                            <div layout-gt-xs="row">
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <md-switch ng-disabled="tieneRolIngenieria == false" ng-model="productoData.HabilitaCierreLet" aria-label="HabilitaCierreLet">
-                                            {{ 'Habilita Cierre LET' }}
-                                        </md-switch>
-                                    </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolIngenieria == false" ng-model="productoData.HabilitaCierreLet" aria-label="HabilitaCierreLet">
+                                        {{ 'Habilita Cierre LET' }}
+                                    </md-switch>
+                                </md-input-container>
 
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Responsable Lib. LET</label>
-                                        <md-select  ng-disabled="!productoData.HabilitaCierreLet || tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionLet" placeholder="Selecciona un responsable" required>
-                                            <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 3 }" ng-value="moduloResponsable.Id">
-                                                {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
-                                            </md-option>
-                                        </md-select>
-                                        <div ng-messages="editAuthorForm.FirstName.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-input-container class="md-block" flex-gt-xs ng-class="{'campo-invalido': editAuthorForm.FechaLiberacionLet.$invalid && editAuthorForm.FechaLiberacionLet.$touched}">
-                                        <label>Fecha Lib. LET</label>
-                                        <input ng-disabled="!productoData.HabilitaCierreLet || tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaLiberacionLet" name="FechaLiberacionLet" id="FechaLiberacionLet" />
-                                        <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaLiberacionLet')"></md-icon>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Responsable Lib. LET</label>
+                                    <md-select ng-disabled="!productoData.HabilitaCierreLet || tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionLet" placeholder="Selecciona un responsable" required>
+                                        <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 3 }" ng-value="moduloResponsable.Id">
+                                            {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs ng-class="{'campo-invalido': editAuthorForm.FechaLiberacionLet.$invalid && editAuthorForm.FechaLiberacionLet.$touched}">
+                                    <label>Fecha Lib. LET</label>
+                                    <input ng-disabled="!productoData.HabilitaCierreLet || tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaLiberacionLet" name="FechaLiberacionLet" id="FechaLiberacionLet" />
+                                    <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaLiberacionLet')"></md-icon>
 
-                                        <div ng-messages="editAuthorForm.FechaLiberacionLet.$error" ng-show="editAuthorForm.FechaLiberacionLet.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
+                                    <div ng-messages="editAuthorForm.FechaLiberacionLet.$error" ng-show="editAuthorForm.FechaLiberacionLet.$touched">
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
 
-                                <div layout-gt-xs="row">
+                            <div layout-gt-xs="row">
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Responsable Liberación final</label>
-                                        <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionFinalIng" placeholder="Selecciona un responsable" required>
-                                            <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 4 }" ng-value="moduloResponsable.Id">
-                                                {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
-                                            </md-option>
-                                        </md-select>
-                                        <div ng-messages="editAuthorForm.FirstName.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha liberación final</label>
-                                        <input ng-disabled="tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaLiberacionFinalIng" name="FechaLiberacionFinalIng" id="FechaLiberacionFinalIng" ng-change="actualizarEstadoCerrado()" />
-                                        <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaLiberacionFinalIng')"></md-icon>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Responsable Liberación final</label>
+                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionFinalIng" placeholder="Selecciona un responsable" required>
+                                        <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 4 }" ng-value="moduloResponsable.Id">
+                                            {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha liberación final</label>
+                                    <input ng-disabled="tieneRolIngenieria == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaLiberacionFinalIng" name="FechaLiberacionFinalIng" id="FechaLiberacionFinalIng" ng-change="actualizarEstadoCerrado()" />
+                                    <md-icon ng-show="tieneRolIngenieria" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaLiberacionFinalIng');actualizarEstadoCerrado()"></md-icon>
 
-                                        <div ng-messages="editAuthorForm.FechaLiberacionFinalIng.$error" ng-show="editAuthorForm.FechaLiberacionFinalIng.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
-                                        </div>
-                                    </md-input-container>
+                                    <div ng-messages="editAuthorForm.FechaLiberacionFinalIng.$error" ng-show="editAuthorForm.FechaLiberacionFinalIng.$touched">
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
+                                        <div ng-message="customValidacion2">No se puede guardar un estado Cerrado con esta fecha.</div>
 
-                                    
+                                    </div>
+                                </md-input-container>
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <md-switch ng-disabled="tieneRolIngenieria == false" ng-model="productoData.CerradoIng" aria-label="CerradoIng">
-                                            {{ 'Cerrado ing.' }}
-                                        </md-switch>
-                                    </md-input-container>
-                                </div>
-                                <div layout-gt-xs="row">
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Observaciones ing.</label>
-                                        <textarea ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ObservacionesIng" name="ObservacionesIng" cols="40" rows="5"></textarea>
 
-                                        <div ng-messages="editAuthorForm.FirstName.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolIngenieria == false" ng-model="productoData.CerradoIng" aria-label="CerradoIng">
+                                        {{ 'Cerrado ing.' }}
+                                    </md-switch>
+                                </md-input-container>
+                            </div>
+                            <div layout-gt-xs="row">
 
-                                </div>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Observaciones ing.</label>
+                                    <textarea ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ObservacionesIng" name="ObservacionesIng" cols="40" rows="5"></textarea>
+
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+                            </div>
 
 
                         </md-content>
@@ -604,8 +617,15 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Colores</label>
-                                    <input ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true" type="text" ng-model="productoData.Colores" name="Colores" />
-                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                    <md-select ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true"
+                                               ng-model="productoData.Colores"
+                                               name="Colores"
+                                               placeholder="Selecciona un color">
+                                        <md-option ng-repeat="option in valueOptions" ng-value="option">
+                                            {{ option }}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editAuthorForm.Colores.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
@@ -619,6 +639,23 @@
                                         {{ 'Arte Modificado' }}
                                     </md-switch>
                                 </md-input-container>
+
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true" ng-model="productoData.AcuerdoDirectoProveedor" aria-label="AcuerdoDirectoProveedor" ng-change="AcuerdoDirectoProveedorChange()">
+                                        {{ 'Acuerdo directo de pago' }}
+                                    </md-switch>
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>OC_Proveedor</label>
+                                    <input ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true || productoData.AcuerdoDirectoProveedor  == true" type="text" ng-model="productoData.OC_Proveedor" name="OC_Proveedor" />
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+
+
 
                             </div>
 
@@ -712,7 +749,7 @@
                                 </md-input-container>
 
                                 <md-input-container class="md-block" flex-gt-xs>
-                                    <md-switch ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true" ng-model="productoData.CerradoPrePrensa" aria-label="CerradoPrePrensa"  >
+                                    <md-switch ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true" ng-model="productoData.CerradoPrePrensa" aria-label="CerradoPrePrensa">
                                         {{ 'Cerra Pre Prensa' }}
                                     </md-switch>
                                 </md-input-container>
@@ -819,7 +856,7 @@
                                 </md-input-container>
 
                                 <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Fecha de compromiso</label>
+                                    <label>Fecha Solicitada por Bolsapel</label>
                                     <input ng-disabled="tieneRolHerramental == false || productoData.TipoCilindros == 2" type="date" id="FechaEntregaNuevosCilindros" ng-model="fechaAuxiliarParaMostrar.FechaEntregaNuevosCilindros" name="FechaEntregaNuevosCilindros" />
                                     <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaEntregaNuevosCilindros')"></md-icon>
 
@@ -830,7 +867,7 @@
                                 </md-input-container>
 
 
-                               
+
                             </div>
 
 
@@ -858,106 +895,157 @@
                             </div>
 
 
-                                <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
-                                  
-
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Liberacion Montaje</label>
-                                        <input ng-disabled="tieneRolHerramental == false || productoData.TipoCilindros == 3" type="date" ng-model="fechaAuxiliarParaMostrar.FechaLiberacionMontaje" name="FechaLiberacionMontaje" id="FechaLiberacionMontaje" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaLiberacionMontaje')"></md-icon>
-
-                                        <div ng-messages="editAuthorForm.FechaLiberacionMontaje.$error" ng-show="editAuthorForm.FechaLiberacionMontaje.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser menor o igual a la fecha de liberacion a grabado de pre prensa.</div>
-                                        </div>
-                                    </md-input-container>
+                            <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
 
 
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Retiro Cilindro</label>
-                                        <input ng-disabled="tieneRolHerramental == false || productoData.TipoCilindros == 3" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRetiroCilindro" name="FechaRetiroCilindro" id="FechaRetiroCilindro" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRetiroCilindro')"></md-icon>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Liberacion Montaje</label>
+                                    <input ng-disabled="tieneRolHerramental == false || productoData.TipoCilindros == 3" type="date" ng-model="fechaAuxiliarParaMostrar.FechaLiberacionMontaje" name="FechaLiberacionMontaje" id="FechaLiberacionMontaje" />
+                                    <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaLiberacionMontaje')"></md-icon>
 
-                                        <div ng-messages="editAuthorForm.FechaRetiroCilindro.$error" ng-show="editAuthorForm.FechaRetiroCilindro.$touched">
-
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
-
-                                <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Promesa Proveedor Grabado</label>
-                                        <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado" name="FechaPromesaProveedorGrabado" id="FechaPromesaProveedorGrabado" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaPromesaProveedorGrabado')"></md-icon>
-
-                                        <div ng-messages="editAuthorForm.FechaPromesaProveedorGrabado.$error" ng-show="editAuthorForm.FechaPromesaProveedorGrabado.$touched">
-
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
-                                        </div>
-                                    </md-input-container>
-
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Saca Prueba</label>
-                                        <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaSacaPrueba" name="FechaSacaPrueba" id="FechaSacaPrueba" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaSacaPrueba')"></md-icon>
-
-                                        <div ng-messages="editAuthorForm.FechaSacaPrueba.$error" ng-show="editAuthorForm.FechaSacaPrueba.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
-                                <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
-
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Aprob. Saca Prueba</label>
-                                        <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba" name="FechaAprobacionSacaPrueba" id="FechaAprobacionSacaPrueba" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaAprobacionSacaPrueba')"></md-icon>
-
-                                        <div ng-messages="editAuthorForm.FechaAprobacionSacaPrueba.$error" ng-show="editAuthorForm.FechaAprobacionSacaPrueba.$touched">
-
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
-                                        </div>
-                                    </md-input-container>
-
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Recepcion Herramental</label>
-                                        <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRecepcionHerramental" name="FechaRecepcionHerramental" id="FechaRecepcionHerramental" ng-change="actualizarEstadoGeneralCerrado()" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRecepcionHerramental')"></md-icon>
-
-                                        <div ng-messages="editAuthorForm.FechaRecepcionHerramental.$error" ng-show="editAuthorForm.FechaRecepcionHerramental.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual Fecha Aprobacion Saca Prueba ni Fecha Promesa Proveedor Grabado.</div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
-
-                                <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 2">
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Fecha Recepcion Herramental</label>
-                                        <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRecepcionHerramental" name="FechaRecepcionHerramental" id="FechaRecepcionHerramental2" ng-change="actualizarEstadoGeneralCerrado()" />
-                                        <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRecepcionHerramental')"></md-icon>
-
-                                        <div ng-messages="editAuthorForm.FechaRecepcionHerramental.$error" ng-show="editAuthorForm.FechaRecepcionHerramental.$touched">
-                                            <div ng-message="customValidacion">La fecha debe ser mayor o igual a Fecha Liberado a Grabado.</div>
-                                        </div>
-                                    </md-input-container>
-
-                                </div>
+                                    <div ng-messages="editAuthorForm.FechaLiberacionMontaje.$error" ng-show="editAuthorForm.FechaLiberacionMontaje.$touched">
+                                        <div ng-message="customValidacion">La fecha debe ser menor o igual a la fecha de liberacion a grabado de pre prensa.</div>
+                                    </div>
+                                </md-input-container>
 
 
-                                <div layout-gt-xs="row">
-                                    <md-input-container class="md-block" flex-gt-xs>
-                                        <label>Obs. Herramenta</label>
-                                        <textarea ng-disabled="tieneRolHerramental == false" ng-model="productoData.ObsHerramental" name="ObsHerramental" cols="40" rows="5"></textarea>
-                                        <div ng-messages="editAuthorForm.FirstName.$error">
-                                            <div ng-messages-include="pages/validation/text.html"></div>
-                                        </div>
-                                    </md-input-container>
-                                </div>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Retiro Cilindro</label>
+                                    <input ng-disabled="tieneRolHerramental == false || productoData.TipoCilindros == 3" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRetiroCilindro" name="FechaRetiroCilindro" id="FechaRetiroCilindro" />
+                                    <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRetiroCilindro')"></md-icon>
+
+                                    <div ng-messages="editAuthorForm.FechaRetiroCilindro.$error" ng-show="editAuthorForm.FechaRetiroCilindro.$touched">
+
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Promesa Proveedor Grabado</label>
+                                    <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado" name="FechaPromesaProveedorGrabado" id="FechaPromesaProveedorGrabado" />
+                                    <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaPromesaProveedorGrabado')"></md-icon>
+
+                                    <div ng-messages="editAuthorForm.FechaPromesaProveedorGrabado.$error" ng-show="editAuthorForm.FechaPromesaProveedorGrabado.$touched">
+
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Recepcion Herramental</label>
+                                    <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRecepcionHerramental" name="FechaRecepcionHerramental" id="FechaRecepcionHerramental" ng-change="actualizarEstadoGeneralCerrado()" />
+                                    <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRecepcionHerramental')"></md-icon>
+
+                                    <div ng-messages="editAuthorForm.FechaRecepcionHerramental.$error" ng-show="editAuthorForm.FechaRecepcionHerramental.$touched">
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual Fecha Aprobacion Saca Prueba ni Fecha Promesa Proveedor Grabado.</div>
+                                    </div>
+                                </md-input-container>
+
+                                <!--<md-input-container class="md-block" flex-gt-xs>
+            <label>Fecha Saca Prueba</label>
+            <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaSacaPrueba" name="FechaSacaPrueba" id="FechaSacaPrueba" />
+            <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaSacaPrueba')"></md-icon>
+
+            <div ng-messages="editAuthorForm.FechaSacaPrueba.$error" ng-show="editAuthorForm.FechaSacaPrueba.$touched">
+                <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
+            </div>
+        </md-input-container>-->
+                            </div>
+                            <!-- <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
+
+             <md-input-container class="md-block" flex-gt-xs>
+                 <label>Fecha Aprob. Saca Prueba</label>
+                 <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaAprobacionSacaPrueba" name="FechaAprobacionSacaPrueba" id="FechaAprobacionSacaPrueba" />
+                 <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaAprobacionSacaPrueba')"></md-icon>
+
+                 <div ng-messages="editAuthorForm.FechaAprobacionSacaPrueba.$error" ng-show="editAuthorForm.FechaAprobacionSacaPrueba.$touched">
+
+                     <div ng-message="customValidacion">La fecha debe ser mayor o igual que las anteriores.</div>
+                 </div>
+             </md-input-container>
+
+
+    </div>-->
+
+                            <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 2">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Fecha Recepcion Herramental</label>
+                                    <input ng-disabled="tieneRolHerramental == false" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRecepcionHerramental" name="FechaRecepcionHerramental" id="FechaRecepcionHerramental2" ng-change="actualizarEstadoGeneralCerrado()" />
+                                    <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRecepcionHerramental')"></md-icon>
+
+                                    <div ng-messages="editAuthorForm.FechaRecepcionHerramental.$error" ng-show="editAuthorForm.FechaRecepcionHerramental.$touched">
+                                        <div ng-message="customValidacion">La fecha debe ser mayor o igual a Fecha Liberado a Grabado.</div>
+                                    </div>
+                                </md-input-container>
+
+                            </div>
+
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Obs. Herramenta</label>
+                                    <textarea ng-disabled="tieneRolHerramental == false" ng-model="productoData.ObsHerramental" name="ObsHerramental" cols="40" rows="5"></textarea>
+                                    <div ng-messages="editAuthorForm.FirstName.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
                         </md-content>
-
-                        </div>
                     </div>
-                            
+                </div>
+
+
+                <div class="col-sm-12 col-md-12">
+
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading" ng-click="toggleTrabajoCilindrosPanel()">
+                            <h4 class="panel-title">
+                                Reposición Herramental
+
+                            </h4>
+
+
+                            <span class="pull-right flecha">
+                                <i class="fa"
+                                   ng-class="{'fa-chevron-up': isTrabajoCilindrosPanelOpen, 'fa-chevron-down': !isTrabajoCilindrosPanelOpen}">
+                                </i>
+                            </span>
+                        </div>
+
+
+                        <md-content layout-padding ng-show="isTrabajoCilindrosPanelOpen">
+
+                            <div class="col-sm-12 col-md-12">
+                                     <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                                        <thead>
+                                            <tr>
+                                                <th>Nro Version</th>
+                                                <th>Cod Producto</th>
+                                                <th>OT Bolsapel</th>
+                                                <th>Fecha Real Entrega</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="trabajo in trabajosCilindros | orderBy:sortField:sortReverse">
+                                                <td><a href="/#/blsp/trabajocilindros/crud/{{trabajo.Nro_Version}}-{{trabajo.Cod_Producto}}" class="title"><strong>{{trabajo.Nro_Version}}</strong></a></td>
+                                                <td><a href="/#/blsp/trabajocilindros/crud/{{trabajo.Nro_Version}}-{{trabajo.Cod_Producto}}" class="title"><strong>{{trabajo.Cod_Producto}}</strong></td>
+                                                <td>{{trabajo.OT_Bolsapel}}</td>
+                                                <td>{{trabajo.FechaRealEntrega | date:'dd/MM/yyyy'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+
+
+
+                        </md-content>
+                    </div>
+                </div>
+
+
+
             </form>
         </div>   
     </div>

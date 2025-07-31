@@ -66,6 +66,8 @@ namespace blsp.Admin.Web
                         //"~/js/app/controllers/MediaGalleryController.js",
                         "~/js/app/controllers/MaquinasController.js",
                         "~/js/app/controllers/OperadoresController.js",
+                        "~/js/app/controllers/TrabajoCilindrosController.js",
+
                          "~/js/app/controllers/tipoMaterialController.js",
                         "~/js/app/controllers/origenScrapController.js",
                         "~/js/app/controllers/scrapController.js",
@@ -73,7 +75,8 @@ namespace blsp.Admin.Web
                          "~/js/app/controllers/ReporteRomaneoController.js",
                            "~/js/app/controllers/etiquetasController.js",
                          "~/js/app/controllers/productosController.js",
-
+                         "~/js/app/controllers/motivosController.js",
+                           "~/js/app/controllers/valoresPorPeriodoMensual.js",
                         //"~/js/app/controllers/LayoutController.js",
                         "~/js/app/controllers/CashRegisterController.js",
                         "~/js/app/controllers/CarsController.js",

@@ -5519,6 +5519,9 @@
     <Content Include="js\angular-sanitize.min.js" />
     <Content Include="js\angular-slugify.js" />
     <Content Include="js\app\controllers\JobTrackController.js" />
+    <Content Include="js\app\controllers\valoresPorPeriodoMensual.js" />
+    <Content Include="js\app\controllers\MotivosController.js" />
+    <Content Include="js\app\controllers\TrabajoCilindrosController.js" />
     <Content Include="js\app\controllers\ReporteController.js" />
     <Content Include="js\app\controllers\ProductosController.js" />
     <Content Include="js\app\controllers\ScrapController.js" />
@@ -5558,6 +5561,13 @@
     <Content Include="pages\dashboardProductos\dashboard.html" />
     <Content Include="pages\JobTrack\crud.html" />
     <Content Include="pages\JobTrack\list.html" />
+    <Content Include="pages\motivos\crud.html" />
+    <Content Include="pages\motivos\list.html" />
+    <Content Include="pages\motivosscrap\list.html" />
+    <Content Include="pages\valoresPorPeriodoMensual\crud.html" />
+    <Content Include="pages\valoresPorPeriodoMensual\list.html" />
+    <Content Include="pages\trabajocilindros\crud.html" />
+    <Content Include="pages\trabajocilindros\list.html" />
     <Content Include="pages\origenScrap\crud.html" />
     <Content Include="pages\origenScrap\list.html" />
     <Content Include="pages\productos\crud.html" />

@@ -62,15 +62,15 @@ angular
                 $rootScope.ProfileImagePath = "/images/placeholders/user.png";
             }
             }, function (error) {
-                //$window.location.href = "/Login/LogOut";
-                //
+               $window.location.href = "/Login/LogOut";
+               
 
                 $scope.errorMessage = "Oops, something went wrong.";
             })
 
         }, function (error) {
-            //$window.location.href = "/Login/LogOut";
-            //
+            $window.location.href = "/Login/LogOut";
+            
 
             $scope.errorMessage = "Oops, something went wrong.";
         })
@@ -101,6 +101,7 @@ angular
                     }
                 })
             }, function (error) {
+                console.log('error en la llamada de info');
                 $scope.errorMessage = "Oops, something went wrong.";
             })
         }

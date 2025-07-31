@@ -1,0 +1,80 @@
+﻿<div ng-app="app" ng-controller="TrabajoCilindrosController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Reposición Herramental</li>
+                </ol>
+                <h1 class="page-header">Reposición Herramental <small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-12">
+
+                <div class="panel panel-inverse col-sm-8 col-md-8 no-padding custom-panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <label>Buscar Reposición Herramental</label>
+                            <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse col-sm-4 col-md-4 no-padding custom-panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Acciones</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="blsp.trabajocilindros.crud">Nuevo Trabajo</a>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Reposición Herramental</h4>
+                    </div>
+
+                    <button style="position: absolute;top: 4px;right: 18px;" ng-click="exportExcel2()" class="btn btn-primary pull-right">Descargar XLS</button>
+
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Nro Version</th>
+                                <th>Cod Producto</th>
+                                <th>Descripcion</th>
+                                <th>Fecha Deseada</th>
+                                <th>Fecha Compromiso</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="trabajo in trabajosCilindros | orderBy:sortField:sortReverse">
+                                <td><a href="/#/blsp/trabajocilindros/crud/{{trabajo.Nro_Version}}-{{trabajo.Cod_Producto}}" class="title"><strong>{{trabajo.Nro_Version}}</strong></a></td>
+                                <td><a href="/#/blsp/trabajocilindros/crud/{{trabajo.Nro_Version}}-{{trabajo.Cod_Producto}}" class="title"><strong>{{trabajo.Cod_Producto}}</strong></td>
+                                <td>{{trabajo.GPProductos.Descripcion}}</td>
+                                <td ng-class="{'fecha-roja': trabajo.isFechaDeseadaGreaterThanToday}">
+                                    {{ trabajo.GPProductos.TipoImpresora === 3 ? (trabajo.FechaDeseada | date:'dd/MM/yyyy') : '-' }}
+                                </td>
+                                <td ng-class="{'fecha-roja': trabajo.isFechaCompromisoGreaterThanToday}">
+                                    {{ trabajo.GPProductos.TipoImpresora === 3 ? (trabajo.FechaCompromiso | date:'dd/MM/yyyy') : '-' }}
+
+                                </td>
+                                <td>{{ getEstadoNombre(trabajo.Estado) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

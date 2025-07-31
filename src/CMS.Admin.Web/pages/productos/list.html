@@ -56,7 +56,7 @@
                                                 </select>
                                             </div>
                                             <div class="fecha-group-imsode">
-                                                <input type="date" id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control" placeholder="Valor">
+                                                <input type="date" id="valueFilter{{$index}}" ng-init="filter.filterValue=date1900" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control" placeholder="Valor">
                                             </div>
                                         </div>
                                         <div class="form-group fecha-group" ng-if="filter.selectedColumn && (filter.selectedColumn === 'Dias' || filter.selectedColumn === 'DiasStandby')">
@@ -204,7 +204,7 @@
                                         </div>
 
 
-                                        <div class="form-group" ng-if="filter.selectedColumn === 'CerradoIng' || filter.selectedColumn === 'CerradoPrePrensa' || filter.selectedColumn === 'ArteModificado' || filter.selectedColumn === 'RushOrder'">
+                                        <div class="form-group" ng-if="filter.selectedColumn === 'CerradoIng' || filter.selectedColumn === 'CerradoPrePrensa' || filter.selectedColumn === 'ArteModificado' || filter.selectedColumn === 'RushOrder' ||  filter.selectedColumn === 'NoUsaPrePrensa'">
                                             <select id="valueFilter{{$index}}" ng-model="filter.filterValue" ng-change="applyFilters()" class="form-control">
                                                 <option value="">Seleccionar valor</option>
                                                 <option ng-repeat="valor in booleans" value="{{valor.key}}">{{valor.value}}</option>
@@ -234,120 +234,122 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">Listado de Productos</h4>
                     </div>
-                    <button style="position: absolute;top: 4px;right: 18px;" data-toggle="modal" data-target="#exampleModal2" class="btn btn-primary pull-right">Descargar XLS</button>
+                    <button style="position: absolute;top: 4px;right: 208px;" data-toggle="modal" data-target="#exampleModal2" class="btn btn-primary pull-right">Descargar XLS</button>
+                    <button style="position: absolute;top: 4px;right: 18px;" ng-click="exportExcel2()" class="btn btn-primary pull-right">Descargar Grabados</button>
+                    <div ng-if="dataLoaded">
+                        <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                            <thead>
+                                <tr>
+                                    <th ng-click="sortBy('Cod_Producto')">Cod Producto</th>
+                                    <th ng-click="sortBy('Descripcion')">Descripcion</th>
+                                    <th ng-click="sortBy('Dias')">Dias</th>
+                                    <th ng-click="sortBy('Fecha_Inicial')">Fecha Inicial</th>
+                                    <th ng-click="sortBy('SemaforoCustomer')">Estado Customer</th>
+                                    <th ng-click="sortBy('SemaforoIngenieria')">Estado Ingenieria</th>
+                                    <th ng-click="sortBy('SemaforoPreprensa')">Estado Preprensa</th>
+                                    <th ng-click="sortBy('SemaforoHerramental')">Estado Herramental</th>
+                                    <th ng-click="sortBy('SemaforoGeneral')">Estado General</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="producto in filteredProductos | filter: searchQuery">
+                                    <td><a href="/#/blsp/productos/crud/{{producto.Cod_Producto}}" class="title"><strong>{{producto.Cod_Producto}}</strong></a></td>
+                                    <td>{{producto.Descripcion}}</td>
+                                    <td>
+                                        <span uib-tooltip="{{producto.DiasStandby > 0 ? 'Días Standby: ' + producto.DiasStandby : ''}}" ng-class="{ 'red-bold': producto.DiasStandby > 0 }">
+                                            {{producto.Dias}}
+                                        </span>
+                                    </td>
+                                    <td>{{producto.Fecha_Inicial | date : "dd/MM/y"}}</td>
+                                    <td class="td-semaforo">
+                                        <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                             uib-tooltip="{{ producto.MensajeSemaforoCustomer != '' ? producto.MensajeSemaforoCustomer: '' }}" tooltip-html-unsafe="true"
+                                             tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                            <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoCustomer == 1 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoCustomer == 2 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoCustomer == 3 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                        </div>
+                                    </td>
 
-                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
-                        <thead>
-                            <tr>
-                                <th ng-click="sortBy('Cod_Producto')">Cod Producto</th>
-                                <th ng-click="sortBy('Descripcion')">Descripcion</th>
-                                <th ng-click="sortBy('Dias')">Dias</th>
-                                <th ng-click="sortBy('Fecha_Inicial')">Fecha Inicial</th>
-                                <th ng-click="sortBy('SemaforoCustomer')">Estado Customer</th>
-                                <th ng-click="sortBy('SemaforoIngenieria')">Estado Ingenieria</th>
-                                <th ng-click="sortBy('SemaforoPreprensa')">Estado Preprensa</th>
-                                <th ng-click="sortBy('SemaforoHerramental')">Estado Herramental</th>
-                                <th ng-click="sortBy('SemaforoGeneral')">Estado General</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="producto in filteredProductos | filter: searchQuery">
-                                <td><a href="/#/blsp/productos/crud/{{producto.Cod_Producto}}" class="title"><strong>{{producto.Cod_Producto}}</strong></a></td>
-                                <td>{{producto.Descripcion}}</td>
-                                <td>
-                                    <span uib-tooltip="{{producto.DiasStandby > 0 ? 'Días Standby: ' + producto.DiasStandby : ''}}" ng-class="{ 'red-bold': producto.DiasStandby > 0 }">
-                                        {{producto.Dias}}
-                                    </span>
-                                </td>
-                                <td>{{producto.Fecha_Inicial | date : "dd/MM/y"}}</td>
-                                <td class="td-semaforo">
-                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
-                                         uib-tooltip="{{ producto.MensajeSemaforoCustomer != '' ? producto.MensajeSemaforoCustomer: '' }}" tooltip-html-unsafe="true"
-                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
-                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoCustomer == 1 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoCustomer == 2 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoCustomer == 3 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <td class="td-semaforo">
-                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
-                                         uib-tooltip="{{ producto.MensajeSemaforoIngenieria != '' ? producto.MensajeSemaforoIngenieria: '' }}" tooltip-html-unsafe="true"
-                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false" ">
-                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoIngenieria == 1 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoIngenieria == 2 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoIngenieria == 3 }">
-                                            <div class="borde"></div>
-                                        </div>
-
-
-                                    </div>
-                                </td>
-                                <td class="td-semaforo">
-                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
-                                         uib-tooltip="{{ producto.MensajeSemaforoPreprensa != '' ? producto.MensajeSemaforoPreprensa: '' }}" tooltip-html-unsafe="true"
-                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
-                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoPreprensa == 1 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoPreprensa == 2 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoPreprensa == 3 }">
-                                            <div class="borde"></div>
-                                        </div>
+                                    <td class="td-semaforo">
+                                        <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                             uib-tooltip="{{ producto.MensajeSemaforoIngenieria != '' ? producto.MensajeSemaforoIngenieria: '' }}" tooltip-html-unsafe="true"
+                                             tooltip-trigger="'mouseenter'" ng-init="showTooltip = false" ">
+                                            <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoIngenieria == 1 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoIngenieria == 2 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoIngenieria == 3 }">
+                                                <div class="borde"></div>
+                                            </div>
 
 
-                                    </div>
-                                </td>
-                                <td class="td-semaforo">
-                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
-                                         uib-tooltip="{{ producto.MensajeSemaforoHerramental != '' ? producto.MensajeSemaforoHerramental: '' }}" tooltip-html-unsafe="true"
-                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
-                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoHerramental == 1 }">
-                                            <div class="borde"></div>
                                         </div>
-                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoHerramental == 2 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoHerramental == 3 }">
-                                            <div class="borde"></div>
-                                        </div>
+                                    </td>
+                                    <td class="td-semaforo">
+                                        <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                             uib-tooltip="{{ producto.MensajeSemaforoPreprensa != '' ? producto.MensajeSemaforoPreprensa: '' }}" tooltip-html-unsafe="true"
+                                             tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                            <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoPreprensa == 1 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoPreprensa == 2 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoPreprensa == 3 }">
+                                                <div class="borde"></div>
+                                            </div>
 
 
-                                    </div>
-                                </td>
-                                <td class="td-semaforo">
-                                    <div class="semaforo" ng-click="showTooltip = !showTooltip"
-                                         uib-tooltip="{{ producto.MensajeSemaforoGeneral != '' ? producto.MensajeSemaforoGeneral: '' }}" tooltip-html-unsafe="true"
-                                         tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
-                                        <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoGeneral == 1 }">
-                                            <div class="borde"></div>
                                         </div>
-                                        <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoGeneral == 2 }">
-                                            <div class="borde"></div>
-                                        </div>
-                                        <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoGeneral == 3 }">
-                                            <div class="borde"></div>
-                                        </div>
+                                    </td>
+                                    <td class="td-semaforo">
+                                        <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                             uib-tooltip="{{ producto.MensajeSemaforoHerramental != '' ? producto.MensajeSemaforoHerramental: '' }}" tooltip-html-unsafe="true"
+                                             tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                            <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoHerramental == 1 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoHerramental == 2 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoHerramental == 3 }">
+                                                <div class="borde"></div>
+                                            </div>
 
 
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                        </div>
+                                    </td>
+                                    <td class="td-semaforo">
+                                        <div class="semaforo" ng-click="showTooltip = !showTooltip"
+                                             uib-tooltip="{{ producto.MensajeSemaforoGeneral != '' ? producto.MensajeSemaforoGeneral: '' }}" tooltip-html-unsafe="true"
+                                             tooltip-trigger="'mouseenter'" ng-init="showTooltip = false">
+                                            <div class="luz roja" ng-class="{ 'encendida': producto.SemaforoGeneral == 1 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz amarilla" ng-class="{ 'encendida': producto.SemaforoGeneral == 2 }">
+                                                <div class="borde"></div>
+                                            </div>
+                                            <div class="luz verde" ng-class="{ 'encendida': producto.SemaforoGeneral == 3 }">
+                                                <div class="borde"></div>
+                                            </div>
+
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
             </div>
     <!-- Modal 2 -->
     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -370,7 +372,7 @@
                                 <md-input-container class="md-block flex">
                                     <label>Filtrar por estado:</label>
                                     <md-select ng-model="filtroEstadoParamandar" placeholder="Selecciona un estado">
-                                        <md-option value=0>Todos</md-option>
+                                        <md-option selected value=0>Todos</md-option>
                                         <md-option value=1>Abierto</md-option>
                                         <md-option value=2>Stand By</md-option>
                                         <md-option value=3>Cerrado</md-option>
@@ -399,8 +401,7 @@
                             </div>
                             <div class="panel-body">
                                 <md-input-container md-no-float class="md-block md-no-error">
-                                    <input ng-init="dateHastainp2 = '1900-01-01'" type="date" ng-model="dateHastainp2" value="{{dateHastainp2}}">
-
+                                    <input type="date" ng-model="dateHastainp2">
                                 </md-input-container>
                             </div>
                         </div>

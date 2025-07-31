@@ -1,0 +1,87 @@
+﻿<div ng-app="app" ng-controller="motivosController as aCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Motivos Scrap</li>
+                </ol>
+                <h1 class="page-header">Motivos Scrap<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <!-- Filtros y búsqueda -->
+            <div class="col-sm-12 col-md-8" style="align-items: center; justify-content: space-between; padding: 0px;">
+                <div class="panel-body">
+                    <div>
+
+                        <div class="form-group">
+                            <div class="form-group-container">
+                                <md-input-container class="md-block flex search">
+                                    <label>Buscar...</label>
+                                    <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                                </md-input-container>
+
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-12 col-md-4">
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Acciones</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="blsp.motivos.crud">Nuevo Motivo Scrap</a>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="col-sm-12 col-md-12">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Listado de Motivos</h4>
+                    </div>
+
+
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Descripcion</th>
+                                <th>Porcentaje Simulacion Mejora</th>
+
+
+                                <th>Habilitado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="motivo in motivos">
+                                <td><a href="/#/blsp/motivos/crud/{{motivo.Id_Motivo}}" class="title"><strong>{{motivo.Id_Motivo}}</strong></a></td>
+                                <td>{{motivo.Descripcion}}</td>
+                                <td>{{motivo.PorcentajeSimulacionMejora}}</td>
+
+                                <td>{{motivo.Habilitado}}</td>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+
+
+        </div>

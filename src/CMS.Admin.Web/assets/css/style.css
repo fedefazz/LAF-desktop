@@ -7525,3 +7525,279 @@ td {
     column-gap: 1.5em;
     align-items: flex-start;
 }
+
+
+.mb-2 {
+    margin-bottom: 2em;
+}
+
+.mb-8 {
+    margin-bottom: 8em;
+}
+.head-container {
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.5em;
+}
+
+    .head-container .chart-title  {
+        flex: 1
+    }
+
+    .head-container .form-control {
+        flex: 0.5
+    }
+
+
+
+.dashboard-productos .widget-chart .widget-chart-sidebar {
+    width: 260px !important;
+    padding: 9px !important;
+}
+
+.dashboard-productos .widget-chart {
+    margin-bottom: 0px !important;
+}
+
+.gaficos-solos{
+    margin-bottom:3em
+}
+
+
+.li-separator {
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 0.5em;
+    background: #80808057;
+}
+
+
+
+
+.dropdown-results {
+    position: absolute;
+    z-index: 1000;
+    background-color: white;
+    width: 470px;
+    border: 1px solid #ccc;
+    max-height: 221px;
+    overflow-y: auto;
+    top: 82px;
+    left: 1px;
+}
+
+.dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+    .dropdown-list li {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+        .dropdown-list li:hover {
+            background-color: #f1f1f1;
+        }
+
+
+.md-content-test {
+    display: unset !important;
+}
+
+.resultempty {
+    position: absolute;
+    /* z-index: 1000; */
+    background-color: white;
+    width: 470px;
+    /* border: 1px solid #ccc; */
+    /* max-height: 221px; */
+    /* overflow-y: auto; */
+    top: 82px;
+    left: 1px;
+    padding: 8px;
+}
+
+.no-padding{
+    padding: 0 !important;
+}
+
+.custom-panel {
+    height: 110px;
+}
+
+.fecha-roja {
+    color: red;
+}
+
+
+.heading-custom {
+   border-bottom: 1px solid #bbb;
+   display:flex;
+   justify-content:space-between
+}
+
+
+.card {
+    position: relative;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+button.btn-sm {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+
+.cardP {
+    display: flex;
+    align-items: center;
+    column-gap: 14px;
+    margin: 0px;
+}
+
+.cardp {
+    display: flex;
+    column-gap: 16px;
+    height: 20px;
+    align-items: center;
+}
+
+/* Animación para desvanecer el elemento */
+.fadeOut {
+    transition: opacity 0.5s ease-out;
+    opacity: 0;
+}
+
+    .fadeOut.ng-leave {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .fadeOut.ng-leave-active {
+        opacity: 0;
+        transition: opacity 0.5s ease-out;
+    }
+
+
+/* Animación para deslizar el elemento hacia arriba */
+.slideUp {
+    transition: transform 0.5s ease-out; /* Desliza el elemento en 0.5 segundos */
+    transform: translateY(0);
+}
+
+    .slideUp.ng-leave {
+        transform: translateY(0); /* La animación comienza en la posición original */
+    }
+
+    .slideUp.ng-leave-active {
+        transform: translateY(-100%); /* El elemento se desliza hacia arriba (fuera de la vista) */
+        transition: transform 0.5s ease-out; /* Tiempo de la animación */
+    }
+
+/* Animación para desvanecer y deslizar hacia la izquierda */
+.fadeLeft {
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+    .fadeLeft.ng-leave {
+        opacity: 1;
+        transform: translateX(0); /* Comienza en su posición original */
+    }
+
+    .fadeLeft.ng-leave-active {
+        opacity: 0; /* Desvanecer el elemento */
+        transform: translateX(-100%); /* Mover el elemento completamente a la izquierda */
+        transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    }
+
+.cardP p{
+    margin: 0px;
+}
+
+.cardP md-select {
+    margin: 0px !important
+}
+
+
+.cardfede {
+    margin-top: 5px;
+    ;
+}
+
+
+.cardfede2 {
+    margin-top: 5px;
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    
+}
+
+.cardfede2 div {
+    flex: 1
+}
+
+.nav-tabs {
+    margin-bottom: 20px;
+}
+
+    .nav-tabs > li > a {
+        padding: 10px 15px;
+    }
+
+.tab-content {
+    margin-top: 20px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+    .tab-pane.active {
+        display: block;
+    }
+
+
+
+.cardspan2, .cardspan {
+    font-weight: bold;
+}
+
+.cardspan1 {
+    color: #0472ee;
+}
+
+
+.cardfede2 input {
+    border: none;
+    border-bottom: 1px solid gray;
+}
+
+.objetivos .cardP {
+  
+    margin: 7px 0;
+}
+
+.tablareporte td{
+    padding: 5px 10px !important;
+    font-size:13px;
+
+}
+
+.bolder{
+    font-weight:700
+}
