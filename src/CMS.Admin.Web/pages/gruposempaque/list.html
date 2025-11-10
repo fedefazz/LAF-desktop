@@ -1,0 +1,60 @@
+<div ng-app="app" ng-controller="GruposEmpaqueController as geCtrl">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <ol class="breadcrumb pull-right">
+                    <li><a href="/#/blsp/dashboard">Home</a></li>
+                    <li class="active">Grupos Empaque</li>
+                </ol>
+                <h1 class="page-header">Grupos Empaque<small></small></h1>
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
+                <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
+            </div>
+            <div class="col-sm-12 col-md-8">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Listado de Grupos</h4>
+                    </div>
+                    <table class="table table-bordered dataTable" datatable="ng" dt-instance="dtInstance" dt-options="dtOptions">
+                        <thead>
+                            <tr>
+                                <th>Grupo</th>
+                                <th>Descripci&oacute;n</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="g in Grupos | orderBy:sortUser:sortReverse | filter:search">
+                                <td class="capitalize"><a href="/#/blsp/gruposempaque/crud/{{g.IDGrupoEmpaque || g.Id || g.IdGrupoEmpaque}}" class="title"><strong>{{g.Descripcion || g.Nombre || g.Name}}</strong></a></td>
+                                <td>{{g.Descripcion || g.Nombre || g.Name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Acciones</h4>
+                    </div>
+                    <div class="panel-body">
+                        <a class="btn btn-block btn-primary" ui-sref="blsp.gruposempaque.crud">Nuevo Grupo</a>
+                    </div>
+                </div>
+
+                <div class="panel panel-inverse">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Buscar</h4>
+                    </div>
+                    <div class="panel-body">
+                        <md-input-container md-no-float class="md-block md-no-error search">
+                            <label>Buscar</label>
+                            <input type="text" ng-model="searchQuery" ng-change="doSearch()">
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -245,6 +245,26 @@ app.config(function ($stateProvider, $locationProvider, $httpProvider, $urlRoute
             }
         })
 
+        // GPP Grupos Empaque
+        .state('blsp.gruposempaque', {
+            url: '/gruposempaque',
+            template: '<div ui-view></div>',
+            abstract: true
+        })
+        .state('blsp.gruposempaque.list', {
+            url: '/list',
+            data: { pageTitle: 'Grupos Empaque' },
+            templateUrl: 'pages/gruposempaque/list.html'
+        })
+        .state('blsp.gruposempaque.crud', {
+            url: '/crud/:id',
+            data: { pageTitle: 'Grupos Empaque CRUD' },
+            templateUrl: 'pages/gruposempaque/crud.html',
+            params: {
+                id: { squash: true, value: null }
+            }
+        })
+
 
 
 
@@ -599,7 +619,7 @@ var url = 'http://api.admin.stg.teletica.ray.media/api/Backload/';
 app.config(function ($httpProvider, fileUploadProvider) {
     delete $httpProvider.defaults.headers.common['X-Requested-With'];
     fileUploadProvider.defaults.redirect = window?.location?.href?.replace(
-        /\/[^\/]*$/,
+        /\/[^\/] *$/,
         '/cors/result.html?%s'
     );
     //if (isOnGitHub) {

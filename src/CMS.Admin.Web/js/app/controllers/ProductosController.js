@@ -790,6 +790,36 @@ angular
         $scope.tieneRolProducto = false;
         $scope.tieneRolPrensa = false;
         $scope.tieneRolHerramental = false;
+        // Estados iniciales de paneles (acordeones)
+        $scope.isProductoPanelOpen = false;
+        $scope.isIngenieriaPanelOpen = false;
+        $scope.isEmpaquePanelOpen = false;
+        $scope.isPrensaPanelOpen = false;
+        $scope.isHerramentalPanelOpen = false;
+        $scope.isTrabajoCilindrosPanelOpen = false;
+
+        // Opciones para Empaque
+        $scope.posicionesTaco = [
+            { id: 0, nombre: 'N/A' },
+            { id: 1, nombre: 'Gira Bobina' }
+        ];
+        $scope.tiposPaletizacion = [
+            { id: 0, nombre: 'Horizontal' },
+            { id: 1, nombre: 'Vertical' }
+        ];
+        $scope.tamanosPallet = [
+            { id: 0, nombre: 'Estándar' },
+            { id: 1, nombre: 'Grande' }
+        ];
+
+        // Helper: cargar grupos de empaque
+        function cargarGruposEmpaque() {
+            var servCall = APIService.GetGruposEmpaque();
+            servCall.then(function (u) {
+                $scope.productoData = $scope.productoData || {};
+                $scope.productoData.gruposEmpaque = u.data || [];
+            }, function () { /* ignore */ });
+        }
 
         if (datosUsuario) {
             datosUsuario = JSON.parse(datosUsuario);
@@ -819,7 +849,8 @@ angular
                     return role.Name === 'Herramental';
                 });
 
-
+                // Cargar grupos de empaque al iniciar el controller
+                cargarGruposEmpaque();
 
 
 
@@ -901,12 +932,26 @@ angular
             $scope.isTrabajoCilindrosPanelOpen = !$scope.isTrabajoCilindrosPanelOpen;
         };
 
+        $scope.toggleEmpaquePanel = function () {
+            $scope.isEmpaquePanelOpen = !$scope.isEmpaquePanelOpen;
+        };
+
         if (id) {
             $scope.PageTitle = 'Editar Producto';
             $scope.SubmitButton = 'Actualizar Producto';
             var servCall = APIService.GetProductoById(id);
             servCall.then(function (u) {
                 $scope.productoData = u.data;
+                // Convertir valores booleanos de empaque de vuelta a números para los selects
+                if ($scope.productoData.PosicionTaco !== undefined && $scope.productoData.PosicionTaco !== null) {
+                    $scope.productoData.PosicionTaco = $scope.productoData.PosicionTaco ? 1 : 0;
+                }
+                if ($scope.productoData.TipoPaletizacion !== undefined && $scope.productoData.TipoPaletizacion !== null) {
+                    $scope.productoData.TipoPaletizacion = $scope.productoData.TipoPaletizacion ? 1 : 0;
+                }
+                if ($scope.productoData.TipoPallet !== undefined && $scope.productoData.TipoPallet !== null) {
+                    $scope.productoData.TipoPallet = $scope.productoData.TipoPallet ? 1 : 0;
+                }
                 console.log('scope.productoData',$scope.productoData);
                 $scope.estados = $scope.productoData.estados;
                 $scope.productoData.EstadoParaMostrar = $scope.estados.find(function (estado) {
@@ -914,7 +959,19 @@ angular
                 });
                 $scope.impresorasDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Flexo' }, { id: 3, nombre: 'Hueco' }];
                 $scope.cilindrosDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Bolsapel' }, { id: 3, nombre: 'Nuevos' }, { id: 4, nombre: 'Ambos' }];
-
+                // Cargar grupos de empaque y mantener selección existente
+                var idGrupoSeleccionado = $scope.productoData.IdGrupoEmpaque ?? $scope.productoData.IDGrupoEmpaque ?? null;                console.log('ID GRUPO ANTES DE CARGAR:', idGrupoSeleccionado);
+                var servCall = APIService.GetGruposEmpaque();
+                servCall.then(function (u) {
+                    $scope.productoData.gruposEmpaque = u.data || [];
+                    // Restaurar la selección del grupo después de cargar
+                    $scope.productoData.IdGrupoEmpaque = idGrupoSeleccionado;
+                    console.log('ID GRUPO DESPUES DE ASIGNAR:', $scope.productoData.IdGrupoEmpaque);
+                    console.log('GRUPOS CARGADOS:', $scope.productoData.gruposEmpaque);
+                }, function () {
+                    // Si falla, al menos inicializa el array vacío
+                    $scope.productoData.gruposEmpaque = [];
+                });
                 $scope.proveedoresDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Bosisio' }, { id: 3, nombre: 'lynch' }, { id: 4, nombre: 'longo' }];
                 var responsableCustomerEncontrado = $scope.productoData.responsables.find(function (responsable) {
                     return responsable.Id === $scope.productoData.ResponsableCustomer;
@@ -1206,8 +1263,27 @@ angular
 
             $scope.productoData.Estado = $scope.productoData.EstadoParaMostrar.IDEstadoProducto;
 
-            var data = $.param($scope.productoData);
+            // Convertir TipoPaletizacion y TipoPallet a booleanos antes de enviar
+            if ($scope.productoData.TipoPaletizacion !== undefined && $scope.productoData.TipoPaletizacion !== null) {
+                $scope.productoData.TipoPaletizacion = $scope.productoData.TipoPaletizacion === 1 || $scope.productoData.TipoPaletizacion === true;
+            }
+            if ($scope.productoData.TipoPallet !== undefined && $scope.productoData.TipoPallet !== null) {
+                $scope.productoData.TipoPallet = $scope.productoData.TipoPallet === 1 || $scope.productoData.TipoPallet === true;
+            }
+            // Convertir campos de empaque a booleanos antes de enviar
+            if ($scope.productoData.PosicionTaco !== undefined && $scope.productoData.PosicionTaco !== null) {
+                $scope.productoData.PosicionTaco = $scope.productoData.PosicionTaco === 1 || $scope.productoData.PosicionTaco === true;
+            }
+            // ASEGURAR QUE IDGrupoEmpaque TENGA EL VALOR CORRECTO
+            if ($scope.productoData.IdGrupoEmpaque !== undefined) {
+                $scope.productoData.IDGrupoEmpaque = $scope.productoData.IdGrupoEmpaque;
+            }
 
+            console.log('ANTES DE ENVIAR - IdGrupoEmpaque:', $scope.productoData.IdGrupoEmpaque);
+            console.log('ANTES DE ENVIAR - IDGrupoEmpaque:', $scope.productoData.IDGrupoEmpaque);
+
+            var data = $.param($scope.productoData);
+            console.log('DATA A ENVIAR:', data);
 
             $scope.validarFechasFinal = function () {
                 var validas = [];

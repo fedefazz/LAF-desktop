@@ -87,6 +87,13 @@
 
             </li>
 
+            <!-- Nuevo: Grupos Empaque -->
+            <li ng-if="hasRole('Admin')" ng-class="{active:$state.includes('blsp.gruposempaque')}">
+
+                <a ui-sref="blsp.gruposempaque.list" title="Grupos Empaque"><i class="fa fa-object-group"></i><span>Grupos Empaque</span></a>
+
+            </li>
+
             <li ng-if="hasRole('Admin')" class="divider" style="font-weight:normal;padding:2px 18px;background-color:#212121;color:#0472ee;">
 
                 Equipamiento

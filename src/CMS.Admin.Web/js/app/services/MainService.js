@@ -31,9 +31,8 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSScraps/valoresporperiodomensual");
         }
 
-
         
-
+        
         this.getMotivoById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSScraps/getMotivoById?id=" + id);
         }
@@ -221,6 +220,7 @@ angular
         }
 
         this.GetTrabajoCilindros = function (filter) {
+            if (filter === undefined || filter === null) filter = '';
             return $http.get($rootScope.webapiurl + "api/PSSProductos/getTrabajosCilindros?filter=" + filter)
         }
 
@@ -250,6 +250,14 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSTiposMaterials")
         }
 
+        // Grupos Empaque
+        this.GetGruposEmpaque = function () {
+            return $http.get($rootScope.webapiurl + "api/GPPGruposEmpaques")
+        }
+        this.GetGrupoEmpaqueById = function (id) {
+            return $http.get($rootScope.webapiurl + "api/GPPGruposEmpaques?id=" + id + "&no-pace")
+        }
+        
         this.GetMaquinaById = function (id) {
             return $http.get($rootScope.webapiurl + "api/PSSMaquinas?id=" + id + "&no-pace")
         }
@@ -496,6 +504,11 @@ angular
             return $http.put($rootScope.webapiurl + "api/PSSProductos?id=" + id, data)
         }
 
+        // Grupos Empaque
+        this.updateGrupoEmpaque = function (id, data) {
+            return $http.put($rootScope.webapiurl + "api/GPPGruposEmpaques?id=" + id, data)
+        }
+
         this.editMotivo = function (id, data) {
             return $http.put($rootScope.webapiurl + "api/PSSScraps/editMotivo?id=" + id, data)
         }
@@ -625,6 +638,11 @@ angular
             return $http.post($rootScope.webapiurl + "api/PSSActividades", data)
         }
 
+        // Grupos Empaque
+        this.createGrupoEmpaque = function (data) {
+            return $http.post($rootScope.webapiurl + "api/GPPGruposEmpaques", data)
+        }
+
         this.createVehicle = function (data) {
             return $http.post($rootScope.webapiurl + "api/Vehicles", data)
         }
@@ -728,6 +746,12 @@ angular
 
             this.deleteActividad = function (id, data) {
                 return $http.delete($rootScope.webapiurl + "api/PSSActividades?id=" + id)
+
+            }
+
+            // Grupos Empaque
+            this.deleteGrupoEmpaque = function (id, data) {
+                return $http.delete($rootScope.webapiurl + "api/GPPGruposEmpaques?id=" + id)
 
             }
 
@@ -905,5 +929,10 @@ angular
 
 
     });
+
+
+
+
+
 
 

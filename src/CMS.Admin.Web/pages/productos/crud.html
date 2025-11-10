@@ -69,9 +69,6 @@
 
 
 
-
-
-
                         </md-content>
                     </div>
 
@@ -116,7 +113,7 @@
                             </div>
                             <span class="pull-right flecha">
                                 <i class="fa"
-                                   ng-class="{'fa-chevron-up': isIngenieriaPanelOpen, 'fa-chevron-down': !isIngenieriaPanelOpen}">
+                                   ng-class="{'fa-chevron-up': isProductoPanelOpen, 'fa-chevron-down': !isProductoPanelOpen}">
                                 </i>
                             </span>
                         </div>
@@ -483,6 +480,114 @@
                     </div>
                 </div>
 
+                <!--//PANEL EMPAQUE-->
+                <div class="col-sm-12 col-md-12">
+                    <div class="panel panel-inverse">
+                        <div class="panel-heading" ng-click="toggleEmpaquePanel()">
+                            <h4 class="panel-title">
+                                Empaque
+                            </h4>
+                            <span class="pull-right flecha">
+                                <i class="fa"
+                                   ng-class="{'fa-chevron-up': isEmpaquePanelOpen, 'fa-chevron-down': !isEmpaquePanelOpen}">
+                                </i>
+                            </span>
+                        </div>
+                        <md-content layout-padding ng-show="isEmpaquePanelOpen">
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Grupo Empaque</label>
+                                    <md-select ng-disabled="tieneRolAdminProducto == false" 
+                                               ng-model="productoData.IdGrupoEmpaque" 
+                                               placeholder="Selecciona un grupo de empaque">
+                                        <md-option ng-value="null">Sin asignar</md-option>
+                                        <md-option ng-repeat="grupo in productoData.gruposEmpaque" 
+                                                   ng-value="grupo.IDGrupoEmpaque">
+                                            {{ grupo.Descripcion }}
+                                        </md-option>
+                                    </md-select>
+                                    <div ng-messages="editAuthorForm.IDGrupoEmpaque.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                            </div>
+                            
+                            <!-- Nuevos campos de Empaque -->
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.FilmSuperior" aria-label="FilmSuperior">
+                                        {{ 'Film Superior' }}
+                                    </md-switch>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.FilmInferior" aria-label="FilmInferior">
+                                        {{ 'Film Inferior' }}
+                                    </md-switch>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.RomaneosPorCara" aria-label="RomaneosPorCara">
+                                        {{ 'Romaneos por cara' }}
+                                    </md-switch>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Frecuencia del cartón por piso</label>
+                                    <input ng-disabled="tieneRolAdminProducto == false" type="number" min="1" ng-model="productoData.FreqCartonXPiso" name="FreqCartonXPiso" />
+                                    <div ng-messages="editAuthorForm.FreqCartonXPiso.$error">
+                                        <div ng-messages-include="pages/validation/text.html"></div>
+                                    </div>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.CartonSuperior" aria-label="CartonSuperior">
+                                        {{ 'Cartón Superior' }}
+                                    </md-switch>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.TapaMadera" aria-label="TapaMadera">
+                                        {{ 'Tapa madera' }}
+                                    </md-switch>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Posición del taco</label>
+                                    <md-select ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.PosicionTaco" placeholder="Selecciona posición">
+                                        <md-option ng-repeat="p in posicionesTaco" ng-value="p.id">{{p.id}} - {{p.nombre}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.LlevaBolsa" aria-label="LlevaBolsa">
+                                        {{ 'Lleva bolsa?' }}
+                                    </md-switch>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.EtiquetaEnBolsa" aria-label="EtiquetaEnBolsa">
+                                        {{ 'Lleva etiqueta en bolsa?' }}
+                                    </md-switch>
+                                </md-input-container>
+                            </div>
+
+                            <div layout-gt-xs="row">
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Tipo de paletización</label>
+                                    <md-select ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.TipoPaletizacion" placeholder="Selecciona tipo">
+                                        <md-option ng-repeat="t in tiposPaletizacion" ng-value="t.id">{{t.id}} - {{t.nombre}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                                <md-input-container class="md-block" flex-gt-xs>
+                                    <label>Tamaño del pallet</label>
+                                    <md-select ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.TipoPallet" placeholder="Selecciona tamaño">
+                                        <md-option ng-repeat="tp in tamanosPallet" ng-value="tp.id">{{tp.nombre}}</md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                        </md-content>
+                    </div>
+                </div>
+
                 <!--//PANEL PRE PRENSA-->
                 <div class="col-sm-12 col-md-12">
 
@@ -509,7 +614,7 @@
                             </div>
                             <span class="pull-right flecha">
                                 <i class="fa"
-                                   ng-class="{'fa-chevron-up': isIngenieriaPanelOpen, 'fa-chevron-down': !isIngenieriaPanelOpen}">
+                                   ng-class="{'fa-chevron-up': isPrensaPanelOpen, 'fa-chevron-down': !isPrensaPanelOpen}">
                                 </i>
                             </span>
                         </div>
@@ -590,7 +695,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Perfil</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.PerfilImpresion" placeholder="Selecciona un Perfil">
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.PerfilImpresion" placeholder="Selecciona un Perfil" required>
                                         <md-option ng-repeat="perfil in productoData.GPPerfilesPrePrensa | filter: { IdTipoMaterial: productoData.TipoMaterialPerfil , IdProveedor: productoData.Proveedor, IdImpresora: productoData.Impresora }" ng-value="perfil.IdPerfilPrePrensa">
                                             {{ perfil.Descripcion }}
                                         </md-option>
@@ -753,12 +858,10 @@
                                         {{ 'Cerra Pre Prensa' }}
                                     </md-switch>
                                 </md-input-container>
-
                             </div>
 
-
-
                             <div layout-gt-xs="row">
+
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Observacion Perfiles</label>
                                     <textarea ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true" ng-model="productoData.ObsPerfiles" name="ObsPerfiles" cols="40" rows="5"></textarea>
@@ -800,7 +903,6 @@
                 </div>
 
 
-
                 <!--//HERRAMENTAL-->
                 <div class="col-sm-12 col-md-12">
 
@@ -827,7 +929,7 @@
                             </div>
                             <span class="pull-right flecha">
                                 <i class="fa"
-                                   ng-class="{'fa-chevron-up': isIngenieriaPanelOpen, 'fa-chevron-down': !isIngenieriaPanelOpen}">
+                                   ng-class="{'fa-chevron-up': isHerramentalPanelOpen, 'fa-chevron-down': !isHerramentalPanelOpen}">
                                 </i>
                             </span>
                         </div>
@@ -845,7 +947,7 @@
                             <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Tipo Cilindro</label>
-                                    <md-select ng-disabled="tieneRolHerramental == false" ng-model="productoData.TipoCilindros" placeholder="Selecciona un tipo de cilindro" required>
+                                    <md-select ng-disabled="tieneRolHerramental == false" ng-model=" productoData.TipoCilindros" placeholder="Selecciona un tipo de cilindro" required>
                                         <md-option ng-repeat="cilindroTipo in cilindrosDisponibles" ng-value="cilindroTipo.id">
                                             {{ cilindroTipo.nombre }}
                                         </md-option>
@@ -912,7 +1014,7 @@
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Fecha Retiro Cilindro</label>
                                     <input ng-disabled="tieneRolHerramental == false || productoData.TipoCilindros == 3" type="date" ng-model="fechaAuxiliarParaMostrar.FechaRetiroCilindro" name="FechaRetiroCilindro" id="FechaRetiroCilindro" />
-                                    <md-icon ng-show="tieneRolHerramental" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRetiroCilindro')"></md-icon>
+                                    <md-icon ng-show="tieneRolHerrantal" ng-style="{'top': '7px', 'right': '8px'}" class="fa fa-times" ng-click="setFechaDefault(fechaAuxiliarParaMostrar, 'FechaRetiroCilindro')"></md-icon>
 
                                     <div ng-messages="editAuthorForm.FechaRetiroCilindro.$error" ng-show="editAuthorForm.FechaRetiroCilindro.$touched">
 

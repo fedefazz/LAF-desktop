@@ -14,11 +14,6 @@ namespace blsp.Admin.Web
                         "~/js/jquery.dataTables.min.js",
                         "~/js/progressive-image.min.js",
                         "~/assets/plugins/DataTables/media/js/dataTables.bootstrap.min.js"
-                       
-
-
-
-
                         ));
 
             bundles.Add(new Bundle("~/bundles/angular").Include(
@@ -77,6 +72,7 @@ namespace blsp.Admin.Web
                          "~/js/app/controllers/productosController.js",
                          "~/js/app/controllers/motivosController.js",
                            "~/js/app/controllers/valoresPorPeriodoMensual.js",
+                           "~/js/app/controllers/GruposEmpaqueController.js",
                         //"~/js/app/controllers/LayoutController.js",
                         "~/js/app/controllers/CashRegisterController.js",
                         "~/js/app/controllers/CarsController.js",
@@ -116,7 +112,7 @@ namespace blsp.Admin.Web
                         "~/js/ngPrint.min.js",
                         "~/js/alasql.js",
                         "~/js/xlsx.core.min.js"
-                                               
+                                                
 
 
 
@@ -148,7 +144,6 @@ namespace blsp.Admin.Web
                       "~/css/_include.css",
                       "~/DataTables/css/buttons.dataTables.css",
                                             "~/css/fixedColumns.dataTables.min.css"
-
 
 
 
