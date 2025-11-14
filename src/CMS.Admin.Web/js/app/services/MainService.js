@@ -23,6 +23,9 @@ angular
             return $http.get($rootScope.webapiurl + "api/PSSScraps?dateDesde=" + fechaDesde + "&dateHasta=" + fechaHasta)
         }
 
+        this.GetPatterns = function () {
+            return $http.get($rootScope.webapiurl + "api/PSSProductos/getPatterns")
+        }
 
         this.GetMotivos = function () {
             return $http.get($rootScope.webapiurl + "api/PSSScraps/GetMotivos");
@@ -256,6 +259,11 @@ angular
         }
         this.GetGrupoEmpaqueById = function (id) {
             return $http.get($rootScope.webapiurl + "api/GPPGruposEmpaques?id=" + id + "&no-pace")
+        }
+        
+        // Obtener tipos de etiquetas para los selectores
+        this.GetTiposEtiquetas = function () {
+            return $http.get($rootScope.webapiurl + "api/GPPGruposEmpaques/TiposEtiquetas")
         }
         
         this.GetMaquinaById = function (id) {

@@ -29,8 +29,23 @@ angular
         };
     })
 
-    .controller('GruposEmpaqueCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+    .controller('GruposEmpaqueCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder, $q) {
         var id = $stateParams.id;
+
+        function loadTiposEtiquetas() {
+            return APIService.GetTiposEtiquetas()
+                .then(function (response) {
+                    if (response.data && Array.isArray(response.data)) {
+                        return response.data.map(function (item) {
+                            return {
+                                Id: parseInt(item.IdEtiqueta, 10),
+                                Description: item.Descripcion
+                            };
+                        });
+                    }
+                    return [];
+                });
+        }
 
         $scope.dtInstance = {};
         $scope.dtOptions = DTOptionsBuilder
@@ -40,72 +55,138 @@ angular
         if (id) {
             $scope.PageTitle = 'Editar Grupo de Empaque';
             $scope.SubmitButton = 'Actualizar Grupo';
+            $scope.grupoEmpaqueData = {
+                Descripcion: '',
+                EtiquetaInterna: false,
+                TipoEtiquetaInterna: 1,
+                EtiquetaExterna: false,
+                TipoEtiquetaExterna: 1,
+                TipoEtiquetaPallet: 1,
+                Habilitado: true,
+                ModoPattern: 0,
+                TipoPattern: 'N/A'
+            };
+
+            $q.all([loadTiposEtiquetas(), APIService.GetGrupoEmpaqueById(id)])
+                .then(function (results) {
+                    $scope.tiposEtiqueta = results[0] || [];
+                    var u = results[1];
+                    var data = (u && u.data) || {};
+
+                    $scope.grupoEmpaqueData.Descripcion = (data.Descripcion || '').toString();
+                    $scope.grupoEmpaqueData.EtiquetaInterna = !!data.EtiquetaInterna;
+                    $scope.grupoEmpaqueData.EtiquetaExterna = !!data.EtiquetaExterna;
+                    $scope.grupoEmpaqueData.Habilitado = data.Habilitado !== false;
+
+                    $scope.grupoEmpaqueData.TipoEtiquetaInterna = (data.TipoEtiquetaInterna !== undefined ? parseInt(data.TipoEtiquetaInterna, 10) : 1);
+                    $scope.grupoEmpaqueData.TipoEtiquetaExterna = (data.TipoEtiquetaExterna !== undefined ? parseInt(data.TipoEtiquetaExterna, 10) : 1);
+                    $scope.grupoEmpaqueData.TipoEtiquetaPallet = (data.TipoEtiquetaPallet !== undefined ? parseInt(data.TipoEtiquetaPallet, 10) : 1);
+                    $scope.grupoEmpaqueData.IDGrupoEmpaque = data.IDGrupoEmpaque || data.Id || data.IdGrupoEmpaque;
+
+                    $scope.grupoEmpaqueData.ModoPattern = data.ModoPattern !== undefined ? parseInt(data.ModoPattern, 10) : 0;
+                    $scope.grupoEmpaqueData.TipoPattern = data.TipoPattern || 'N/A';
+
+                    ensureDependentZero();
+                    $scope.$evalAsync(revalidateForm);
+                })
+                .catch(function () {
+                    $window.location.href = '/#/blsp/gruposempaque/list';
+                });
         } else {
             $scope.PageTitle = 'Crear Grupo de Empaque';
             $scope.SubmitButton = 'Crear Grupo';
+            $scope.grupoEmpaqueData = {
+                Descripcion: '',
+                EtiquetaInterna: false,
+                TipoEtiquetaInterna: 1,
+                EtiquetaExterna: false,
+                TipoEtiquetaExterna: 1,
+                TipoEtiquetaPallet: 1,
+                Habilitado: true,
+                ModoPattern: 0,
+                TipoPattern: 'N/A'
+            };
+            loadTiposEtiquetas()
+                .then(function (tipos) {
+                    $scope.tiposEtiqueta = tipos || [];
+                    ensureDependentZero();
+                    $scope.$evalAsync(revalidateForm);
+                })
+                .catch(function () {
+                    $scope.tiposEtiqueta = [];
+                });
         }
+
+        // Patterns
+        $scope.patterns = [];
+        APIService.GetPatterns()
+            .then(function (response) {
+                $scope.patterns = (response.data && Array.isArray(response.data)) ? response.data : [];
+                console.log('Patterns cargados exitosamente:', $scope.patterns);
+            })
+            .catch(function () {
+                $scope.patterns = [];
+            });
 
         function ensureDependentZero() {
             if ($scope.grupoEmpaqueData) {
                 if (!$scope.grupoEmpaqueData.EtiquetaInterna) {
-                    $scope.grupoEmpaqueData.TipoEtiquetaInterna = 0;
+                    $scope.grupoEmpaqueData.TipoEtiquetaInterna = 1;
                 }
                 if (!$scope.grupoEmpaqueData.EtiquetaExterna) {
-                    $scope.grupoEmpaqueData.TipoEtiquetaExterna = 0;
+                    $scope.grupoEmpaqueData.TipoEtiquetaExterna = 1;
+                }
+                if ($scope.grupoEmpaqueData.ModoPattern === 0) {
+                    $scope.grupoEmpaqueData.TipoPattern = 'N/A';
                 }
             }
         }
 
-        if (id) {
-            var servCall = APIService.GetGrupoEmpaqueById(id);
-            servCall.then(function (u) {
-                $scope.grupoEmpaqueData = u.data || {};
-                $scope.grupoEmpaqueData.Descripcion = ($scope.grupoEmpaqueData.Descripcion || '').toString();
-                $scope.grupoEmpaqueData.EtiquetaInterna = !!$scope.grupoEmpaqueData.EtiquetaInterna;
-                $scope.grupoEmpaqueData.EtiquetaExterna = !!$scope.grupoEmpaqueData.EtiquetaExterna;
-                $scope.grupoEmpaqueData.Habilitado = $scope.grupoEmpaqueData.Habilitado !== false;
-                $scope.grupoEmpaqueData.TipoEtiquetaInterna = parseInt($scope.grupoEmpaqueData.TipoEtiquetaInterna || 0, 10);
-                $scope.grupoEmpaqueData.TipoEtiquetaExterna = parseInt($scope.grupoEmpaqueData.TipoEtiquetaExterna || 0, 10);
-                $scope.grupoEmpaqueData.TipoEtiquetaPallet = parseInt($scope.grupoEmpaqueData.TipoEtiquetaPallet || 0, 10);
+        function revalidateForm() {
+            var f = $scope.editForm;
+            if (!f) return;
 
-                ensureDependentZero();
+            // Solo revalidar, no forzar $setViewValue/$render
+            if (f.TipoEtiquetaInterna) f.TipoEtiquetaInterna.$validate();
+            if (f.TipoEtiquetaExterna) f.TipoEtiquetaExterna.$validate();
+            if (f.TipoEtiquetaPallet) f.TipoEtiquetaPallet.$validate();
 
-                delete $scope.grupoEmpaqueData.$id;
-                AlertService.ShowAlert($scope);
-            }, function () {
-                $window.location.href = '/#/blsp/gruposempaque/list';
-            });
-        } else {
-            $scope.grupoEmpaqueData = {
-                Descripcion: '',
-                EtiquetaInterna: false,
-                TipoEtiquetaInterna: 0,
-                EtiquetaExterna: false,
-                TipoEtiquetaExterna: 0,
-                TipoEtiquetaPallet: 0,
-                Habilitado: true
-            };
-            ensureDependentZero();
+            // Si el toggle está apagado, el required no debe bloquear
+            if (!$scope.grupoEmpaqueData.EtiquetaInterna && f.TipoEtiquetaInterna) {
+                f.TipoEtiquetaInterna.$setValidity('required', true);
+            }
+            if (!$scope.grupoEmpaqueData.EtiquetaExterna && f.TipoEtiquetaExterna) {
+                f.TipoEtiquetaExterna.$setValidity('required', true);
+            }
+
+            // Tras poblar desde la API, dejar el form “limpio”
+            if (f.$setPristine) f.$setPristine();
+            if (f.$setUntouched) f.$setUntouched();
         }
+
+        $scope.onModoPatternChange = function () {
+            if ($scope.grupoEmpaqueData.ModoPattern === 0) {
+                $scope.grupoEmpaqueData.TipoPattern = 'N/A';
+            }
+        };
 
         $scope.onToggleChange = function (which) {
             if (which === 'EtiquetaInterna' && !$scope.grupoEmpaqueData.EtiquetaInterna) {
-                $scope.grupoEmpaqueData.TipoEtiquetaInterna = 0;
+                $scope.grupoEmpaqueData.TipoEtiquetaInterna = 1;
             }
             if (which === 'EtiquetaExterna' && !$scope.grupoEmpaqueData.EtiquetaExterna) {
-                $scope.grupoEmpaqueData.TipoEtiquetaExterna = 0;
+                $scope.grupoEmpaqueData.TipoEtiquetaExterna = 1;
             }
         };
 
         $scope.$watch('grupoEmpaqueData.EtiquetaInterna', function (val) {
-            if (!val) {
-                $scope.grupoEmpaqueData.TipoEtiquetaInterna = 0;
-            }
+            if (!$scope.grupoEmpaqueData) return;
+            if (!val) $scope.grupoEmpaqueData.TipoEtiquetaInterna = 1;
         });
+
         $scope.$watch('grupoEmpaqueData.EtiquetaExterna', function (val) {
-            if (!val) {
-                $scope.grupoEmpaqueData.TipoEtiquetaExterna = 0;
-            }
+            if (!$scope.grupoEmpaqueData) return;
+            if (!val) $scope.grupoEmpaqueData.TipoEtiquetaExterna = 1;
         });
 
         function normalizeForSubmit(m) {
@@ -114,36 +195,56 @@ angular
             m.EtiquetaInterna = !!m.EtiquetaInterna;
             m.EtiquetaExterna = !!m.EtiquetaExterna;
             m.Habilitado = m.Habilitado !== false;
-            m.TipoEtiquetaInterna = parseInt(m.TipoEtiquetaInterna || 0, 10);
-            m.TipoEtiquetaExterna = parseInt(m.TipoEtiquetaExterna || 0, 10);
-            m.TipoEtiquetaPallet = parseInt(m.TipoEtiquetaPallet || 0, 10);
 
-            if (!m.EtiquetaInterna) m.TipoEtiquetaInterna = 0;
-            if (!m.EtiquetaExterna) m.TipoEtiquetaExterna = 0;
+            if (m.EtiquetaInterna && (m.TipoEtiquetaInterna === null || m.TipoEtiquetaInterna === undefined)) {
+                m._errorCampo = 'TipoEtiquetaInterna';
+                return m;
+            }
+            if (m.EtiquetaExterna && (m.TipoEtiquetaExterna === null || m.TipoEtiquetaExterna === undefined)) {
+                m._errorCampo = 'TipoEtiquetaExterna';
+                return m;
+            }
+
+            m.TipoEtiquetaInterna = parseInt(m.TipoEtiquetaInterna, 10) || 1;
+            m.TipoEtiquetaExterna = parseInt(m.TipoEtiquetaExterna, 10) || 1;
+            m.TipoEtiquetaPallet = parseInt(m.TipoEtiquetaPallet, 10) || 1;
+
+            if (!m.EtiquetaInterna) m.TipoEtiquetaInterna = 1;
+            if (!m.EtiquetaExterna) m.TipoEtiquetaExterna = 1;
+
+            var modo = parseInt(m.ModoPattern, 10);
+            m.ModoPattern = isNaN(modo) ? 0 : modo;
+            m.TipoPattern = m.TipoPattern || 'N/A';
+            if (m.ModoPattern === 0) m.TipoPattern = 'N/A';
 
             return m;
         }
 
         $scope.processForm = function () {
             var payload = normalizeForSubmit($scope.grupoEmpaqueData);
+            if (payload._errorCampo) {
+                var msg = payload._errorCampo === 'TipoEtiquetaInterna'
+                    ? 'Debe seleccionar un Tipo de etiqueta interna.'
+                    : 'Debe seleccionar un Tipo de etiqueta externa.';
+                AlertService.SetAlert(msg, 'error');
+                AlertService.ShowAlert($scope);
+                return;
+            }
             var data = $.param(payload);
+
             if (id) {
-                var servCall = APIService.updateGrupoEmpaque(id, data);
-                servCall.then(function () {
-                    AlertService.SetAlert('El grupo fue actualizado con \u00E9xito', 'success');
-                    AlertService.ShowAlert($scope);
+                APIService.updateGrupoEmpaque(id, data).then(function () {
+                    $window.location.href = '/#/blsp/gruposempaque/list';
                 }, function () {
-                    $scope.errorMessage = 'Oops, something went wrong.';
+                    $scope.errorMessage = 'Error al actualizar el grupo.';
+                    $window.location.href = '/#/blsp/gruposempaque/list';
                 });
             } else {
-                var servCall = APIService.createGrupoEmpaque(data);
-                servCall.then(function (u) {
-                    var d = u.data || {};
-                    var newId = d.Id || d.IDGrupoEmpaque || d.IdGrupoEmpaque || d.id;
-                    AlertService.SetAlert('El grupo fue creado con \u00E9xito', 'success');
-                    $window.location.href = '/#/blsp/gruposempaque/crud/' + newId;
+                APIService.createGrupoEmpaque(data).then(function (u) {
+                    AlertService.SetAlert('El grupo fue creado con éxito', 'success');
+                    $window.location.href = '/#/blsp/gruposempaque/list';
                 }, function () {
-                    $scope.errorMessage = 'Oops, something went wrong.';
+                    $scope.errorMessage = 'Error al crear el grupo.';
                 });
             }
         };
@@ -151,16 +252,15 @@ angular
         $scope.deleteGrupoEmpaque = function (ev, idDel) {
             var confirm = $mdDialog.confirm()
                 .title('Eliminar Grupo de Empaque')
-                .textContent('\u00BFEst\u00E1 seguro de eliminar este grupo?')
+                .textContent('¿Está seguro de eliminar este grupo?')
                 .ariaLabel('Delete')
                 .targetEvent(ev)
                 .ok('Delete')
                 .cancel('Cancel');
 
             $mdDialog.show(confirm).then(function () {
-                var servCall = APIService.deleteGrupoEmpaque(idDel);
-                servCall.then(function () {
-                    AlertService.SetAlert('El grupo ha sido eliminado con \u00E9xito', 'success');
+                APIService.deleteGrupoEmpaque(idDel).then(function () {
+                    AlertService.SetAlert('El grupo ha sido eliminado con éxito', 'success');
                     $window.location.href = '/#/blsp/gruposempaque/list';
                 }, function () {
                     $scope.errorMessage = 'Oops, something went wrong.';

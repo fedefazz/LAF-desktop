@@ -1,4 +1,4 @@
-<div ng-app="app" ng-controller="GruposEmpaqueCRUDController">
+<div ng-controller="GruposEmpaqueCRUDController">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-12">
@@ -32,32 +32,62 @@
 
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
-                                    <md-switch ng-model="grupoEmpaqueData.EtiquetaInterna" aria-label="EtiquetaInterna" ng-change="onToggleChange('EtiquetaInterna')">
+                                    <md-switch ng-model="grupoEmpaqueData.EtiquetaInterna"
+                                               ng-change="onToggleChange('EtiquetaInterna')">
                                         Lleva etiqueta interna?
                                     </md-switch>
                                 </md-input-container>
-                                <md-input-container class="md-block" flex-gt-xs>
+                                <md-input-container class="md-block" flex-gt-xs
+                                                    ng-class="{'campo-invalido': editForm.TipoEtiquetaInterna.$invalid && editForm.TipoEtiquetaInterna.$touched}">
                                     <label>Tipo etiqueta interna</label>
-                                    <input type="number" min="0" step="1" ng-disabled="!grupoEmpaqueData.EtiquetaInterna" ng-model="grupoEmpaqueData.TipoEtiquetaInterna" name="TipoEtiquetaInterna" required />
+                                    <md-select name="TipoEtiquetaInterna"
+                                               ng-if="tiposEtiqueta.length"
+                                               ng-model="grupoEmpaqueData.TipoEtiquetaInterna"
+                                               ng-required="grupoEmpaqueData.EtiquetaInterna"
+                                               ng-disabled="!grupoEmpaqueData.EtiquetaInterna">
+                                        <md-option ng-repeat="t in tiposEtiqueta track by t.Id" ng-value="t.Id">{{ t.Description }}</md-option>
+                                    </md-select>                                  
+                                    <div ng-messages="editForm.TipoEtiquetaInterna.$error" ng-if="editForm.TipoEtiquetaInterna.$touched">
+                                        <div ng-message="required">Requerido (encendido).</div>
+                                        <div ng-if="editForm.TipoEtiquetaInterna.$error.valorInvalido">Seleccione un tipo válido.</div>
+                                    </div>
                                 </md-input-container>
                             </div>
 
                             <div layout-gt-xs="row">
+                                <!-- Toggle Etiqueta Externa -->
                                 <md-input-container class="md-block" flex-gt-xs>
-                                    <md-switch ng-model="grupoEmpaqueData.EtiquetaExterna" aria-label="EtiquetaExterna" ng-change="onToggleChange('EtiquetaExterna')">
+                                    <md-switch ng-model="grupoEmpaqueData.EtiquetaExterna"
+                                               ng-change="onToggleChange('EtiquetaExterna')">
                                         Lleva etiqueta externa?
                                     </md-switch>
                                 </md-input-container>
-                                <md-input-container class="md-block" flex-gt-xs>
+                                <md-input-container class="md-block" flex-gt-xs
+                                                    ng-class="{'campo-invalido': editForm.TipoEtiquetaExterna.$invalid && editForm.TipoEtiquetaExterna.$touched}">
                                     <label>Tipo etiqueta externa</label>
-                                    <input type="number" min="0" step="1" ng-disabled="!grupoEmpaqueData.EtiquetaExterna" ng-model="grupoEmpaqueData.TipoEtiquetaExterna" name="TipoEtiquetaExterna" required />
+                                    <md-select name="TipoEtiquetaExterna"
+                                               ng-if="tiposEtiqueta.length"
+                                               ng-model="grupoEmpaqueData.TipoEtiquetaExterna"
+                                               ng-required="grupoEmpaqueData.EtiquetaExterna"
+                                               ng-disabled="!grupoEmpaqueData.EtiquetaExterna">
+                                        <md-option ng-repeat="t in tiposEtiqueta track by t.Id" ng-value="t.Id">{{ t.Description }}</md-option>
+                                    </md-select>                                 
+                                    <div ng-messages="editForm.TipoEtiquetaExterna.$error" ng-if="editForm.TipoEtiquetaExterna.$touched">
+                                        <div ng-message="required">Requerido (encendido).</div>
+                                        <div ng-if="editForm.TipoEtiquetaExterna.$error.valorInvalido">Seleccione un tipo válido.</div>
+                                    </div>
                                 </md-input-container>
                             </div>
 
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Tipo etiqueta pallet</label>
-                                    <input type="number" min="0" step="1" ng-model="grupoEmpaqueData.TipoEtiquetaPallet" name="TipoEtiquetaPallet" required />
+                                    <md-select ng-model="grupoEmpaqueData.TipoEtiquetaPallet"
+                                               name="TipoEtiquetaPallet"
+                                               required
+                                               ng-if="tiposEtiqueta.length">
+                                        <md-option ng-repeat="tipo in tiposEtiqueta track by tipo.Id" ng-value="tipo.Id">{{tipo.Description}}</md-option>
+                                    </md-select>
                                 </md-input-container>
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <md-switch ng-model="grupoEmpaqueData.Habilitado" aria-label="Habilitado">
@@ -65,6 +95,7 @@
                                     </md-switch>
                                 </md-input-container>
                             </div>
+
                         </md-content>
                     </div>
                 </div>

@@ -781,8 +781,8 @@ angular
 
 
 
-    .controller('productosCRUDController', function ($scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
-
+    .controller('productosCRUDController', function ($timeout,$scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+        var ID_PERFIL_SIN_ASIGNAR = 1;
         // Leer el objeto JSON desde localStorage
         var datosUsuario = $window.localStorage.getItem('datosUsuario');
         $scope.tieneRolAdminProducto = false;
@@ -812,13 +812,61 @@ angular
             { id: 1, nombre: 'Grande' }
         ];
 
+        // Forzar revalidación cuando el form y los controles existen
+        $scope.revalidateForm = function () {
+            if (!$scope.editAuthorForm) return;
+            angular.forEach($scope.editAuthorForm, function (ctrl, name) {
+                if (name && name[0] === '$') return;
+                if (ctrl && typeof ctrl.$validate === 'function') {
+                    try { ctrl.$validate(); } catch (_) { }
+                }
+            });
+        };
+
+        // Cuenta perfiles disponibles con los filtros actuales (Material/Proveedor/Impresora)
+        $scope.perfilesDisponiblesCount = function () {
+            var lst = ($scope.productoData && $scope.productoData.GPPerfilesPrePrensa) ? $scope.productoData.GPPerfilesPrePrensa : [];
+            var mat = $scope.productoData && $scope.productoData.TipoMaterialPerfil;
+            var prov = $scope.productoData && $scope.productoData.Proveedor;
+            var imp = $scope.productoData && $scope.productoData.Impresora;
+            return lst.filter(function (p) {
+                return (mat == null || p.IdTipoMaterial === mat) &&
+                    (prov == null || p.IdProveedor === prov) &&
+                    (imp == null || p.IdImpresora === imp);
+            }).length;
+        };
+
+        // Limpiar Perfil si no hay opciones y revalidar al cambiar filtros
+        $scope.$watchGroup([
+            'productoData.TipoMaterialPerfil',
+            'productoData.Proveedor',
+            'productoData.Impresora',
+            'productoData.NoUsaPrePrensa'
+        ], function () {
+            if ($scope.perfilesDisponiblesCount() === 0 || $scope.productoData.NoUsaPrePrensa === true) {
+                $scope.productoData.PerfilImpresion = ID_PERFIL_SIN_ASIGNAR;
+            }
+            $timeout(function () { $scope.revalidateForm(); }, 0);
+        });
+
+
         // Helper: cargar grupos de empaque
-        function cargarGruposEmpaque() {
+        function cargarGruposEmpaque(idGrupoSeleccionado) {
             var servCall = APIService.GetGruposEmpaque();
             servCall.then(function (u) {
                 $scope.productoData = $scope.productoData || {};
                 $scope.productoData.gruposEmpaque = u.data || [];
-            }, function () { /* ignore */ });
+
+                // Restaurar selección si existe
+                if (idGrupoSeleccionado !== undefined && idGrupoSeleccionado !== null) {
+                    $scope.productoData.IdGrupoEmpaque = idGrupoSeleccionado;
+                }
+
+                // Revalidar tras poblar opciones del select
+                $timeout(function () { $scope.revalidateForm(); }, 0);
+            }, function () {
+                $scope.productoData.gruposEmpaque = [];
+            });
         }
 
         if (datosUsuario) {
@@ -849,8 +897,10 @@ angular
                     return role.Name === 'Herramental';
                 });
 
-                // Cargar grupos de empaque al iniciar el controller
-                cargarGruposEmpaque();
+                // Cargar grupos de empaque solo en ALTA (sin id). En EDICIÓN se llama tras cargar el producto.
+                if (!id) {
+                    cargarGruposEmpaque(null);
+                }
 
 
 
@@ -874,8 +924,38 @@ angular
             $scope.isTrabajoCilindrosPanelOpen = false;
 
         }
+        // --- Pattern (Empaque) ---
+        $scope.productoData = $scope.productoData || {};
+        $scope.productoData.ModoPattern = false;          // Auto por defecto (bit = 0)
+        $scope.productoData.TipoPattern = 'N/A';
 
+        // Cargar lista de patterns (records -> code)
+        $scope.patterns = [];
+        APIService.GetPatterns().then(function (resp) {
+            var data = resp && resp.data;
+            var records = (data && data.records) || data || [];
+            $scope.patterns = Array.isArray(records)
+                ? records.map(function (x) { return x.code || x.Code || x; })
+                : [];
+            if ($scope.productoData.ModoPattern === true &&
+                $scope.productoData.TipoPattern !== 'N/A' &&
+                $scope.productoData.TipoPattern &&
+                $scope.patterns.indexOf($scope.productoData.TipoPattern) === -1) {
+                $scope.patterns.unshift($scope.productoData.TipoPattern);
+            }
+        }, function () { $scope.patterns = []; });
 
+        // Watch: si pasa a Auto fuerza 'N/A'
+        $scope.$watch('productoData.ModoPattern', function (val) {
+            var isManual = (val === true);
+            if (!isManual) {
+                $scope.productoData.TipoPattern = 'N/A';
+            } else {
+                if ($scope.productoData.TipoPattern === 'N/A' || $scope.productoData.TipoPattern === '0') {
+                    $scope.productoData.TipoPattern = '';
+                }
+            }
+        });
         var id = $stateParams.id;
         $scope.fechaAuxiliarParaMostrar = {};
 
@@ -942,6 +1022,38 @@ angular
             var servCall = APIService.GetProductoById(id);
             servCall.then(function (u) {
                 $scope.productoData = u.data;
+                if (id) {
+                    // dentro del servCall.then(...) después de $scope.productoData = u.data;
+                    if ($scope.productoData.PerfilImpresion !== null && $scope.productoData.PerfilImpresion !== undefined && $scope.productoData.PerfilImpresion !== '') {
+                        var n = Number($scope.productoData.PerfilImpresion);
+                        if (!isNaN(n)) $scope.productoData.PerfilImpresion = n;
+                    }
+                    // Revalidar inicial condicionada a opciones
+                    // ... dentro de servCall.then(...) justo después de $scope.productoData = u.data;
+                    $timeout(function () {
+                        if ($scope.perfilesDisponiblesCount() === 0 || $scope.productoData.NoUsaPrePrensa === true) {
+                            $scope.productoData.PerfilImpresion = ID_PERFIL_SIN_ASIGNAR;
+                        }
+                        $scope.revalidateForm();
+                    }, 50);
+                }
+                // Normalizar Pattern si viene del backend
+                // dentro de servCall.then(...) tras $scope.productoData = u.data;
+                // Normalizar ModoPattern y TipoPattern desde backend
+                // Normalizar ModoPattern / TipoPattern desde backend
+                var rawModo = u.data.ModoPattern;
+                if (rawModo === 1 || rawModo === '1' || rawModo === true) {
+                    $scope.productoData.ModoPattern = true;
+                } else {
+                    $scope.productoData.ModoPattern = false;
+                }
+                var rawTipo = u.data.TipoPattern;
+                if ($scope.productoData.ModoPattern === false) {
+                    $scope.productoData.TipoPattern = 'N/A';
+                } else {
+                    $scope.productoData.TipoPattern =
+                        (rawTipo && rawTipo !== '0' && rawTipo !== 'N/A') ? rawTipo : '';
+                }
                 // Convertir valores booleanos de empaque de vuelta a números para los selects
                 if ($scope.productoData.PosicionTaco !== undefined && $scope.productoData.PosicionTaco !== null) {
                     $scope.productoData.PosicionTaco = $scope.productoData.PosicionTaco ? 1 : 0;
@@ -949,8 +1061,60 @@ angular
                 if ($scope.productoData.TipoPaletizacion !== undefined && $scope.productoData.TipoPaletizacion !== null) {
                     $scope.productoData.TipoPaletizacion = $scope.productoData.TipoPaletizacion ? 1 : 0;
                 }
-                if ($scope.productoData.TipoPallet !== undefined && $scope.productoData.TipoPallet !== null) {
-                    $scope.productoData.TipoPallet = $scope.productoData.TipoPallet ? 1 : 0;
+                // Migración si existe TamanoPallet legacy
+                if ($scope.productoData.TipoPallet != null && $scope.productoData.TamanoPallet == null) {
+                    $scope.productoData.TamanoPallet = $scope.productoData.TipoPallet;
+                }
+
+
+                // Helpers tamaño pallet (robustos para distintas claves)
+                $scope.getTamanoPalletId = function (tp) {
+                    return tp.IdTamanoPallet || tp.IdTamañoPallet || tp.IDTamanoPallet || tp.IDTamañoPallet ||
+                        tp.Id || tp.id || tp.Codigo || tp.Code;
+                };
+                $scope.getTamanoPalletDescripcion = function (tp) {
+                    return tp.Descripcion || tp.Nombre || tp.Label || tp.Texto || ('ID ' + $scope.getTamanoPalletId(tp));
+                };
+                function extraerTamanosPallet(prod) {
+                    var posibles = [
+                        'tamanoPallets', 'TamanoPallets', 'TamanosPallets', 'TamanosPallet',
+                        'TamanioPallets', 'TamanioPallet', 'TamañoPallets', 'TamañoPallet'
+                    ];
+                    for (var i = 0; i < posibles.length; i++) {
+                        var k = posibles[i];
+                        if (Array.isArray(prod[k]) && prod[k].length) return prod[k];
+                    }
+                    return [];
+                }
+
+                var listaAPI = extraerTamanosPallet($scope.productoData);
+                console.log('Tamaños pallet RAW:', listaAPI);
+                if (listaAPI.length) {
+                    $scope.tamanosPallet = listaAPI;
+                } else {
+                    // Mantener hardcode si API vacío (ya definido arriba)
+                    console.warn('API sin tamaños, usando fallback hardcode');
+                }
+
+                // Capturar las claves del primer elemento para construir label dinámico
+                $scope._tamanoPalletKeys = listaAPI[0] ? Object.keys(listaAPI[0]) : [];
+                console.log('Claves del primer tamaño:', $scope._tamanoPalletKeys);
+
+                // Helper para obtener un ID genérico
+                $scope.getTamanoPalletId = function (tp) {
+                    return tp.IdTamanoPallet || tp.IdTamañoPallet || tp.IDTamanoPallet || tp.IDTamañoPallet ||
+                        tp.Id || tp.ID || tp.Codigo || tp.Code;
+                };
+                // Helper para descripción
+                $scope.getTamanoPalletDescripcion = function (tp) {
+                    return tp.Descripcion || tp.Nombre || tp.Texto || tp.Label || ('ID ' + $scope.getTamanoPalletId(tp));
+                };
+
+                // Si el modelo usa TamanoPallet pero solo existe TipoPallet, mantener el original
+                // (No crear un TamanoPallet artificial si no existe)
+                if ($scope.productoData.TamanoPallet === undefined && $scope.productoData.TipoPallet !== undefined) {
+                    // No tocar: dejar que el usuario seleccione y se almacene en TamanoPallet
+                    console.log('Modelo original tiene TipoPallet:', $scope.productoData.TipoPallet);
                 }
                 console.log('scope.productoData',$scope.productoData);
                 $scope.estados = $scope.productoData.estados;
@@ -959,19 +1123,10 @@ angular
                 });
                 $scope.impresorasDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Flexo' }, { id: 3, nombre: 'Hueco' }];
                 $scope.cilindrosDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Bolsapel' }, { id: 3, nombre: 'Nuevos' }, { id: 4, nombre: 'Ambos' }];
-                // Cargar grupos de empaque y mantener selección existente
-                var idGrupoSeleccionado = $scope.productoData.IdGrupoEmpaque ?? $scope.productoData.IDGrupoEmpaque ?? null;                console.log('ID GRUPO ANTES DE CARGAR:', idGrupoSeleccionado);
-                var servCall = APIService.GetGruposEmpaque();
-                servCall.then(function (u) {
-                    $scope.productoData.gruposEmpaque = u.data || [];
-                    // Restaurar la selección del grupo después de cargar
-                    $scope.productoData.IdGrupoEmpaque = idGrupoSeleccionado;
-                    console.log('ID GRUPO DESPUES DE ASIGNAR:', $scope.productoData.IdGrupoEmpaque);
-                    console.log('GRUPOS CARGADOS:', $scope.productoData.gruposEmpaque);
-                }, function () {
-                    // Si falla, al menos inicializa el array vacío
-                    $scope.productoData.gruposEmpaque = [];
-                });
+                // Cargar grupos de empaque y mantener selección existente (usa el helper)
+                var idGrupoSeleccionado = $scope.productoData.IdGrupoEmpaque ?? $scope.productoData.IDGrupoEmpaque ?? null;
+                console.log('ID GRUPO ANTES DE CARGAR:', idGrupoSeleccionado);
+                cargarGruposEmpaque(idGrupoSeleccionado);
                 $scope.proveedoresDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Bosisio' }, { id: 3, nombre: 'lynch' }, { id: 4, nombre: 'longo' }];
                 var responsableCustomerEncontrado = $scope.productoData.responsables.find(function (responsable) {
                     return responsable.Id === $scope.productoData.ResponsableCustomer;
@@ -1112,7 +1267,55 @@ angular
                     $scope.fechaAuxiliarParaMostrar.FechaPromesaProveedorGrabado = new Date($scope.productoData.FechaPromesaProveedorGrabado);
                 }
 
+                // Tamaños de pallet desde el API (normalizado a un solo array en $scope)
+                $scope.tamanosPallet = $scope.productoData.tamanoPallets
+                    || $scope.productoData.TamanoPallets
+                    || $scope.productoData.TamanosPallets
+                    || [];
 
+                // --- Fix required fantasma ---
+                function repararRequired(campos) {
+                    if (!$scope.editAuthorForm) return;
+                    campos.forEach(function (n) {
+                        var c = $scope.editAuthorForm[n];
+                        if (c && c.$error && c.$error.required &&
+                            c.$modelValue !== undefined && c.$modelValue !== null && c.$modelValue !== '') {
+                            c.$setValidity('required', true);
+                        }
+                    });
+                }
+
+                var camposConValorPeroInvalidos = [
+                    'Cod_Producto',
+                    'Descripcion',
+                    'Fecha_Creacion',
+                    'Unid_Medida',
+                    'Liberacion',
+                    'ResponsableConfeccionIng',
+                    'ResponsableLiberacionFinalIng',
+                    'TipoImpresora',
+                    'Impresora',
+                    'Proveedor',
+                    'ResponsablePrePrensa',
+                    'TipoMaterialPerfil',
+                    'PerfilImpresion',
+                    'EstadoPrePrensa'
+                ];
+               
+                // 1. Revalidar inmediatamente tras asignar modelo y poblar selects
+                $timeout(function () {
+                    if ($scope.perfilesDisponiblesCount() === 0) {
+                        $scope.productoData.PerfilImpresion = null;
+                    }
+                    $scope.revalidateForm();
+                    dumpFormErrors($scope.editAuthorForm, 'antes de reparar required');
+                }, 0);
+
+                // 2. Reparar required “fantasma” luego de que md-select haya compilado
+                $timeout(function () {
+                    repararRequired(camposConValorPeroInvalidos);
+                    dumpFormErrors($scope.editAuthorForm, 'después de reparar required');
+                }, 50);
                 AlertService.ShowAlert($scope);
             }, function (error) {
                 AlertService.SetAlert("Error al cargar el producto", "error");
@@ -1194,6 +1397,78 @@ angular
             return fechaOriginalDate.getTime() !== fechaNoOriginalDate.getTime();
         };
 
+
+        // DEBUG de validaciones
+        var DEBUG_VALID = true;
+
+        // Reemplaza tu dumpFormErrors por esta versión extendida
+        function dumpFormErrors(form, label) {
+            if (!DEBUG_VALID || !form) return;
+            var invalids = [];
+            angular.forEach(form, function (ctrl, name) {
+                if (name && name[0] === '$') return;
+                if (ctrl && ctrl.$invalid) {
+                    invalids.push({
+                        control: name,
+                        errors: Object.keys(ctrl.$error || {}).filter(function (k) { return ctrl.$error[k]; }),
+                        model: ctrl.$modelValue,
+                        view: ctrl.$viewValue,
+                        touched: ctrl.$touched,
+                        dirty: ctrl.$dirty
+                    });
+                }
+            });
+            console.group('VALIDATION DEBUG ' + (label || ''));
+            console.log('form.$valid =', form.$valid, ' form.$error =', angular.copy(form.$error));
+            console.table(invalids);
+
+            // NUEVO: listar con precisión los campos con 'required'
+            var req = (form.$error && form.$error.required) || [];
+            if (req.length) {
+                console.warn('Campos con error "required":', req.map(function (c) { return c.$name; }));
+                req.forEach(function (c) {
+                    var el = c.$$element && c.$$element[0];
+                    if (el) {
+                        console.warn(' - control:',
+                            { name: el.getAttribute('name'), ngModel: el.getAttribute('ng-model'), type: el.getAttribute('type') || el.tagName });
+                        console.warn('   HTML:', el.outerHTML);
+                    } else {
+                        console.warn(' - (sin $$element) name:', c.$name);
+                    }
+                });
+            }
+            console.groupEnd();
+        }
+
+        function hookValidity(form) {
+            if (!DEBUG_VALID || !form) return;
+            angular.forEach(form, function (ctrl, name) {
+                if (!ctrl || name && name[0] === '$' || typeof ctrl.$setValidity !== 'function') return;
+                var orig = ctrl.$setValidity;
+                ctrl.$setValidity = function (key, isValid) {
+                    try {
+                        console.debug('setValidity ->', name, 'rule:', key, 'isValid:', isValid, 'model:', ctrl.$modelValue);
+                    } catch (e) { }
+                    return orig.apply(ctrl, arguments);
+                };
+            });
+        }
+
+        // Hook al crear el form
+        $scope.$watch(function () { return $scope.editAuthorForm; }, function (f) {
+            if (f) {
+                // engancha una sola vez
+                $timeout(function () { hookValidity(f); }, 0);
+            }
+        });
+
+        // Log cuando cambia el estado global del form
+        $scope.$watch(function () { return $scope.editAuthorForm && $scope.editAuthorForm.$valid; }, function (nv, ov) {
+            if (nv !== ov && $scope.editAuthorForm) {
+                $timeout(function () { dumpFormErrors($scope.editAuthorForm, 'cambio form.$valid'); }, 0);
+            }
+        });
+
         $scope.processForm = function () {
             // Llamados para procesar las fechas
             $scope.productoData.Fecha_Creacion = $scope.procesarFecha($scope.productoData.Fecha_Creacion , $scope.fechaAuxiliarParaMostrar.Fecha_Creacion);
@@ -1267,9 +1542,7 @@ angular
             if ($scope.productoData.TipoPaletizacion !== undefined && $scope.productoData.TipoPaletizacion !== null) {
                 $scope.productoData.TipoPaletizacion = $scope.productoData.TipoPaletizacion === 1 || $scope.productoData.TipoPaletizacion === true;
             }
-            if ($scope.productoData.TipoPallet !== undefined && $scope.productoData.TipoPallet !== null) {
-                $scope.productoData.TipoPallet = $scope.productoData.TipoPallet === 1 || $scope.productoData.TipoPallet === true;
-            }
+           
             // Convertir campos de empaque a booleanos antes de enviar
             if ($scope.productoData.PosicionTaco !== undefined && $scope.productoData.PosicionTaco !== null) {
                 $scope.productoData.PosicionTaco = $scope.productoData.PosicionTaco === 1 || $scope.productoData.PosicionTaco === true;
@@ -1279,9 +1552,37 @@ angular
                 $scope.productoData.IDGrupoEmpaque = $scope.productoData.IdGrupoEmpaque;
             }
 
+            if ($scope.productoData.TamanoPallet != null) {
+                $scope.productoData.TipoPallet = $scope.productoData.TamanoPallet;
+            }
+
             console.log('ANTES DE ENVIAR - IdGrupoEmpaque:', $scope.productoData.IdGrupoEmpaque);
             console.log('ANTES DE ENVIAR - IDGrupoEmpaque:', $scope.productoData.IDGrupoEmpaque);
 
+            // Normalizar Pattern antes de enviar
+            // Normalizar Pattern antes de enviar
+            $scope.productoData.ModoPattern = ($scope.productoData.ModoPattern === true); // bool definitivo
+            if ($scope.productoData.ModoPattern === false) {
+                $scope.productoData.TipoPattern = 'N/A';
+            } else {
+                $scope.productoData.TipoPattern =
+                    ($scope.productoData.TipoPattern && $scope.productoData.TipoPattern !== '0')
+                        ? $scope.productoData.TipoPattern
+                        : 'N/A';
+            }
+            // ... dentro de $scope.processForm, antes de var data = $.param($scope.productoData);
+            if (
+                $scope.productoData.PerfilImpresion === null ||
+                $scope.productoData.PerfilImpresion === undefined ||
+                $scope.productoData.PerfilImpresion === '' ||
+                $scope.perfilesDisponiblesCount() === 0 ||
+                $scope.productoData.NoUsaPrePrensa === true
+            ) {
+                $scope.productoData.PerfilImpresion = ID_PERFIL_SIN_ASIGNAR; // forzar “Sin asignar”
+            } else {
+                var n = Number($scope.productoData.PerfilImpresion);
+                if (!isNaN(n)) $scope.productoData.PerfilImpresion = n;
+            }
             var data = $.param($scope.productoData);
             console.log('DATA A ENVIAR:', data);
 

@@ -26,14 +26,14 @@
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block flex-03">
                                     <label>Cod. Producto</label>
-                                    <input ng-disabled="true" type="text" ng-model="productoData.Cod_Producto" name="Nombre" required />
+                                    <input ng-disabled="true" type="text" ng-model="productoData.Cod_Producto" name="Cod_Producto" required />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
                                 </md-input-container>
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Descripcion</label>
-                                    <input ng-disabled="true" type="text" ng-model="productoData.Descripcion" name="Nombre" required />
+                                    <input ng-disabled="true" type="text" ng-model="productoData.Descripcion" name="Descripcion" required />
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
@@ -343,7 +343,12 @@
                                     <label>Liberacion</label>
 
                                     <md-select ng-disabled="tieneRolIngenieria == false || ((productoData.Tipo_Adm === 'SNPS' || productoData.Tipo_Adm === 'SCP') &&
-                             (productoData.Reemplazo_Prod ==='' || productoData.Referencia_Item ===''))" ng-model="productoData.Liberacion" placeholder="Selecciona un responsable" required>
+        (productoData.Reemplazo_Prod ==='' || productoData.Referencia_Item ===''))"
+    ng-model="productoData.Liberacion"
+    name="Liberacion"
+    placeholder="Selecciona un responsable"
+    ng-model-options="{trackBy: '$value'}"
+    ng-required="!((productoData.Tipo_Adm === 'SNPS' || productoData.Tipo_Adm === 'SCP') && (productoData.Reemplazo_Prod === '' || productoData.Referencia_Item === ''))">
                                         <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 7 }" ng-value="moduloResponsable.Id">
                                             {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
                                         </md-option>
@@ -378,7 +383,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Responsable confección</label>
-                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableConfeccionIng" placeholder="Selecciona un responsable" required>
+                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableConfeccionIng" name="ResponsableConfeccionIng" placeholder="Selecciona un responsable" required>
                                         <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 2 }" ng-value="moduloResponsable.Id">
                                             {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
                                         </md-option>
@@ -409,11 +414,17 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Responsable Lib. LET</label>
-                                    <md-select ng-disabled="!productoData.HabilitaCierreLet || tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionLet" placeholder="Selecciona un responsable" required>
-                                        <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 3 }" ng-value="moduloResponsable.Id">
-                                            {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
-                                        </md-option>
-                                    </md-select>
+                                   <md-select ng-disabled="!productoData.HabilitaCierreLet || tieneRolIngenieria == false"
+           ng-model="productoData.ResponsableLiberacionLet"
+           name="ResponsableLiberacionLet"
+           placeholder="Selecciona un responsable"
+           ng-model-options="{trackBy: '$value'}"
+           ng-required="productoData.HabilitaCierreLet === true">
+  <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 3 }"
+             ng-value="moduloResponsable.Id">
+    {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
+  </md-option>
+</md-select>
                                     <div ng-messages="editAuthorForm.FirstName.$error">
                                         <div ng-messages-include="pages/validation/text.html"></div>
                                     </div>
@@ -433,7 +444,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Responsable Liberación final</label>
-                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionFinalIng" placeholder="Selecciona un responsable" required>
+                                    <md-select ng-disabled="tieneRolIngenieria == false" ng-model="productoData.ResponsableLiberacionFinalIng" name="ResponsableLiberacionFinalIng" placeholder="Selecciona un responsable" required>
                                         <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 4 }" ng-value="moduloResponsable.Id">
                                             {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
                                         </md-option>
@@ -577,13 +588,43 @@
                                         <md-option ng-repeat="t in tiposPaletizacion" ng-value="t.id">{{t.id}} - {{t.nombre}}</md-option>
                                     </md-select>
                                 </md-input-container>
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Tamaño del pallet</label>
-                                    <md-select ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.TipoPallet" placeholder="Selecciona tamaño">
-                                        <md-option ng-repeat="tp in tamanosPallet" ng-value="tp.id">{{tp.nombre}}</md-option>
-                                    </md-select>
-                                </md-input-container>
+                               <md-input-container class="md-block" flex-gt-xs>
+    <label>Tipo del pallet</label>
+    <md-select ng-disabled="tieneRolAdminProducto == false"
+               ng-model="productoData.TamanoPallet"
+               placeholder="Selecciona tamaño">
+        <md-option ng-repeat="tp in tamanosPallet"
+                   ng-value="getTamanoPalletId(tp)">
+            {{ getTamanoPalletDescripcion(tp) }}
+        </md-option>
+    </md-select>
+</md-input-container>
                             </div>
+                            <!-- Campos nuevos: ModoPattern y TipoPattern -->
+<!-- Campos nuevos: ModoPattern y TipoPattern -->
+<div layout-gt-xs="row">
+  <md-input-container class="md-block" flex-gt-xs>
+    <label>Modo de Pattern</label>
+    <md-select ng-disabled="tieneRolAdminProducto == false"
+               ng-model="productoData.ModoPattern"
+               placeholder="Selecciona modo">
+      <md-option ng-value="false">Auto</md-option>
+      <md-option ng-value="true">Manual</md-option>
+    </md-select>
+  </md-input-container>
+
+  <md-input-container class="md-block" flex-gt-xs>
+    <label>Tipo de Pattern</label>
+    <md-select ng-disabled="tieneRolAdminProducto == false || productoData.ModoPattern === false"
+               ng-model="productoData.TipoPattern"
+               placeholder="Selecciona tipo">
+      <md-option ng-value="'N/A'">N/A</md-option>
+      <md-option ng-repeat="code in patterns" ng-value="code">
+        {{ code }}
+      </md-option>
+    </md-select>
+  </md-input-container>
+</div>
                         </md-content>
                     </div>
                 </div>
@@ -633,7 +674,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Tipo de impresora</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.TipoImpresora" placeholder="Selecciona un tipo de impresora" required>
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.TipoImpresora"  name="TipoImpresora" placeholder="Selecciona un tipo de impresora" ng-required="!productoData.NoUsaPrePrensa">
                                         <md-option ng-repeat="impresoraTipo in impresorasDisponibles" ng-value="impresoraTipo.id">
                                             {{ impresoraTipo.nombre }}
                                         </md-option>
@@ -645,7 +686,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Impresora</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.Impresora" placeholder="Selecciona una impresora" required>
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.Impresora" name="Impresora" placeholder="Selecciona una impresora" ng-required="!productoData.NoUsaPrePrensa">
                                         <md-option ng-repeat="impresora in productoData.impresoras | filter: { IdTipoImpresora: productoData.TipoImpresora }" ng-value="impresora.IdImpresora">
                                             {{ impresora.NombreImpresora }}
                                         </md-option>
@@ -657,7 +698,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Proveedor</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.Proveedor" placeholder="Selecciona un proveedor" required>
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.Proveedor"  name="Proveedor" placeholder="Selecciona un proveedor" ng-required="!productoData.NoUsaPrePrensa">
                                         <md-option ng-repeat="proveedor in proveedoresDisponibles" ng-value="proveedor.id">
                                             {{ proveedor.nombre }}
                                         </md-option>
@@ -671,7 +712,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Responsable Pre Prensa</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.ResponsablePrePrensa" placeholder="Selecciona un responsable" required>
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.ResponsablePrePrensa" name="ResponsablePrePrensa" placeholder="Selecciona un responsable" ng-required="!productoData.NoUsaPrePrensa">
                                         <md-option ng-repeat="moduloResponsable in productoData.responsables | filter:{ IdModuloProducto: 5 }" ng-value="moduloResponsable.Id">
                                             {{ moduloResponsable.GPResponsables.Nombre }} {{ moduloResponsable.GPResponsables.Apellido }}
                                         </md-option>
@@ -683,7 +724,7 @@
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Tipo de Material</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.TipoMaterialPerfil" placeholder="Selecciona un Material" required>
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.TipoMaterialPerfil" name="TipoMaterialPerfil" placeholder="Selecciona un Material" ng-required="!productoData.NoUsaPrePrensa">
                                         <md-option ng-repeat="material in productoData.materiales" ng-value="material.IdTipoMaterial">
                                             {{ material.Descripcion }}
                                         </md-option>
@@ -693,23 +734,34 @@
                                     </div>
                                 </md-input-container>
 
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Perfil</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.PerfilImpresion" placeholder="Selecciona un Perfil" required>
-                                        <md-option ng-repeat="perfil in productoData.GPPerfilesPrePrensa | filter: { IdTipoMaterial: productoData.TipoMaterialPerfil , IdProveedor: productoData.Proveedor, IdImpresora: productoData.Impresora }" ng-value="perfil.IdPerfilPrePrensa">
-                                            {{ perfil.Descripcion }}
-                                        </md-option>
-                                    </md-select>
-                                    <div ng-messages="editAuthorForm.FirstName.$error">
-                                        <div ng-messages-include="pages/validation/text.html"></div>
-                                    </div>
-                                </md-input-container>
+                               <md-input-container class="md-block" flex-gt-xs>
+  <label>Perfil</label>
+  <md-select ng-disabled="tieneRolPrensa == false || productoData.NoUsaPrePrensa == true || perfilesDisponiblesCount() === 0"
+             ng-model="productoData.PerfilImpresion"
+             name="PerfilImpresion"
+             placeholder="Selecciona un Perfil"
+             ng-model-options="{ trackBy: '$value' }"
+             ng-required="!productoData.NoUsaPrePrensa && perfilesDisponiblesCount() > 0">
+
+    <!-- Opción fija, no filtrada -->
+    <md-option ng-value="1">Sin asignar</md-option>
+
+    <!-- Opciones filtradas por material / proveedor / impresora -->
+    <md-option ng-repeat="perfil in productoData.GPPerfilesPrePrensa | filter: { IdTipoMaterial: productoData.TipoMaterialPerfil , IdProveedor: productoData.Proveedor, IdImpresora: productoData.Impresora }"
+               ng-value="perfil.IdPerfilPrePrensa">
+      {{ perfil.Descripcion }}
+    </md-option>
+  </md-select>
+  <div ng-messages="editAuthorForm.FirstName.$error">
+    <div ng-messages-include="pages/validation/text.html"></div>
+  </div>
+</md-input-container>
 
                             </div>
                             <div layout-gt-xs="row">
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Estado</label>
-                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.EstadoPrePrensa" placeholder="Selecciona un Estado" required>
+                                    <md-select ng-disabled="tieneRolPrensa == false" ng-model="productoData.EstadoPrePrensa"  name="EstadoPrePrensa" placeholder="Selecciona un Estado" ng-required="!productoData.NoUsaPrePrensa">
                                         <md-option ng-repeat="estado in productoData.GPEstadosPrePrensa" ng-value="estado.IdEstadoPrePrensa">
                                             {{ estado.Descripcion }}
                                         </md-option>
@@ -944,18 +996,22 @@
                                 </md-input-container>
                             </div>
 
-                            <div layout-gt-xs="row" ng-show="productoData.TipoImpresora == 3">
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <label>Tipo Cilindro</label>
-                                    <md-select ng-disabled="tieneRolHerramental == false" ng-model=" productoData.TipoCilindros" placeholder="Selecciona un tipo de cilindro" required>
-                                        <md-option ng-repeat="cilindroTipo in cilindrosDisponibles" ng-value="cilindroTipo.id">
-                                            {{ cilindroTipo.nombre }}
-                                        </md-option>
-                                    </md-select>
-                                    <div ng-messages="editAuthorForm.FirstName.$error">
-                                        <div ng-messages-include="pages/validation/text.html"></div>
-                                    </div>
-                                </md-input-container>
+                            <div layout-gt-xs="row" ng-if="productoData.TipoImpresora == 3">
+  <md-input-container class="md-block" flex-gt-xs>
+    <label>Tipo Cilindro</label>
+    <md-select ng-disabled="tieneRolHerramental == false"
+               ng-model=" productoData.TipoCilindros"
+               name="TipoCilindros"
+               placeholder="Selecciona un tipo de cilindro"
+               ng-required="productoData.TipoImpresora == 3">
+      <md-option ng-repeat="cilindroTipo in cilindrosDisponibles" ng-value="cilindroTipo.id">
+        {{ cilindroTipo.nombre }}
+      </md-option>
+    </md-select>
+    <div ng-messages="editAuthorForm.FirstName.$error">
+      <div ng-messages-include="pages/validation/text.html"></div>
+    </div>
+  </md-input-container>
 
                                 <md-input-container class="md-block" flex-gt-xs>
                                     <label>Fecha Solicitada por Bolsapel</label>
