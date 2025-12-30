@@ -2,7 +2,7 @@
 
 angular
     .module('app.controllers')
-    .controller('productosController', function ($scope, $filter, APIService, DTOptionsBuilder, $timeout) {
+    .controller('productosController', function ($scope, $filter, APIService, DTOptionsBuilder, DTColumnBuilder, $timeout) {
         // Inicialización de variables
 
         // Obtener la fecha actual
@@ -21,6 +21,7 @@ angular
         $scope.toggleDiv = function () {
             $scope.isDivVisible = !$scope.isDivVisible; // Cambia el estado
         };
+        $scope.activeTab = 'activos'; // Tab activo por defecto
         $scope.estados = ['Abierto', 'Stand By', 'Cerrado', 'Cancelado'];
         $scope.booleans = [{ 'key': false, 'value': 'No' }, { 'key': true, 'value': 'Si' }];
 
@@ -120,20 +121,63 @@ angular
         $scope.Tipo_AdmValues = [];
 
         $scope.filteredProductos = [];
+        $scope.filteredProductosMigrados = [];
         $scope.sortColumn = '';
         $scope.reverseSort = false;
         $scope.dateComparison = 'equals'; // Comparación para fechas
         $scope.dataLoaded = false; // Bandera para indicar si los datos están cargados
+        
+        // Función para cambiar de tab
+        $scope.setActiveTab = function(tab) {
+            if (tab === 'migrados' && !$scope.productosMigrados) {
+                // Mostrar mensaje de carga
+                $scope.loadingMigrados = true;
+
+                // Cargar productos migrados de forma asíncrona y alimentar DataTables nativo
+                $timeout(function() {
+                    var data = ($scope.productosOriginal || []).filter(function (producto) {
+                        return producto.Estado === 'Migrado';
+                    });
+                    $scope.productosMigrados = data;
+                    $scope.filteredProductosMigrados = data;
+                    try { console.log('[Migrados] Loaded data count:', data.length); } catch (e) {}
+                    $scope.loadingMigrados = false;
+                    $scope.activeTab = tab;
+
+                    // Cargar datos en DataTables cuando la instancia esté disponible
+                    $timeout(function () {
+                        if ($scope.dtInstanceMigrados) {
+                            var dt = $scope.dtInstanceMigrados.DataTable || $scope.dtInstanceMigrados;
+                            try { console.log('[Migrados] Populating DataTable with rows:', data.length); } catch (e) {}
+                            dt.clear();
+                            dt.rows.add(data);
+                            // aplicar el término de búsqueda actual si existe
+                            if ($scope.searchQuery) {
+                                dt.search($scope.searchQuery).draw(false);
+                            } else {
+                                dt.draw(false);
+                            }
+                        } else {
+                            try { console.log('[Migrados] dtInstance not ready yet'); } catch (e) {}
+                        }
+                    }, 80);
+                }, 0);
+            } else {
+                $scope.activeTab = tab;
+            }
+        };
 
         // Obtener productos desde la API
         GetProductos();
 
         function GetProductos() {
             APIService.GetProductos().then(function (response) {
-                $scope.productos = response.data;
+                $scope.productosOriginal = response.data; // Guardar todos los productos sin filtrar
+                // Filtrar productos activos (no migrados)
                 $scope.productos = response.data.filter(function (producto) {
                     return producto.Estado !== "Migrado";
                 });
+                // productos migrados se cargarán bajo demanda en el tab
                 console.log('$scope.productos', $scope.productos);
                 $scope.codProductoValues = [...new Set($scope.productos.map(p => p.Cod_Producto))]; // Obtener valores únicos para Cod_Producto
                 $scope.ResponsableComercialValues = [...new Set($scope.productos.map(p => p.ResponsableComercial))]; // Obtener valores únicos para ResponsableComercial
@@ -169,13 +213,103 @@ angular
             });
         }
 
+        $scope.dtInstanceActivos = {};
+        $scope.dtInstanceMigrados = null;
+
+        // Callback de inicialización de DataTables (Migrados)
+        $scope.dtInstanceMigradosInit = function (dtInstance) {
+            $scope.dtInstanceMigrados = dtInstance;
+            try {
+                console.log('[Migrados] dtInstance initialized:', !!dtInstance, 'data ready:', $scope.productosMigrados ? $scope.productosMigrados.length : 0);
+            } catch (e) {}
+            if ($scope.productosMigrados && $scope.productosMigrados.length) {
+                var dt = dtInstance.DataTable || dtInstance;
+                console.log('[Migrados] Initial populate on init with rows:', $scope.productosMigrados.length);
+                dt.clear();
+                dt.rows.add($scope.productosMigrados);
+                dt.draw(false);
+            }
+        };
+
         $scope.dtOptions = DTOptionsBuilder
             .newOptions()
             .withLanguageSource('/js/angular-datatables-spanish.json')
             .withOption('paging', true)
             .withPaginationType('full_numbers')
             .withDisplayLength(20)
-            .withOption('order', [6, 'desc']);
+            .withOption('order', [6, 'desc']); // Ordenar por columna 6 (Estado Preprensa)
+            
+        $scope.dtOptionsMigrados = DTOptionsBuilder
+            .newOptions()
+            .withLanguageSource('/js/angular-datatables-spanish.json')
+            .withOption('paging', true)
+            .withOption('processing', true)
+            .withOption('deferRender', true)
+            .withOption('searching', true)
+            .withPaginationType('full_numbers')
+            .withDisplayLength(50)
+            .withOption('order', [3, 'desc']); // Ordenar por Fecha_Inicial (columna 3-0)
+
+        // Columnas para DataTables nativo en Migrados (sin Angular en celdas)
+        $scope.dtColumnsMigrados = [
+            DTColumnBuilder.newColumn('Cod_Producto').withTitle('Cod Producto').renderWith(function (data, type, row) {
+                var code = data || '';
+                if (type === 'filter' || type === 'sort') return code;
+                return '<a href="/#/blsp/productos/crud/' + code + '" class="title"><strong>' + code + '</strong></a>';
+            }),
+            DTColumnBuilder.newColumn('Descripcion').withTitle('Descripcion').renderWith(function (data, type) {
+                var text = (data === undefined || data === null) ? '' : data;
+                return (type === 'filter' || type === 'sort') ? text : text;
+            }),
+            DTColumnBuilder.newColumn('Dias').withTitle('Dias').renderWith(function (data, type, row) {
+                var standby = row && row.DiasStandby ? row.DiasStandby : 0;
+                var value = (data === undefined || data === null) ? '' : data;
+                if (type === 'filter' || type === 'sort') return value;
+                var cls = standby > 0 ? 'red-bold' : '';
+                var title = standby > 0 ? ('Días Standby: ' + standby) : '';
+                return '<span title="' + title + '" class="' + cls + '">' + value + '</span>';
+            }),
+            DTColumnBuilder.newColumn('Fecha_Inicial').withTitle('Fecha Inicial').renderWith(function (data, type) {
+                try {
+                    var d = new Date(data);
+                    if (isNaN(d)) return '';
+                    var dd = ('0' + d.getDate()).slice(-2);
+                    var mm = ('0' + (d.getMonth() + 1)).slice(-2);
+                    var yyyy = d.getFullYear();
+                    var formatted = dd + '/' + mm + '/' + yyyy;
+                    return (type === 'filter' || type === 'sort') ? formatted : formatted;
+                } catch (e) { return ''; }
+            }),
+            DTColumnBuilder.newColumn(null).withTitle('Estado Customer').renderWith(function (data, type, row) {
+                return renderSemaforo(row, 'SemaforoCustomer');
+            }).notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('Estado Ingenieria').renderWith(function (data, type, row) {
+                return renderSemaforo(row, 'SemaforoIngenieria');
+            }).notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('Estado Preprensa').renderWith(function (data, type, row) {
+                return renderSemaforo(row, 'SemaforoPreprensa');
+            }).notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('Estado Herramental').renderWith(function (data, type, row) {
+                return renderSemaforo(row, 'SemaforoHerramental');
+            }).notSortable(),
+            DTColumnBuilder.newColumn(null).withTitle('Estado General').renderWith(function (data, type, row) {
+                return renderSemaforo(row, 'SemaforoGeneral');
+            }).notSortable()
+        ];
+
+        function renderSemaforo(row, field) {
+            var val = row && row[field] ? row[field] : 0;
+            var r = 'luz roja' + (val == 1 ? ' encendida' : '');
+            var a = 'luz amarilla' + (val == 2 ? ' encendida' : '');
+            var v = 'luz verde' + (val == 3 ? ' encendida' : '');
+            return (
+                '<div class="semaforo">' +
+                '  <div class="' + r + '"><div class="borde"></div></div>' +
+                '  <div class="' + a + '"><div class="borde"></div></div>' +
+                '  <div class="' + v + '"><div class="borde"></div></div>' +
+                '</div>'
+            );
+        }
 
         // Función para aplicar los filtros
         $scope.applyFilters = _.debounce(function () {
@@ -292,7 +426,16 @@ angular
         }, true);
 
         $scope.doSearch = function () {
-            $scope.applyFilters(); // Reaplicar filtros y ordenación
+            if ($scope.activeTab === 'migrados') {
+                $timeout(function () {
+                    if ($scope.dtInstanceMigrados) {
+                        var dt = $scope.dtInstanceMigrados.DataTable || $scope.dtInstanceMigrados;
+                        dt.search($scope.searchQuery || '').draw(false);
+                    }
+                }, 0);
+            } else {
+                $scope.applyFilters(); // Activos: reaplicar filtros y ordenación
+            }
         };
     
         $scope.exportExcel = function () {
@@ -313,9 +456,12 @@ angular
                     $scope.dataForExcel = u.data;
                     console.log('$scope.dataForExcel', $scope.dataForExcel);
 
-                    $scope.dataForExcel = $scope.dataForExcel.filter(function (producto) {
-                        return producto.Estado !== "Migrado";
-                    });
+                    // Aplicar filtro de migrados solo si el toggle está desactivado
+                    if (!$scope.showMigrados) {
+                        $scope.dataForExcel = $scope.dataForExcel.filter(function (producto) {
+                            return producto.Estado !== "Migrado";
+                        });
+                    }
                     $scope.exportData();
                     $scope.butonVisible = false;
 
@@ -782,6 +928,7 @@ angular
 
 
     .controller('productosCRUDController', function ($timeout,$scope, APIService, $window, $cookies, $rootScope, $mdDialog, AlertService, $stateParams, $localStorage, DTOptionsBuilder, DTColumnBuilder) {
+        $scope.esMigrado = false; // Flag para permitir grabar sin validaciones si es Migrado
         var ID_PERFIL_SIN_ASIGNAR = 1;
         // Leer el objeto JSON desde localStorage
         var datosUsuario = $window.localStorage.getItem('datosUsuario');
@@ -957,6 +1104,54 @@ angular
             }
         });
         var id = $stateParams.id;
+
+        // Helper robusto para detectar si el producto es Migrado
+        function esMigradoPorEstado(obj) {
+            try {
+                if (!obj) return false;
+                // Cadenas posibles
+                var estStr = obj.Estado || (obj.EstadoParaMostrar && (obj.EstadoParaMostrar.Estado || obj.EstadoParaMostrar.Descripcion));
+                if (typeof estStr === 'string') {
+                    var s = estStr.toLowerCase().trim();
+                    if (s === 'migrado') return true;
+                    // Si el backend envía código como string ("2"), convertirlo
+                    var sNum = parseInt(estStr, 10);
+                    if (!isNaN(sNum) && sNum === 2) return true;
+                }
+                // Ids posibles (si el backend usa numericos)
+                var estNum = null;
+                if (typeof obj.Estado === 'number') estNum = obj.Estado;
+                if (typeof obj.Estado === 'string') {
+                    var n = parseInt(obj.Estado, 10);
+                    if (!isNaN(n)) estNum = n;
+                }
+                if (obj.EstadoParaMostrar && obj.EstadoParaMostrar.IDEstadoProducto !== undefined) {
+                    var idNum = obj.EstadoParaMostrar.IDEstadoProducto;
+                    if (typeof idNum === 'string') {
+                        var idn = parseInt(idNum, 10);
+                        if (!isNaN(idn)) idNum = idn;
+                    }
+                    if (typeof idNum === 'number') {
+                        estNum = estNum || idNum;
+                    }
+                }
+                // Si tu mapping usa otro valor para Migrado, ajusta aqui
+                if (estNum === 2) return true;
+                // Fallback: si hay catálogo de estados, validar por descripción
+                if (Array.isArray(obj.estados) && (obj.Estado !== undefined && obj.Estado !== null)) {
+                    var cur = obj.estados.find(function(e){
+                        var id = e.IDEstadoProducto != null ? e.IDEstadoProducto : e.Id;
+                        if (typeof id === 'string') { var t = parseInt(id,10); if (!isNaN(t)) id = t; }
+                        return id === estNum || id === obj.Estado || (typeof obj.Estado === 'string' && !isNaN(parseInt(obj.Estado,10)) && id === parseInt(obj.Estado,10));
+                    });
+                    if (cur) {
+                        var d = (cur.Estado || cur.Descripcion || cur.Nombre || '').toString().toLowerCase().trim();
+                        if (d === 'migrado') return true;
+                    }
+                }
+            } catch (_) {}
+            return false;
+        }
         $scope.fechaAuxiliarParaMostrar = {};
 
 
@@ -1022,6 +1217,8 @@ angular
             var servCall = APIService.GetProductoById(id);
             servCall.then(function (u) {
                 $scope.productoData = u.data;
+                // Detectar Migrado basado en los datos devueltos por API, soportando string o código numérico
+                $scope.esMigrado = $scope.esMigrado || esMigradoPorEstado($scope.productoData);
                 if (id) {
                     // dentro del servCall.then(...) después de $scope.productoData = u.data;
                     if ($scope.productoData.PerfilImpresion !== null && $scope.productoData.PerfilImpresion !== undefined && $scope.productoData.PerfilImpresion !== '') {
@@ -1121,7 +1318,19 @@ angular
                 $scope.productoData.EstadoParaMostrar = $scope.estados.find(function (estado) {
                     return estado?.IDEstadoProducto === $scope.productoData.Estado;
                 });
+                // Re-evaluar migrado luego de fijar EstadoParaMostrar
+                $scope.esMigrado = $scope.esMigrado || esMigradoPorEstado($scope.productoData);
                 $scope.impresorasDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Flexo' }, { id: 3, nombre: 'Hueco' }];
+                // Solo para productos migrados en EDICIÓN: si no hay impresora seleccionada,
+                // asignar automáticamente el primer valor del combo para permitir grabar.
+                if ($scope.esMigrado) {
+                    var imp = $scope.productoData.Impresora;
+                    if (imp === null || imp === undefined || imp === '' || imp === 0 || imp === '0') {
+                        if (Array.isArray($scope.impresorasDisponibles) && $scope.impresorasDisponibles.length > 0) {
+                            $scope.productoData.Impresora = $scope.impresorasDisponibles[0].id;
+                        }
+                    }
+                }
                 $scope.cilindrosDisponibles = [{ id: 1, nombre: 'Sin Asignar' }, { id: 2, nombre: 'Bolsapel' }, { id: 3, nombre: 'Nuevos' }, { id: 4, nombre: 'Ambos' }];
                 // Cargar grupos de empaque y mantener selección existente (usa el helper)
                 var idGrupoSeleccionado = $scope.productoData.IdGrupoEmpaque ?? $scope.productoData.IDGrupoEmpaque ?? null;
@@ -1326,6 +1535,8 @@ angular
             servCallGetProductoPorCodigo.then(function (u) {
                 $scope.servCallGetProductoPorCodigoData = u.data[0];
                 console.log('$scope.servCallGetProductoPorCodigoData', $scope.servCallGetProductoPorCodigoData);
+                // También detectar migrado con la otra respuesta del API
+                $scope.esMigrado = $scope.esMigrado || esMigradoPorEstado($scope.servCallGetProductoPorCodigoData);
 
             },
 
@@ -1585,6 +1796,21 @@ angular
             }
             var data = $.param($scope.productoData);
             console.log('DATA A ENVIAR:', data);
+
+            // Si es migrado, saltar todas las validaciones y grabar directo
+            if ($scope.esMigrado) {
+                if (id) {
+                    var servCall = APIService.updateProducto(id, data);
+                    servCall.then(function (u) {
+                        AlertService.SetAlert("El Producto fue actualizado con éxito", "success");
+                        $scope.ShowAlert();
+                        $window.location.href = "/#/blsp/productos/list";
+                    }, function (error) {
+                        $scope.errorMessage = "Oops, something went wrong.";
+                    });
+                }
+                return;
+            }
 
             $scope.validarFechasFinal = function () {
                 var validas = [];
@@ -4223,3 +4449,4 @@ angular
         
 
  });
+

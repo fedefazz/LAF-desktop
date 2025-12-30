@@ -13,7 +13,7 @@
                 <div ng-model="successMessage" class="alert alert-success" role="alert" ng-show="successMessage">{{ successMessage }}</div>
                 <div ng-model="errorMessage" class="alert alert-danger" role="alert" ng-show="errorMessage">{{ errorMessage }}</div>
             </div>
-            <form ng-submit="editAuthorForm.$valid && processForm()" class="form-horizontal" role="form" name="editAuthorForm" novalidate>
+            <form ng-submit="(esMigrado || editAuthorForm.$valid) && processForm()" class="form-horizontal" role="form" name="editAuthorForm" novalidate>
                 <div class="col-sm-12 col-md-8">
                     <div class="panel panel-inverse">
                         <div class="panel-heading">
@@ -79,7 +79,7 @@
                             <h4 class="panel-title">Acciones</h4>
                         </div>
                         <div class="panel-body">
-                            <button class="btn btn-block btn-primary" ng-disabled="!editAuthorForm.$valid" type="submit">{{SubmitButton}}</button>
+                            <button class="btn btn-block btn-primary" ng-disabled="!esMigrado && !editAuthorForm.$valid" type="submit">{{SubmitButton}}</button>
                             <a class="btn btn-block btn-default" ui-sref="blsp.productos.list">Volver</a>
                         </div>
                     </div>
