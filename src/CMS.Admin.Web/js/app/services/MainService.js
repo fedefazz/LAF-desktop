@@ -204,8 +204,19 @@ angular
 
         
 
-        this.GetProductos = function (filter) {
-            return $http.get($rootScope.webapiurl + "api/PSSProductos/getProductos?filter=" + filter)
+        this.GetProductos = function (estado, filter) {
+            var url = $rootScope.webapiurl + "api/PSSProductos/getProductos";
+            var params = [];
+            if (estado !== null && estado !== undefined) {
+                params.push("estado=" + estado);
+            }
+            if (filter) {
+                params.push("filter=" + filter);
+            }
+            if (params.length > 0) {
+                url += "?" + params.join("&");
+            }
+            return $http.get(url);
         }
 
         this.GetReporteRomaneo = function (pNroOf, pCodProducto, dateDesde, dateHasta, pTurno, pTipoRomaneo) {

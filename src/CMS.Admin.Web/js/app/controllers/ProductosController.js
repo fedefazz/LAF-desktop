@@ -21,9 +21,39 @@ angular
         $scope.toggleDiv = function () {
             $scope.isDivVisible = !$scope.isDivVisible; // Cambia el estado
         };
-        $scope.activeTab = 'activos'; // Tab activo por defecto
-        $scope.estados = ['Abierto', 'Stand By', 'Cerrado', 'Cancelado'];
+        $scope.activeTab = 'abierto'; // Tab activo por defecto
+        $scope.estados = ['Abierto', 'Stand By', 'Cerrado', 'Cancelado', 'Migrado'];
         $scope.booleans = [{ 'key': false, 'value': 'No' }, { 'key': true, 'value': 'Si' }];
+        
+        // Mapeo de tabs a IDs de estado en la BD
+        $scope.estadoMap = {
+            'abierto': 1,
+            'standby': 2,
+            'cerrado': 3,
+            'cancelado': 4,
+            'migrado': 5
+        };
+        
+        // Datasets por tab
+        $scope.productosAbierto = null;
+        $scope.productosStandby = null;
+        $scope.productosCerrado = null;
+        $scope.productosCancelado = null;
+        $scope.productosMigrado = null;
+        
+        // Filtered datasets por tab
+        $scope.filteredProductosAbierto = [];
+        $scope.filteredProductosStandby = [];
+        $scope.filteredProductosCerrado = [];
+        $scope.filteredProductosCancelado = [];
+        $scope.filteredProductosMigrado = [];
+        
+        // Flags de carga
+        $scope.loadingAbierto = false;
+        $scope.loadingStandby = false;
+        $scope.loadingCerrado = false;
+        $scope.loadingCancelado = false;
+        $scope.loadingMigrado = false;
 
         $scope.selectedColumn = ''; // Columna seleccionada para filtrar
         $scope.filterValue = ''; // Valor para filtrar
@@ -121,85 +151,100 @@ angular
         $scope.Tipo_AdmValues = [];
 
         $scope.filteredProductos = [];
-        $scope.filteredProductosMigrados = [];
         $scope.sortColumn = '';
         $scope.reverseSort = false;
         $scope.dateComparison = 'equals'; // Comparación para fechas
         $scope.dataLoaded = false; // Bandera para indicar si los datos están cargados
         
-        // Función para cambiar de tab
+        // Función para cambiar de tab con request por estado
         $scope.setActiveTab = function(tab) {
-            if (tab === 'migrados' && !$scope.productosMigrados) {
-                // Mostrar mensaje de carga
-                $scope.loadingMigrados = true;
+            $scope.activeTab = tab;
+            var estadoId = $scope.estadoMap[tab];
+            var datasetKey = 'productos' + tab.charAt(0).toUpperCase() + tab.slice(1);
+            var loadingKey = 'loading' + tab.charAt(0).toUpperCase() + tab.slice(1);
+            
+            // Cargar datos solo si no existen aún
+            if (!$scope[datasetKey]) {
+                $scope[loadingKey] = true;
+                GetProductos(estadoId, tab);
+            } else {
+                // Si ya existen, actualizar filteredProductos
+                $scope.filteredProductos = $scope[datasetKey];
+                
+                // Si es migrado y DataTables ya está inicializado, redibujar
+                if (tab === 'migrado' && $scope.dtInstanceMigrados) {
+                    $timeout(function() {
+                        var dt = $scope.dtInstanceMigrados.DataTable || $scope.dtInstanceMigrados;
+                        dt.clear();
+                        dt.rows.add($scope[datasetKey]);
+                        if ($scope.searchQuery) {
+                            dt.search($scope.searchQuery).draw(false);
+                        } else {
+                            dt.draw(false);
+                        }
+                    }, 50);
+                }
+            }
+        };
 
-                // Cargar productos migrados de forma asíncrona y alimentar DataTables nativo
-                $timeout(function() {
-                    var data = ($scope.productosOriginal || []).filter(function (producto) {
-                        return producto.Estado === 'Migrado';
-                    });
-                    $scope.productosMigrados = data;
-                    $scope.filteredProductosMigrados = data;
-                    try { console.log('[Migrados] Loaded data count:', data.length); } catch (e) {}
-                    $scope.loadingMigrados = false;
-                    $scope.activeTab = tab;
+        // Obtener productos desde la API por estado
+        GetProductos(1, 'abierto'); // Cargar Abierto por defecto
 
-                    // Cargar datos en DataTables cuando la instancia esté disponible
-                    $timeout(function () {
+        function GetProductos(estadoId, tab) {
+            APIService.GetProductos(estadoId).then(function (response) {
+                var datasetKey = 'productos' + tab.charAt(0).toUpperCase() + tab.slice(1);
+                var filteredKey = 'filteredProductos' + tab.charAt(0).toUpperCase() + tab.slice(1);
+                var loadingKey = 'loading' + tab.charAt(0).toUpperCase() + tab.slice(1);
+                
+                // Guardar en el dataset correspondiente
+                $scope[datasetKey] = response.data;
+                $scope[filteredKey] = response.data;
+                $scope[loadingKey] = false;
+                $scope.dataLoaded = true;
+                
+                console.log('[' + tab + '] Loaded products count:', response.data.length);
+                
+                // Poblar valores únicos para filtros (solo para el primer tab)
+                if (tab === 'abierto') {
+                    $scope.codProductoValues = [...new Set(response.data.map(p => p.Cod_Producto))];
+                    $scope.ResponsableComercialValues = [...new Set(response.data.map(p => p.ResponsableComercial))];
+                    $scope.categoriaValues = [...new Set(response.data.map(p => p.Categoria))];
+                    $scope.EstadoPrePrensaValues = [...new Set(response.data.map(p => p.EstadoPrePrensa))];
+                    $scope.Nombre_ClienteValues = [...new Set(response.data.map(p => p.Nombre_Cliente))];
+                    $scope.Tipo_AdmValues = [...new Set(response.data.map(p => p.Tipo_Adm))];
+                    $scope.ResponsableCustomerlValues = [...new Set(response.data.map(p => p.ResponsableCustomer))];
+                    $scope.CilindrosValues = [...new Set(response.data.map(p => p.Cilindros))];
+                    $scope.LiberacionValues = [...new Set(response.data.map(p => p.Liberacion))];
+                    $scope.ResponsableConfeccionIngValues = [...new Set(response.data.map(p => p.ResponsableConfeccionIng))];
+                    $scope.ResponsableLiberacionLetValues = [...new Set(response.data.map(p => p.ResponsableLiberacionLet))];
+                    $scope.ResponsableLiberacionFinalIngValues = [...new Set(response.data.map(p => p.ResponsableLiberacionFinalIng))];
+                    $scope.TipoImpresoraValues = [...new Set(response.data.map(p => p.TipoImpresora))];
+                    $scope.ImpresoraValues = [...new Set(response.data.map(p => p.Impresora))];
+                    $scope.ProveedorValues = [...new Set(response.data.map(p => p.Proveedor))];
+                    $scope.ResponsablePrePrensaValues = [...new Set(response.data.map(p => p.ResponsablePrePrensa))];
+                    $scope.PerfilImpresionValues = [...new Set(response.data.map(p => p.PerfilImpresion))];
+                    $scope.TipoCilindrosValues = [...new Set(response.data.map(p => p.TipoCilindros))];
+                    $scope.CodigosCilindrosValues = [...new Set(response.data.map(p => p.CodigosCilindros))];
+                }
+                
+                // Para Migrado, poblar DataTables nativo
+                if (tab === 'migrado') {
+                    $timeout(function() {
                         if ($scope.dtInstanceMigrados) {
                             var dt = $scope.dtInstanceMigrados.DataTable || $scope.dtInstanceMigrados;
-                            try { console.log('[Migrados] Populating DataTable with rows:', data.length); } catch (e) {}
+                            console.log('[Migrado] Populating DataTable with rows:', response.data.length);
                             dt.clear();
-                            dt.rows.add(data);
-                            // aplicar el término de búsqueda actual si existe
+                            dt.rows.add(response.data);
                             if ($scope.searchQuery) {
                                 dt.search($scope.searchQuery).draw(false);
                             } else {
                                 dt.draw(false);
                             }
-                        } else {
-                            try { console.log('[Migrados] dtInstance not ready yet'); } catch (e) {}
                         }
-                    }, 80);
-                }, 0);
-            } else {
-                $scope.activeTab = tab;
-            }
-        };
-
-        // Obtener productos desde la API
-        GetProductos();
-
-        function GetProductos() {
-            APIService.GetProductos().then(function (response) {
-                $scope.productosOriginal = response.data; // Guardar todos los productos sin filtrar
-                // Filtrar productos activos (no migrados)
-                $scope.productos = response.data.filter(function (producto) {
-                    return producto.Estado !== "Migrado";
-                });
-                // productos migrados se cargarán bajo demanda en el tab
-                console.log('$scope.productos', $scope.productos);
-                $scope.codProductoValues = [...new Set($scope.productos.map(p => p.Cod_Producto))]; // Obtener valores únicos para Cod_Producto
-                $scope.ResponsableComercialValues = [...new Set($scope.productos.map(p => p.ResponsableComercial))]; // Obtener valores únicos para ResponsableComercial
-                $scope.categoriaValues = [...new Set($scope.productos.map(p => p.Categoria))];
-                $scope.EstadoPrePrensaValues = [...new Set($scope.productos.map(p => p.EstadoPrePrensa))];
-                $scope.Nombre_ClienteValues = [...new Set($scope.productos.map(p => p.Nombre_Cliente))];
-                $scope.Tipo_AdmValues = [...new Set($scope.productos.map(p => p.Tipo_Adm))];
-                $scope.ResponsableCustomerlValues = [...new Set($scope.productos.map(p => p.ResponsableCustomer))];
-                $scope.CilindrosValues = [...new Set($scope.productos.map(p => p.Cilindros))];
-                $scope.LiberacionValues = [...new Set($scope.productos.map(p => p.Liberacion))];
-                $scope.ResponsableConfeccionIngValues = [...new Set($scope.productos.map(p => p.ResponsableConfeccionIng))];
-                $scope.ResponsableLiberacionLetValues = [...new Set($scope.productos.map(p => p.ResponsableLiberacionLet))];
-                $scope.ResponsableLiberacionFinalIngValues = [...new Set($scope.productos.map(p => p.ResponsableLiberacionFinalIng))];
-                $scope.TipoImpresoraValues = [...new Set($scope.productos.map(p => p.TipoImpresora))];
-                $scope.ImpresoraValues = [...new Set($scope.productos.map(p => p.Impresora))];
-                $scope.ProveedorValues = [...new Set($scope.productos.map(p => p.Proveedor))];
-                $scope.ResponsablePrePrensaValues = [...new Set($scope.productos.map(p => p.ResponsablePrePrensa))];
-                $scope.PerfilImpresionValues = [...new Set($scope.productos.map(p => p.PerfilImpresion))];
-                $scope.TipoCilindrosValues = [...new Set($scope.productos.map(p => p.TipoCilindros))];
-                $scope.CodigosCilindrosValues = [...new Set($scope.productos.map(p => p.CodigosCilindros))];
-                $scope.dataLoaded = true; // Indicar que los datos están cargados
-                // Usar $timeout para asegurarse de que Angular haya procesado los cambios antes de inicializar la tabla
+                    }, 50);
+                }
+                
+                // Usar $timeout para asegurarse de que Angular haya procesado los cambios
                 $timeout(function () {
                     $scope.applyFilters();
                     if ($scope.dtInstance && $scope.dtInstance.reloadData) {
@@ -209,7 +254,10 @@ angular
 
                 //$scope.applyFilters(); // Aplicar filtros después de obtener los datos
             }, function (error) {
-                $scope.errorMessage = "Oops, algo salió mal.";
+                console.error('Error al cargar productos para tab ' + tab + ':', error);
+                var loadingKey = 'loading' + tab.charAt(0).toUpperCase() + tab.slice(1);
+                $scope[loadingKey] = false;
+                $scope.errorMessage = "Error al cargar productos del estado " + tab;
             });
         }
 
@@ -248,7 +296,15 @@ angular
             .withOption('searching', true)
             .withPaginationType('full_numbers')
             .withDisplayLength(50)
-            .withOption('order', [3, 'desc']); // Ordenar por Fecha_Inicial (columna 3-0)
+            .withOption('order', [3, 'desc']) // Ordenar por Fecha_Inicial (columna 3-0)
+            .withDOM("<'row'<'col-sm-6'l><'col-sm-6'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>")
+            .withOption('autoWidth', false)
+            .withOption('headerCallback', function(thead) {
+                $(thead).addClass('thead-light');
+            })
+            .withOption('drawCallback', function() {
+                $('.dataTables_wrapper').addClass('table-responsive');
+            });
 
         // Columnas para DataTables nativo en Migrados (sin Angular en celdas)
         $scope.dtColumnsMigrados = [
@@ -280,19 +336,19 @@ angular
                     return (type === 'filter' || type === 'sort') ? formatted : formatted;
                 } catch (e) { return ''; }
             }),
-            DTColumnBuilder.newColumn(null).withTitle('Estado Customer').renderWith(function (data, type, row) {
+            DTColumnBuilder.newColumn(null).withTitle('Estado Customer').withClass('td-semaforo').renderWith(function (data, type, row) {
                 return renderSemaforo(row, 'SemaforoCustomer');
             }).notSortable(),
-            DTColumnBuilder.newColumn(null).withTitle('Estado Ingenieria').renderWith(function (data, type, row) {
+            DTColumnBuilder.newColumn(null).withTitle('Estado Ingenieria').withClass('td-semaforo').renderWith(function (data, type, row) {
                 return renderSemaforo(row, 'SemaforoIngenieria');
             }).notSortable(),
-            DTColumnBuilder.newColumn(null).withTitle('Estado Preprensa').renderWith(function (data, type, row) {
+            DTColumnBuilder.newColumn(null).withTitle('Estado Preprensa').withClass('td-semaforo').renderWith(function (data, type, row) {
                 return renderSemaforo(row, 'SemaforoPreprensa');
             }).notSortable(),
-            DTColumnBuilder.newColumn(null).withTitle('Estado Herramental').renderWith(function (data, type, row) {
+            DTColumnBuilder.newColumn(null).withTitle('Estado Herramental').withClass('td-semaforo').renderWith(function (data, type, row) {
                 return renderSemaforo(row, 'SemaforoHerramental');
             }).notSortable(),
-            DTColumnBuilder.newColumn(null).withTitle('Estado General').renderWith(function (data, type, row) {
+            DTColumnBuilder.newColumn(null).withTitle('Estado General').withClass('td-semaforo').renderWith(function (data, type, row) {
                 return renderSemaforo(row, 'SemaforoGeneral');
             }).notSortable()
         ];
@@ -314,7 +370,10 @@ angular
         // Función para aplicar los filtros
         $scope.applyFilters = _.debounce(function () {
             $timeout(function () {
-                let productosFiltrados = $scope.productos;
+                // Obtener el dataset del tab activo
+                var datasetKey = 'productos' + $scope.activeTab.charAt(0).toUpperCase() + $scope.activeTab.slice(1);
+                var filteredKey = 'filteredProductos' + $scope.activeTab.charAt(0).toUpperCase() + $scope.activeTab.slice(1);
+                let productosFiltrados = $scope[datasetKey] || [];
 
                 $scope.filters.forEach(filter => {
                     if (filter.selectedColumn && filter.filterValue) {
@@ -393,7 +452,8 @@ angular
                     }
                 });
 
-                $scope.filteredProductos = $filter('orderBy')(productosFiltrados, $scope.sortColumn, $scope.reverseSort);
+                var filteredKey = 'filteredProductos' + $scope.activeTab.charAt(0).toUpperCase() + $scope.activeTab.slice(1);
+                $scope[filteredKey] = $filter('orderBy')(productosFiltrados, $scope.sortColumn, $scope.reverseSort);
             }, 200);
         }, 300); // Ajusta el tiempo de debounce según sea necesario
 
@@ -426,7 +486,7 @@ angular
         }, true);
 
         $scope.doSearch = function () {
-            if ($scope.activeTab === 'migrados') {
+            if ($scope.activeTab === 'migrado') {
                 $timeout(function () {
                     if ($scope.dtInstanceMigrados) {
                         var dt = $scope.dtInstanceMigrados.DataTable || $scope.dtInstanceMigrados;
@@ -434,7 +494,7 @@ angular
                     }
                 }, 0);
             } else {
-                $scope.applyFilters(); // Activos: reaplicar filtros y ordenación
+                $scope.applyFilters(); // Para otros estados: reaplicar filtros
             }
         };
     
@@ -951,8 +1011,8 @@ angular
             { id: 1, nombre: 'Gira Bobina' }
         ];
         $scope.tiposPaletizacion = [
-            { id: 0, nombre: 'Horizontal' },
-            { id: 1, nombre: 'Vertical' }
+            { id: 0, nombre: 'Vertical' },
+            { id: 1, nombre: 'Horizontal' }
         ];
         $scope.tamanosPallet = [
             { id: 0, nombre: 'Estándar' },

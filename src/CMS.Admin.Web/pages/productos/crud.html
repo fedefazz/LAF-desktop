@@ -535,11 +535,6 @@
                                         {{ 'Film Inferior' }}
                                     </md-switch>
                                 </md-input-container>
-                                <md-input-container class="md-block" flex-gt-xs>
-                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.RomaneosPorCara" aria-label="RomaneosPorCara">
-                                        {{ 'Romaneos por cara' }}
-                                    </md-switch>
-                                </md-input-container>
                             </div>
 
                             <div layout-gt-xs="row">
@@ -575,9 +570,17 @@
                                     </md-switch>
                                 </md-input-container>
                                 <md-input-container class="md-block" flex-gt-xs>
-                                    <md-switch ng-disabled="tieneRolAdminProducto == false" ng-model="productoData.EtiquetaEnBolsa" aria-label="EtiquetaEnBolsa">
-                                        {{ 'Lleva etiqueta en bolsa?' }}
-                                    </md-switch>
+                                    <label>Ubicación Etiqueta</label>
+                                    <input ng-disabled="tieneRolAdminProducto == false" 
+                                           type="text" 
+                                           maxlength="4" 
+                                           ng-model="productoData.PalletLabel" 
+                                           ng-pattern="/^[0-4]{4}$/"
+                                           name="PalletLabel" 
+                                           placeholder="Ubicación Etiqueta" />
+                                    <div ng-messages="editAuthorForm.PalletLabel.$error">
+                                        <div ng-message="pattern">Debe ingresar exactamente 4 dígitos (0, 1, 2, 3, 4)</div>
+                                    </div>
                                 </md-input-container>
                             </div>
 
